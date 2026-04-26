@@ -62,7 +62,10 @@ function AddMoneyPage() {
         {chips.map((c) => (
           <button
             key={c}
-            onClick={() => setAmount(String(c))}
+            onClick={() => {
+              setAmount(String(c));
+              navigate({ to: "/add-money/method", search: { amount: String(c) } });
+            }}
             className="min-w-[78px] flex-1 rounded-xl bg-white border border-[color:var(--border)] py-3 text-[16px] font-medium text-[var(--pp-text)]"
           >
             ${c}
@@ -72,6 +75,20 @@ function AddMoneyPage() {
 
       {/* Spacer pushes keypad down */}
       <div className="flex-1" />
+
+      {/* Next button — appears once a positive amount is entered */}
+      {parseFloat(amount) > 0 && (
+        <div className="px-4 pb-3">
+          <button
+            onClick={() =>
+              navigate({ to: "/add-money/method", search: { amount } })
+            }
+            className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold"
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Numeric keypad */}
       <div className="bg-[oklch(0.92_0.005_260)] px-2 pt-2 pb-3">
@@ -95,19 +112,10 @@ function AddMoneyPage() {
           />
         </div>
       </div>
-
-      {/* Hidden submit area — tap on amount continues */}
-      <button
-        onClick={() =>
-          navigate({ to: "/add-money/method", search: { amount: amount === "0" ? "10" : amount } })
-        }
-        className="sr-only"
-      >
-        Continue
-      </button>
     </div>
   );
 }
+
 
 function Key({
   label,
