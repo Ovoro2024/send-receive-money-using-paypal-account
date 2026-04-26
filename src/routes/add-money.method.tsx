@@ -4,6 +4,30 @@ import { ArrowLeft, X, Check, Plus } from "lucide-react";
 
 type Search = { amount?: string };
 
+function getParsedAmount(value: string) {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 10;
+}
+
+function formatAmountDisplay(value: string) {
+  const parsed = getParsedAmount(value);
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: Number.isInteger(parsed) ? 0 : 2,
+    maximumFractionDigits: 2,
+  }).format(parsed);
+}
+
+function formatAmountCta(value: string) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(getParsedAmount(value));
+}
+
 export const Route = createFileRoute("/add-money/method")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     amount: typeof s.amount === "string" ? s.amount : "10",
@@ -24,6 +48,8 @@ function MethodPage() {
   const navigate = useNavigate();
   const [speed, setSpeed] = useState<Speed>("bank");
   const [sheetOpen, setSheetOpen] = useState(false);
+  const displayAmount = formatAmountDisplay(amount);
+  const ctaAmount = formatAmountCta(amount);
 
   const isDebit = speed === "debit";
 
@@ -42,7 +68,7 @@ function MethodPage() {
       <main className="flex-1 px-5 pb-32">
         {/* Amount */}
         <p className="mt-8 text-center text-[44px] font-semibold text-[var(--pp-text)] leading-none">
-          ${amount}
+          {displayAmount}
         </p>
 
         {/* Speed selector */}
@@ -102,7 +128,7 @@ function MethodPage() {
           onClick={() => navigate({ to: "/security-check" })}
           className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold"
         >
-          Add ${amount}.00 Now
+          Add {ctaAmount} Now
         </button>
       </div>
 
