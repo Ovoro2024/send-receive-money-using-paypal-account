@@ -16,6 +16,7 @@ import { Route as FinancesRouteImport } from './routes/finances'
 import { Route as DealsRouteImport } from './routes/deals'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
 import { Route as AddMoneyMethodRouteImport } from './routes/add-money.method'
 
 const WalletRoute = WalletRouteImport.update({
@@ -53,6 +54,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AddMoneyRoute,
+} as any)
 const AddMoneyMethodRoute = AddMoneyMethodRouteImport.update({
   id: '/method',
   path: '/method',
@@ -68,16 +74,17 @@ export interface FileRoutesByFullPath {
   '/security-check': typeof SecurityCheckRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
+  '/add-money/': typeof AddMoneyIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/add-money': typeof AddMoneyRouteWithChildren
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
+  '/add-money': typeof AddMoneyIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +96,7 @@ export interface FileRoutesById {
   '/security-check': typeof SecurityCheckRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
+  '/add-money/': typeof AddMoneyIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,16 +109,17 @@ export interface FileRouteTypes {
     | '/security-check'
     | '/wallet'
     | '/add-money/method'
+    | '/add-money/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/add-money'
     | '/deals'
     | '/finances'
     | '/payments'
     | '/security-check'
     | '/wallet'
     | '/add-money/method'
+    | '/add-money'
   id:
     | '__root__'
     | '/'
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/security-check'
     | '/wallet'
     | '/add-money/method'
+    | '/add-money/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/add-money/': {
+      id: '/add-money/'
+      path: '/'
+      fullPath: '/add-money/'
+      preLoaderRoute: typeof AddMoneyIndexRouteImport
+      parentRoute: typeof AddMoneyRoute
+    }
     '/add-money/method': {
       id: '/add-money/method'
       path: '/method'
@@ -196,10 +213,12 @@ declare module '@tanstack/react-router' {
 
 interface AddMoneyRouteChildren {
   AddMoneyMethodRoute: typeof AddMoneyMethodRoute
+  AddMoneyIndexRoute: typeof AddMoneyIndexRoute
 }
 
 const AddMoneyRouteChildren: AddMoneyRouteChildren = {
   AddMoneyMethodRoute: AddMoneyMethodRoute,
+  AddMoneyIndexRoute: AddMoneyIndexRoute,
 }
 
 const AddMoneyRouteWithChildren = AddMoneyRoute._addFileChildren(
