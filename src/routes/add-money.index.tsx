@@ -64,19 +64,29 @@ function AddMoneyPage() {
         </h1>
       </header>
 
-      <button
-        type="button"
+      <div
+        role="button"
+        tabIndex={hasAmount ? 0 : -1}
         onClick={handleAmountTap}
-        disabled={!hasAmount}
         aria-label={hasAmount ? `Continue with $${amount}` : "Enter an amount"}
-        className="mt-10 flex w-full appearance-none flex-col items-center border-0 bg-transparent px-4 text-center outline-none ring-0 shadow-none disabled:cursor-default disabled:pointer-events-none"
+        onKeyDown={(event) => {
+          if (!hasAmount) return;
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            handleAmountTap();
+          }
+        }}
+        className={
+          "mt-10 flex w-full flex-col items-center px-4 text-center touch-manipulation outline-none" +
+          (hasAmount ? " cursor-pointer" : " pointer-events-none cursor-default")
+        }
       >
         <div className="flex items-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
           <span>$</span>
           <span>{amount}</span>
         </div>
         <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">PayPal balance: $30.71</p>
-      </button>
+      </div>
 
       <div className="mt-10 flex gap-3 overflow-x-auto px-4 pb-1">
         {chips.map((chip) => (
@@ -87,7 +97,7 @@ function AddMoneyPage() {
               setAmount(String(chip));
               goNext(String(chip));
             }}
-            className="min-w-[78px] flex-1 rounded-xl border border-[color:var(--border)] bg-white py-3 text-[16px] font-medium text-[var(--pp-text)]"
+            className="min-w-[78px] flex-1 touch-manipulation rounded-xl border border-[color:var(--border)] bg-white py-3 text-[16px] font-medium text-[var(--pp-text)]"
           >
             ${chip}
           </button>
