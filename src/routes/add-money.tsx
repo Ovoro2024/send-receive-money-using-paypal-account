@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { ArrowLeft, Delete } from "lucide-react";
 
 export const Route = createFileRoute("/add-money")({
@@ -18,18 +18,41 @@ function AddMoneyPage() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState<string>("0");
 
+  const getNormalizedAmount = (value: string) => {
+    const trimmed = value.endsWith(".") ? value.slice(0, -1) : value;
+    const numericValue = Number.parseFloat(trimmed);
+
+    if (!Number.isFinite(numericValue) || numericValue <= 0) {
+      return null;
+    }
+
+    return trimmed;
+  };
+
   const press = (k: string) => {
     setAmount((prev) => {
       if (k === "del") {
         const next = prev.slice(0, -1);
         return next.length === 0 ? "0" : next;
       }
+
       if (k === ".") {
         if (prev.includes(".")) return prev;
         return prev + ".";
       }
-      if (prev === "0") return k;
-      return prev + k;
+
+      if (prev === "0") {
+        if (k === "0") return prev;
+        return k;
+      }
+
+      const next = prev + k;
+      const decimals = next.split(".")[1];
+      if (decimals && decimals.length > 2) {
+        return prev;
+      }
+
+      return next;
     });
   };
 
@@ -37,11 +60,16 @@ function AddMoneyPage() {
     navigate({ to: "/add-money/method", search: { amount: value } });
   };
 
-  const hasAmount = parseFloat(amount) > 0;
+  const hasAmount = getNormalizedAmount(amount) !== null;
+
+  const handleAmountTap = () => {
+    const nextAmount = getNormalizedAmount(amount);
+    if (!nextAmount) return;
+    goNext(nextAmount);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
-      {/* Header */}
       <header className="relative flex items-center justify-center px-4 pt-5 pb-4">
         <Link to="/finances" className="absolute left-4 top-5 text-[var(--pp-text)]">
           <ArrowLeft size={24} strokeWidth={2.25} />
@@ -51,22 +79,26 @@ function AddMoneyPage() {
         </h1>
       </header>
 
-      {/* Amount */}
-      <div className="mt-10 flex flex-col items-center">
+      <button
+        type="button"
+        onClick={handleAmountTap}
+        disabled={!hasAmount}
+        aria-label={hasAmount ? `Continue with $${amount}` : "Enter an amount"}
+        className="mt-10 flex flex-col items-center px-4 disabled:cursor-default"
+      >
         <div className="flex items-center text-[44px] font-semibold text-[var(--pp-text)] leading-none">
           <span>$</span>
-          <span className="ml-0.5 inline-block w-[2px] h-9 bg-[var(--pp-blue)] animate-pulse" />
           <span>{amount}</span>
         </div>
         <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">
           PayPal balance: $30.71
         </p>
-      </div>
+      </button>
 
-      {/* Quick chips */}
       <div className="mt-10 flex gap-3 overflow-x-auto px-4">
         {chips.map((c) => (
           <button
+            type="button"
             key={c}
             onClick={() => {
               setAmount(String(c));
@@ -81,18 +113,6 @@ function AddMoneyPage() {
 
       <div className="flex-1" />
 
-      {hasAmount && (
-        <div className="px-4 pb-3">
-          <button
-            onClick={() => goNext(amount)}
-            className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold"
-          >
-            Next
-          </button>
-        </div>
-      )}
-
-      {/* Numeric keypad */}
       <div className="bg-[oklch(0.92_0.005_260)] px-2 pt-2 pb-3">
         <div className="grid grid-cols-3 gap-1.5">
           <Key label="1" onPress={() => press("1")} />
@@ -128,13 +148,14 @@ function Key({
 }: {
   label?: string;
   sub?: string;
-  icon?: React.ReactNode;
+  icon?: ReactNode;
   onPress: () => void;
   muted?: boolean;
   ariaLabel?: string;
 }) {
   return (
     <button
+      type="button"
       onClick={onPress}
       aria-label={ariaLabel ?? label}
       className={
