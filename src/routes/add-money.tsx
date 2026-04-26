@@ -116,16 +116,6 @@ function AddMoneyPage() {
   );
 }
 
-        onClick={() =>
-          navigate({ to: "/add-money/method", search: { amount: amount === "0" ? "10" : amount } })
-        }
-        className="sr-only"
-      >
-        Continue
-      </button>
-    </div>
-  );
-}
 
 function Key({
   label,
