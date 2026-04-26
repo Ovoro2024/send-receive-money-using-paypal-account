@@ -14,16 +14,16 @@ export const Route = createFileRoute("/add-money/")({
 
 const chips = [10, 25, 50, 100] as const;
 
+function getNormalizedAmount(value: string) {
+  const trimmed = value.endsWith(".") ? value.slice(0, -1) : value;
+  const numericValue = Number.parseFloat(trimmed);
+  if (!Number.isFinite(numericValue) || numericValue <= 0) return null;
+  return trimmed;
+}
+
 function AddMoneyPage() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState("0");
-
-  const getNormalizedAmount = (value: string) => {
-    const trimmed = value.endsWith(".") ? value.slice(0, -1) : value;
-    const numericValue = Number.parseFloat(trimmed);
-    if (!Number.isFinite(numericValue) || numericValue <= 0) return null;
-    return trimmed;
-  };
 
   const press = (key: string) => {
     setAmount((prev) => {
@@ -69,16 +69,16 @@ function AddMoneyPage() {
         onClick={handleAmountTap}
         disabled={!hasAmount}
         aria-label={hasAmount ? `Continue with $${amount}` : "Enter an amount"}
-        className="mt-10 flex flex-col items-center px-4 disabled:cursor-default"
+        className="mt-10 flex w-full appearance-none flex-col items-center border-0 bg-transparent px-4 text-center outline-none ring-0 shadow-none disabled:cursor-default disabled:pointer-events-none"
       >
-        <div className="flex items-center text-[44px] font-semibold leading-none text-[var(--pp-text)]">
+        <div className="flex items-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
           <span>$</span>
           <span>{amount}</span>
         </div>
         <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">PayPal balance: $30.71</p>
       </button>
 
-      <div className="mt-10 flex gap-3 overflow-x-auto px-4">
+      <div className="mt-10 flex gap-3 overflow-x-auto px-4 pb-1">
         {chips.map((chip) => (
           <button
             key={chip}
