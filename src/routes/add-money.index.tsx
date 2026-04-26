@@ -24,6 +24,8 @@ function getNormalizedAmount(value: string) {
 function AddMoneyPage() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState("0");
+  const normalizedAmount = getNormalizedAmount(amount);
+  const hasAmount = normalizedAmount !== null;
 
   const press = (key: string) => {
     setAmount((prev) => {
@@ -47,14 +49,11 @@ function AddMoneyPage() {
   };
 
   const handleAmountTap = () => {
-    const nextAmount = getNormalizedAmount(amount);
-    if (nextAmount) goNext(nextAmount);
+    if (normalizedAmount) goNext(normalizedAmount);
   };
 
-  const hasAmount = getNormalizedAmount(amount) !== null;
-
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
+    <div className="min-h-screen select-none bg-[var(--pp-bg)]">
       <header className="relative flex items-center justify-center px-4 pt-5 pb-4">
         <Link to="/finances" className="absolute left-4 top-5 text-[var(--pp-text)]">
           <ArrowLeft size={24} strokeWidth={2.25} />
@@ -68,7 +67,8 @@ function AddMoneyPage() {
         role="button"
         tabIndex={hasAmount ? 0 : -1}
         onClick={handleAmountTap}
-        aria-label={hasAmount ? `Continue with $${amount}` : "Enter an amount"}
+        aria-label={hasAmount ? `Continue with $${normalizedAmount}` : "Enter an amount"}
+        aria-disabled={!hasAmount}
         onKeyDown={(event) => {
           if (!hasAmount) return;
           if (event.key === "Enter" || event.key === " ") {
@@ -88,7 +88,7 @@ function AddMoneyPage() {
         <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">PayPal balance: $30.71</p>
       </div>
 
-      <div className="mt-10 flex gap-3 overflow-x-auto px-4 pb-1">
+      <div className="mt-10 grid grid-cols-4 gap-3 px-4 pb-1">
         {chips.map((chip) => (
           <button
             key={chip}
@@ -97,16 +97,16 @@ function AddMoneyPage() {
               setAmount(String(chip));
               goNext(String(chip));
             }}
-            className="min-w-[78px] flex-1 touch-manipulation rounded-xl border border-[color:var(--border)] bg-white py-3 text-[16px] font-medium text-[var(--pp-text)]"
+            className="touch-manipulation rounded-xl border border-[color:var(--border)] bg-white py-3 text-[16px] font-medium text-[var(--pp-text)] shadow-[0_1px_0_rgba(0,0,0,0.04)]"
           >
             ${chip}
           </button>
         ))}
       </div>
 
-      <div className="flex-1" />
+      <div className="h-[340px]" />
 
-      <div className="bg-[oklch(0.92_0.005_260)] px-2 pt-2 pb-3">
+      <div className="bg-muted px-2 pt-2 pb-3">
         <div className="grid grid-cols-3 gap-1.5">
           <Key label="1" onPress={() => press("1")} />
           <Key label="2" sub="ABC" onPress={() => press("2")} />
