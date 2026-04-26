@@ -33,6 +33,12 @@ function AddMoneyPage() {
     });
   };
 
+  const goNext = (value: string) => {
+    navigate({ to: "/add-money/method", search: { amount: value } });
+  };
+
+  const hasAmount = parseFloat(amount) > 0;
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       {/* Header */}
@@ -64,7 +70,7 @@ function AddMoneyPage() {
             key={c}
             onClick={() => {
               setAmount(String(c));
-              navigate({ to: "/add-money/method", search: { amount: String(c) } });
+              goNext(String(c));
             }}
             className="min-w-[78px] flex-1 rounded-xl bg-white border border-[color:var(--border)] py-3 text-[16px] font-medium text-[var(--pp-text)]"
           >
@@ -73,16 +79,12 @@ function AddMoneyPage() {
         ))}
       </div>
 
-      {/* Spacer pushes keypad down */}
       <div className="flex-1" />
 
-      {/* Next button — appears once a positive amount is entered */}
-      {parseFloat(amount) > 0 && (
+      {hasAmount && (
         <div className="px-4 pb-3">
           <button
-            onClick={() =>
-              navigate({ to: "/add-money/method", search: { amount } })
-            }
+            onClick={() => goNext(amount)}
             className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold"
           >
             Next
@@ -115,7 +117,6 @@ function AddMoneyPage() {
     </div>
   );
 }
-
 
 function Key({
   label,
