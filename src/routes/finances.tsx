@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
@@ -56,9 +56,12 @@ function FinancesPage() {
         </div>
 
         {/* Add Money button */}
-        <button className="mt-7 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold">
+        <Link
+          to="/add-money"
+          className="mt-7 block w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-center text-white text-[17px] font-bold"
+        >
           Add Money
-        </button>
+        </Link>
 
         {/* Debit card visual */}
         <div className="mt-5 rounded-2xl bg-[var(--pp-blue-dark)] p-5 relative overflow-hidden">
