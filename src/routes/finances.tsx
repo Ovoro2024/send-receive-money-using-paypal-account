@@ -44,9 +44,17 @@ function FinancesPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       <main className="flex-1 px-5 pt-10 pb-6">
-        <h1 className="text-[34px] font-bold leading-tight text-[var(--pp-text)]">
-          Finances
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-[34px] font-bold leading-tight text-[var(--pp-text)]">
+            Finances
+          </h1>
+          <button
+            onClick={() => signOut()}
+            className="text-[14px] font-semibold text-[var(--pp-link)]"
+          >
+            Sign out
+          </button>
+        </div>
 
         {/* Tabs */}
         <div className="mt-4 flex items-center gap-2">
@@ -73,7 +81,7 @@ function FinancesPage() {
         <div className="mt-7">
           <p className="text-[15px] text-[var(--pp-text)]">Total PayPal Balance</p>
           <p className="mt-2 text-[44px] font-semibold leading-none text-[var(--pp-text)]">
-            $30.71
+            {balance === null ? "—" : formatUsd(balance)}
           </p>
         </div>
 
