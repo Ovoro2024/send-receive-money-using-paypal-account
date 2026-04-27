@@ -3,7 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 
+type Search = { amount?: string };
+
 export const Route = createFileRoute("/security-check/code")({
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    amount: typeof s.amount === "string" ? s.amount : "10",
+  }),
   component: ConfirmCodePage,
   head: () => ({
     meta: [
