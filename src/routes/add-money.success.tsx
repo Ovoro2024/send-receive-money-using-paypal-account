@@ -1,23 +1,24 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { RequireAuth } from "@/auth/RequireAuth";
+import { useBalance } from "@/auth/useBalance";
 
 type Search = { amount?: string };
 
-function formatCurrency(value: string) {
-  const parsed = Number.parseFloat(value);
-  const safe = Number.isFinite(parsed) && parsed > 0 ? parsed : 10;
+function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(safe);
+  }).format(value);
 }
 
 export const Route = createFileRoute("/add-money/success")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     amount: typeof s.amount === "string" ? s.amount : "10",
   }),
-  component: SuccessPage,
+  component: SuccessRoute,
   head: () => ({
     meta: [
       { title: "Money added — PayPal" },
@@ -26,10 +27,36 @@ export const Route = createFileRoute("/add-money/success")({
   }),
 });
 
+function SuccessRoute() {
+  return (
+    <RequireAuth>
+      <SuccessPage />
+    </RequireAuth>
+  );
+}
+
 function SuccessPage() {
   const { amount = "10" } = Route.useSearch();
   const navigate = useNavigate();
-  const formatted = formatCurrency(amount);
+  const { addMoney } = useBalance();
+  const ranRef = useRef(false);
+  const [error, setError] = useState<string | null>(null);
+  const [credited, setCredited] = useState(false);
+
+  const numericAmount = (() => {
+    const parsed = Number.parseFloat(amount);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  })();
+
+  useEffect(() => {
+    if (ranRef.current) return;
+    if (numericAmount <= 0) return;
+    ranRef.current = true;
+    addMoney(numericAmount).then(({ error: err }) => {
+      if (err) setError(err);
+      else setCredited(true);
+    });
+  }, [numericAmount, addMoney]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -40,10 +67,20 @@ function SuccessPage() {
           </svg>
         </div>
         <p className="mt-8 text-center text-[22px] font-semibold text-[var(--pp-text)] leading-snug">
-          You added {formatted} to
+          You added {formatCurrency(numericAmount)} to
           <br />
           your balance
         </p>
+        {error && (
+          <p className="mt-4 text-center text-[14px] text-[oklch(0.55_0.22_25)]">
+            {error}
+          </p>
+        )}
+        {!error && !credited && (
+          <p className="mt-4 text-center text-[13px] text-[var(--pp-text-muted)]">
+            Saving...
+          </p>
+        )}
       </main>
 
       <div className="px-4 pb-6 pt-2">
