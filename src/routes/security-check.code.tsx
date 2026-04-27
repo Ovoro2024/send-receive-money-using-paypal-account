@@ -82,9 +82,11 @@ function ConfirmCodePage() {
                 key={i}
                 className={
                   "h-12 w-11 rounded-md border bg-white flex items-center justify-center text-[20px] font-semibold text-[var(--pp-text)] tabular-nums " +
-                  (isActive
-                    ? "border-[var(--pp-blue)] ring-1 ring-[var(--pp-blue)]"
-                    : "border-[color:var(--border)]")
+                  (error
+                    ? "border-[oklch(0.55_0.22_25)] ring-1 ring-[oklch(0.55_0.22_25)]"
+                    : isActive
+                      ? "border-[var(--pp-blue)] ring-1 ring-[var(--pp-blue)]"
+                      : "border-[color:var(--border)]")
                 }
               >
                 {char}
