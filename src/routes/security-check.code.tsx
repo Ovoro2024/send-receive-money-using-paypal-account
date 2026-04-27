@@ -106,6 +106,12 @@ function ConfirmCodePage() {
           />
         </div>
 
+        {error && (
+          <p className="mt-4 text-center text-[14px] text-[oklch(0.55_0.22_25)]">
+            Incorrect code. Please try again.
+          </p>
+        )}
+
         <button className="mt-8 mx-auto text-[15px] font-semibold text-[var(--pp-link)]">
           Resend code
         </button>
@@ -113,7 +119,7 @@ function ConfirmCodePage() {
         <div className="flex-1" />
 
         <button
-          disabled={!isComplete}
+          disabled={!isValid}
           onClick={() => navigate({ to: "/security-check/confirmed", search: { amount } })}
           className="mb-6 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-semibold disabled:opacity-50"
         >
