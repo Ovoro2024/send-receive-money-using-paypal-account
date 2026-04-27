@@ -125,7 +125,7 @@ function MethodPage() {
       {/* Bottom CTA */}
       <div className="sticky bottom-0 left-0 right-0 px-4 pb-5 pt-2 bg-[var(--pp-bg)]">
         <button
-          onClick={() => navigate({ to: "/security-check" })}
+          onClick={() => navigate({ to: "/security-check", search: { amount } as never })}
           className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold"
         >
           Add {ctaAmount} Now
