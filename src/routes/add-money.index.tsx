@@ -1,9 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { RequireAuth } from "@/auth/RequireAuth";
+import { useBalance } from "@/auth/useBalance";
 
 export const Route = createFileRoute("/add-money/")({
-  component: AddMoneyPage,
+  component: AddMoneyRoute,
   head: () => ({
     meta: [
       { title: "Add money — PayPal" },
