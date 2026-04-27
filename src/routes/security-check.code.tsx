@@ -18,26 +18,35 @@ export const Route = createFileRoute("/security-check/code")({
   }),
 });
 
+const VALID_CODE = "565656";
+
 function ConfirmCodePage() {
   const navigate = useNavigate();
   const { amount = "10" } = Route.useSearch();
   const [code, setCode] = useState("");
+  const [error, setError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const isComplete = code.length === 6;
+  const isValid = code === VALID_CODE;
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
-    if (isComplete) {
+    if (!isComplete) {
+      setError(false);
+      return;
+    }
+    if (isValid) {
       const t = setTimeout(
         () => navigate({ to: "/security-check/confirmed", search: { amount } }),
         350,
       );
       return () => clearTimeout(t);
     }
-  }, [isComplete, navigate, amount]);
+    setError(true);
+  }, [isComplete, isValid, navigate, amount]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
