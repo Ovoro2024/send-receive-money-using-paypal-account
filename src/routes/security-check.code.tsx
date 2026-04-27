@@ -103,7 +103,7 @@ function ConfirmCodePage() {
 
         <button
           disabled={!isComplete}
-          onClick={() => navigate({ to: "/security-check/confirmed" })}
+          onClick={() => navigate({ to: "/security-check/confirmed", search: { amount } })}
           className="mb-6 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-semibold disabled:opacity-50"
         >
           Continue
