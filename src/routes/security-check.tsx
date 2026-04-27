@@ -3,7 +3,12 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 
+type Search = { amount?: string };
+
 export const Route = createFileRoute("/security-check")({
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    amount: typeof s.amount === "string" ? s.amount : "10",
+  }),
   component: SecurityCheckPage,
   head: () => ({
     meta: [
