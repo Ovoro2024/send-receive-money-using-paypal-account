@@ -38,8 +38,17 @@ function sanitize(raw: string) {
   return `${trimmedInt}.${decPart.slice(0, 2)}`;
 }
 
+function AddMoneyRoute() {
+  return (
+    <RequireAuth>
+      <AddMoneyPage />
+    </RequireAuth>
+  );
+}
+
 function AddMoneyPage() {
   const navigate = useNavigate();
+  const { balance } = useBalance();
   const [amount, setAmount] = useState("0");
   const inputRef = useRef<HTMLInputElement>(null);
   const normalizedAmount = getNormalizedAmount(amount);
@@ -87,7 +96,7 @@ function AddMoneyPage() {
           </span>
         </div>
         <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">
-          PayPal balance: $30.71
+          PayPal balance: {balance === null ? "—" : `$${balance.toFixed(2)}`}
         </p>
       </div>
 
