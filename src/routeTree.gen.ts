@@ -16,6 +16,7 @@ import { Route as FinancesRouteImport } from './routes/finances'
 import { Route as DealsRouteImport } from './routes/deals'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
 import { Route as SecurityCheckConfirmedRouteImport } from './routes/security-check.confirmed'
 import { Route as SecurityCheckCodeRouteImport } from './routes/security-check.code'
@@ -57,6 +58,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SecurityCheckIndexRoute = SecurityCheckIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SecurityCheckRoute,
+} as any)
 const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -96,19 +102,20 @@ export interface FileRoutesByFullPath {
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
   '/add-money/': typeof AddMoneyIndexRoute
+  '/security-check/': typeof SecurityCheckIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
-  '/security-check': typeof SecurityCheckRouteWithChildren
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
   '/add-money': typeof AddMoneyIndexRoute
+  '/security-check': typeof SecurityCheckIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -124,6 +131,7 @@ export interface FileRoutesById {
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
   '/add-money/': typeof AddMoneyIndexRoute
+  '/security-check/': typeof SecurityCheckIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,19 +148,20 @@ export interface FileRouteTypes {
     | '/security-check/code'
     | '/security-check/confirmed'
     | '/add-money/'
+    | '/security-check/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/deals'
     | '/finances'
     | '/payments'
-    | '/security-check'
     | '/wallet'
     | '/add-money/method'
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
     | '/add-money'
+    | '/security-check'
   id:
     | '__root__'
     | '/'
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/security-check/code'
     | '/security-check/confirmed'
     | '/add-money/'
+    | '/security-check/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -230,6 +240,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/security-check/': {
+      id: '/security-check/'
+      path: '/'
+      fullPath: '/security-check/'
+      preLoaderRoute: typeof SecurityCheckIndexRouteImport
+      parentRoute: typeof SecurityCheckRoute
+    }
     '/add-money/': {
       id: '/add-money/'
       path: '/'
@@ -287,11 +304,13 @@ const AddMoneyRouteWithChildren = AddMoneyRoute._addFileChildren(
 interface SecurityCheckRouteChildren {
   SecurityCheckCodeRoute: typeof SecurityCheckCodeRoute
   SecurityCheckConfirmedRoute: typeof SecurityCheckConfirmedRoute
+  SecurityCheckIndexRoute: typeof SecurityCheckIndexRoute
 }
 
 const SecurityCheckRouteChildren: SecurityCheckRouteChildren = {
   SecurityCheckCodeRoute: SecurityCheckCodeRoute,
   SecurityCheckConfirmedRoute: SecurityCheckConfirmedRoute,
+  SecurityCheckIndexRoute: SecurityCheckIndexRoute,
 }
 
 const SecurityCheckRouteWithChildren = SecurityCheckRoute._addFileChildren(
