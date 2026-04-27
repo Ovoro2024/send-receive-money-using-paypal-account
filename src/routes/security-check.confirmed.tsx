@@ -20,11 +20,15 @@ export const Route = createFileRoute("/security-check/confirmed")({
 
 function ConfirmedPage() {
   const navigate = useNavigate();
+  const { amount = "10" } = Route.useSearch();
 
   useEffect(() => {
-    const t = setTimeout(() => navigate({ to: "/add-money/success" }), 1800);
+    const t = setTimeout(
+      () => navigate({ to: "/add-money/success", search: { amount } }),
+      1800,
+    );
     return () => clearTimeout(t);
-  }, [navigate]);
+  }, [navigate, amount]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
