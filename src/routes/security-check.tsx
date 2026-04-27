@@ -30,6 +30,7 @@ function formatPhone(raw: string) {
 
 function SecurityCheckPage() {
   const navigate = useNavigate();
+  const { amount = "10" } = Route.useSearch();
   const [phone, setPhone] = useState("");
   const digits = phone.replace(/\D/g, "");
   const isValid = digits.length === 10;
