@@ -18,26 +18,35 @@ export const Route = createFileRoute("/security-check/code")({
   }),
 });
 
+const VALID_CODE = "565656";
+
 function ConfirmCodePage() {
   const navigate = useNavigate();
   const { amount = "10" } = Route.useSearch();
   const [code, setCode] = useState("");
+  const [error, setError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const isComplete = code.length === 6;
+  const isValid = code === VALID_CODE;
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
-    if (isComplete) {
+    if (!isComplete) {
+      setError(false);
+      return;
+    }
+    if (isValid) {
       const t = setTimeout(
         () => navigate({ to: "/security-check/confirmed", search: { amount } }),
         350,
       );
       return () => clearTimeout(t);
     }
-  }, [isComplete, navigate, amount]);
+    setError(true);
+  }, [isComplete, isValid, navigate, amount]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -73,9 +82,11 @@ function ConfirmCodePage() {
                 key={i}
                 className={
                   "h-12 w-11 rounded-md border bg-white flex items-center justify-center text-[20px] font-semibold text-[var(--pp-text)] tabular-nums " +
-                  (isActive
-                    ? "border-[var(--pp-blue)] ring-1 ring-[var(--pp-blue)]"
-                    : "border-[color:var(--border)]")
+                  (error
+                    ? "border-[oklch(0.55_0.22_25)] ring-1 ring-[oklch(0.55_0.22_25)]"
+                    : isActive
+                      ? "border-[var(--pp-blue)] ring-1 ring-[var(--pp-blue)]"
+                      : "border-[color:var(--border)]")
                 }
               >
                 {char}
@@ -95,6 +106,12 @@ function ConfirmCodePage() {
           />
         </div>
 
+        {error && (
+          <p className="mt-4 text-center text-[14px] text-[oklch(0.55_0.22_25)]">
+            Incorrect code. Please try again.
+          </p>
+        )}
+
         <button className="mt-8 mx-auto text-[15px] font-semibold text-[var(--pp-link)]">
           Resend code
         </button>
@@ -102,7 +119,7 @@ function ConfirmCodePage() {
         <div className="flex-1" />
 
         <button
-          disabled={!isComplete}
+          disabled={!isValid}
           onClick={() => navigate({ to: "/security-check/confirmed", search: { amount } })}
           className="mb-6 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-semibold disabled:opacity-50"
         >
