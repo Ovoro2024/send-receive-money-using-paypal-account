@@ -20,6 +20,7 @@ export const Route = createFileRoute("/security-check/code")({
 
 function ConfirmCodePage() {
   const navigate = useNavigate();
+  const { amount = "10" } = Route.useSearch();
   const [code, setCode] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const isComplete = code.length === 6;
@@ -30,10 +31,13 @@ function ConfirmCodePage() {
 
   useEffect(() => {
     if (isComplete) {
-      const t = setTimeout(() => navigate({ to: "/security-check/confirmed" }), 350);
+      const t = setTimeout(
+        () => navigate({ to: "/security-check/confirmed", search: { amount } }),
+        350,
+      );
       return () => clearTimeout(t);
     }
-  }, [isComplete, navigate]);
+  }, [isComplete, navigate, amount]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
