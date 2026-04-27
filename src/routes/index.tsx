@@ -1,11 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trophy, ScanLine, X, ArrowUp, Landmark } from "lucide-react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
+import { RequireAuth } from "@/auth/RequireAuth";
+import { useBalance } from "@/auth/useBalance";
 import avatar from "@/assets/avatar.jpg";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: IndexRoute,
   head: () => ({
     meta: [
       { title: "PayPal" },
@@ -14,7 +16,19 @@ export const Route = createFileRoute("/")({
   }),
 });
 
+function IndexRoute() {
+  return (
+    <RequireAuth>
+      <Index />
+    </RequireAuth>
+  );
+}
+
 function Index() {
+  const { balance } = useBalance();
+  const balanceLabel = balance === null
+    ? "—"
+    : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance);
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       {/* Header */}
@@ -38,8 +52,8 @@ function Index() {
           <AccountCard
             icon={<PayPalLogo className="h-7 w-7" />}
             title="PayPal balance"
-            amount="$30.71"
-            footer={<span className="text-[var(--pp-link)] font-semibold">Add money</span>}
+            amount={balanceLabel}
+            footer={<Link to="/add-money" className="text-[var(--pp-link)] font-semibold">Add money</Link>}
           />
           <AccountCard
             icon={

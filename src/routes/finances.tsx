@@ -2,9 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
+import { RequireAuth } from "@/auth/RequireAuth";
+import { useBalance } from "@/auth/useBalance";
+import { useAuth } from "@/auth/AuthProvider";
 
 export const Route = createFileRoute("/finances")({
-  component: FinancesPage,
+  component: FinancesRoute,
   head: () => ({
     meta: [
       { title: "Finances — PayPal" },
@@ -16,15 +19,42 @@ export const Route = createFileRoute("/finances")({
 const tabs = ["Balance", "Savings", "Crypto"] as const;
 type Tab = (typeof tabs)[number];
 
+function FinancesRoute() {
+  return (
+    <RequireAuth>
+      <FinancesPage />
+    </RequireAuth>
+  );
+}
+
+function formatUsd(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 function FinancesPage() {
   const [tab, setTab] = useState<Tab>("Balance");
+  const { balance } = useBalance();
+  const { signOut } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       <main className="flex-1 px-5 pt-10 pb-6">
-        <h1 className="text-[34px] font-bold leading-tight text-[var(--pp-text)]">
-          Finances
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-[34px] font-bold leading-tight text-[var(--pp-text)]">
+            Finances
+          </h1>
+          <button
+            onClick={() => signOut()}
+            className="text-[14px] font-semibold text-[var(--pp-link)]"
+          >
+            Sign out
+          </button>
+        </div>
 
         {/* Tabs */}
         <div className="mt-4 flex items-center gap-2">
@@ -51,7 +81,7 @@ function FinancesPage() {
         <div className="mt-7">
           <p className="text-[15px] text-[var(--pp-text)]">Total PayPal Balance</p>
           <p className="mt-2 text-[44px] font-semibold leading-none text-[var(--pp-text)]">
-            $30.71
+            {balance === null ? "—" : formatUsd(balance)}
           </p>
         </div>
 
