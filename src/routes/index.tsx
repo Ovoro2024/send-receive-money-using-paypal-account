@@ -52,8 +52,8 @@ function Index() {
           <AccountCard
             icon={<PayPalLogo className="h-7 w-7" />}
             title="PayPal balance"
-            amount="$30.71"
-            footer={<span className="text-[var(--pp-link)] font-semibold">Add money</span>}
+            amount={balanceLabel}
+            footer={<Link to="/add-money" className="text-[var(--pp-link)] font-semibold">Add money</Link>}
           />
           <AccountCard
             icon={
