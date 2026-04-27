@@ -89,7 +89,7 @@ function SecurityCheckPage() {
 
         <button
           disabled={!isValid}
-          onClick={() => navigate({ to: "/security-check/code" })}
+          onClick={() => navigate({ to: "/security-check/code", search: { amount } })}
           className="mt-8 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-semibold disabled:opacity-50"
         >
           Next
