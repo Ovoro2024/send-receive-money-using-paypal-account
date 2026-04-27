@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
-import { ArrowLeft, Delete } from "lucide-react";
+import { useRef, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/add-money/")({
   component: AddMoneyPage,
@@ -21,39 +21,38 @@ function getNormalizedAmount(value: string) {
   return trimmed;
 }
 
+function sanitize(raw: string) {
+  // keep digits and a single dot, max 2 decimals
+  let cleaned = raw.replace(/[^0-9.]/g, "");
+  const firstDot = cleaned.indexOf(".");
+  if (firstDot !== -1) {
+    cleaned =
+      cleaned.slice(0, firstDot + 1) +
+      cleaned.slice(firstDot + 1).replace(/\./g, "");
+  }
+  const [intPart, decPart] = cleaned.split(".");
+  const trimmedInt = intPart.replace(/^0+(?=\d)/, "") || "0";
+  if (decPart === undefined) return trimmedInt;
+  return `${trimmedInt}.${decPart.slice(0, 2)}`;
+}
+
 function AddMoneyPage() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState("0");
+  const inputRef = useRef<HTMLInputElement>(null);
   const normalizedAmount = getNormalizedAmount(amount);
   const hasAmount = normalizedAmount !== null;
-
-  const press = (key: string) => {
-    setAmount((prev) => {
-      if (key === "del") {
-        const next = prev.slice(0, -1);
-        return next.length === 0 ? "0" : next;
-      }
-      if (key === ".") {
-        if (prev.includes(".")) return prev;
-        return `${prev}.`;
-      }
-      if (prev === "0") return key === "0" ? prev : key;
-      const next = prev + key;
-      const decimals = next.split(".")[1];
-      return decimals && decimals.length > 2 ? prev : next;
-    });
-  };
 
   const goNext = (value: string) => {
     navigate({ to: "/add-money/method", search: { amount: value } });
   };
 
-  const handleAmountTap = () => {
-    if (normalizedAmount) goNext(normalizedAmount);
+  const focusInput = () => {
+    inputRef.current?.focus();
   };
 
   return (
-    <div className="min-h-screen select-none bg-[var(--pp-bg)]">
+    <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       <header className="relative flex items-center justify-center px-4 pt-5 pb-4">
         <Link to="/finances" className="absolute left-4 top-5 text-[var(--pp-text)]">
           <ArrowLeft size={24} strokeWidth={2.25} />
@@ -64,28 +63,30 @@ function AddMoneyPage() {
       </header>
 
       <div
-        role="button"
-        tabIndex={hasAmount ? 0 : -1}
-        onClick={handleAmountTap}
-        aria-label={hasAmount ? `Continue with $${normalizedAmount}` : "Enter an amount"}
-        aria-disabled={!hasAmount}
-        onKeyDown={(event) => {
-          if (!hasAmount) return;
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            handleAmountTap();
-          }
-        }}
-        className={
-          "mt-10 flex w-full flex-col items-center px-4 text-center touch-manipulation outline-none" +
-          (hasAmount ? " cursor-pointer" : " pointer-events-none cursor-default")
-        }
+        onClick={focusInput}
+        className="mt-10 flex w-full flex-col items-center px-4 text-center"
       >
-        <div className="flex items-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
+        <div className="flex items-center justify-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
           <span>$</span>
-          <span>{amount}</span>
+          <span className="relative">
+            {amount}
+            {/* hidden native input invokes the phone numeric keyboard */}
+            <input
+              ref={inputRef}
+              type="text"
+              inputMode="decimal"
+              pattern="[0-9]*"
+              autoFocus
+              value={amount}
+              onChange={(e) => setAmount(sanitize(e.target.value))}
+              aria-label="Amount"
+              className="absolute inset-0 h-full w-full opacity-0 outline-none"
+            />
+          </span>
         </div>
-        <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">PayPal balance: $30.71</p>
+        <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">
+          PayPal balance: $30.71
+        </p>
       </div>
 
       <div className="mt-10 grid grid-cols-4 gap-3 px-4 pb-1">
@@ -93,10 +94,7 @@ function AddMoneyPage() {
           <button
             key={chip}
             type="button"
-            onClick={() => {
-              setAmount(String(chip));
-              goNext(String(chip));
-            }}
+            onClick={() => setAmount(String(chip))}
             className="touch-manipulation rounded-xl border border-[color:var(--border)] bg-white py-3 text-[16px] font-medium text-[var(--pp-text)] shadow-[0_1px_0_rgba(0,0,0,0.04)]"
           >
             ${chip}
@@ -104,72 +102,19 @@ function AddMoneyPage() {
         ))}
       </div>
 
-      <div className="h-[340px]" />
+      <div className="flex-1" />
 
-      <div className="bg-muted px-2 pt-2 pb-3">
-        <div className="grid grid-cols-3 gap-1.5">
-          <Key label="1" onPress={() => press("1")} />
-          <Key label="2" sub="ABC" onPress={() => press("2")} />
-          <Key label="3" sub="DEF" onPress={() => press("3")} />
-          <Key label="4" sub="GHI" onPress={() => press("4")} />
-          <Key label="5" sub="JKL" onPress={() => press("5")} />
-          <Key label="6" sub="MNO" onPress={() => press("6")} />
-          <Key label="7" sub="PQRS" onPress={() => press("7")} />
-          <Key label="8" sub="TUV" onPress={() => press("8")} />
-          <Key label="9" sub="WXYZ" onPress={() => press("9")} />
-          <Key label="." onPress={() => press(".")} muted />
-          <Key label="0" onPress={() => press("0")} />
-          <Key
-            ariaLabel="Delete"
-            icon={<Delete size={22} strokeWidth={1.75} />}
-            onPress={() => press("del")}
-            muted
-          />
+      {hasAmount && (
+        <div className="sticky bottom-0 left-0 right-0 bg-[var(--pp-bg)] px-4 pb-5 pt-3">
+          <button
+            type="button"
+            onClick={() => goNext(normalizedAmount!)}
+            className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-[17px] font-bold text-white"
+          >
+            Add Money
+          </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function Key({
-  label,
-  sub,
-  icon,
-  onPress,
-  muted,
-  ariaLabel,
-}: {
-  label?: string;
-  sub?: string;
-  icon?: ReactNode;
-  onPress: () => void;
-  muted?: boolean;
-  ariaLabel?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onPress}
-      aria-label={ariaLabel ?? label}
-      className={
-        "flex h-12 select-none flex-col items-center justify-center rounded-md " +
-        (muted
-          ? "bg-transparent text-[var(--pp-text)]"
-          : "bg-white text-[var(--pp-text)] shadow-[0_1px_0_rgba(0,0,0,0.25)]")
-      }
-    >
-      {icon ? (
-        icon
-      ) : (
-        <>
-          <span className="text-[22px] font-normal leading-none">{label}</span>
-          {sub ? (
-            <span className="mt-0.5 text-[9px] tracking-[0.15em] text-[var(--pp-text-muted)]">
-              {sub}
-            </span>
-          ) : null}
-        </>
       )}
-    </button>
+    </div>
   );
 }
