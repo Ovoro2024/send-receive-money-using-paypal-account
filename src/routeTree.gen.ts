@@ -14,6 +14,7 @@ import { Route as SecurityCheckRouteImport } from './routes/security-check'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as FinancesRouteImport } from './routes/finances'
 import { Route as DealsRouteImport } from './routes/deals'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
@@ -46,6 +47,11 @@ const FinancesRoute = FinancesRouteImport.update({
 const DealsRoute = DealsRouteImport.update({
   id: '/deals',
   path: '/deals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AddMoneyRoute = AddMoneyRouteImport.update({
@@ -92,6 +98,7 @@ const AddMoneyMethodRoute = AddMoneyMethodRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/add-money': typeof AddMoneyRouteWithChildren
+  '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/add-money': typeof AddMoneyRouteWithChildren
+  '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/add-money'
+    | '/auth'
     | '/deals'
     | '/finances'
     | '/payments'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/deals'
     | '/finances'
     | '/payments'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/add-money'
+    | '/auth'
     | '/deals'
     | '/finances'
     | '/payments'
@@ -182,6 +194,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AddMoneyRoute: typeof AddMoneyRouteWithChildren
+  AuthRoute: typeof AuthRoute
   DealsRoute: typeof DealsRoute
   FinancesRoute: typeof FinancesRoute
   PaymentsRoute: typeof PaymentsRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       path: '/deals'
       fullPath: '/deals'
       preLoaderRoute: typeof DealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/add-money': {
@@ -320,6 +340,7 @@ const SecurityCheckRouteWithChildren = SecurityCheckRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AddMoneyRoute: AddMoneyRouteWithChildren,
+  AuthRoute: AuthRoute,
   DealsRoute: DealsRoute,
   FinancesRoute: FinancesRoute,
   PaymentsRoute: PaymentsRoute,
@@ -329,3 +350,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
