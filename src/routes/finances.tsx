@@ -2,9 +2,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
+import { RequireAuth } from "@/auth/RequireAuth";
+import { useBalance } from "@/auth/useBalance";
+import { useAuth } from "@/auth/AuthProvider";
 
 export const Route = createFileRoute("/finances")({
-  component: FinancesPage,
+  component: FinancesRoute,
   head: () => ({
     meta: [
       { title: "Finances — PayPal" },
@@ -16,8 +19,27 @@ export const Route = createFileRoute("/finances")({
 const tabs = ["Balance", "Savings", "Crypto"] as const;
 type Tab = (typeof tabs)[number];
 
+function FinancesRoute() {
+  return (
+    <RequireAuth>
+      <FinancesPage />
+    </RequireAuth>
+  );
+}
+
+function formatUsd(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 function FinancesPage() {
   const [tab, setTab] = useState<Tab>("Balance");
+  const { balance } = useBalance();
+  const { signOut } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
