@@ -4,7 +4,6 @@ import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
-import { useAuth } from "@/auth/AuthProvider";
 
 export const Route = createFileRoute("/finances")({
   component: FinancesRoute,
