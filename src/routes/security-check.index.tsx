@@ -3,11 +3,13 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 
-type Search = { amount?: string };
+type Speed = "debit" | "bank";
+type Search = { amount?: string; speed?: Speed };
 
 export const Route = createFileRoute("/security-check/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     amount: typeof s.amount === "string" ? s.amount : "10",
+    speed: s.speed === "debit" || s.speed === "bank" ? s.speed : "bank",
   }),
   component: SecurityCheckPage,
   head: () => ({
@@ -30,7 +32,7 @@ function formatPhone(raw: string) {
 
 function SecurityCheckPage() {
   const navigate = useNavigate();
-  const { amount = "10" } = Route.useSearch();
+  const { amount = "10", speed = "bank" } = Route.useSearch();
   const [phone, setPhone] = useState("");
   const digits = phone.replace(/\D/g, "");
   const isValid = digits.length === 10;
@@ -85,7 +87,7 @@ function SecurityCheckPage() {
 
         <button
           disabled={!isValid}
-          onClick={() => navigate({ to: "/security-check/code", search: { amount } })}
+          onClick={() => navigate({ to: "/security-check/code", search: { amount, speed } })}
           className="mt-8 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-[17px] font-semibold text-white disabled:opacity-50"
         >
           Next

@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 
-type Search = { amount?: string };
+type Speed = "debit" | "bank";
+type Search = { amount?: string; speed?: Speed };
 
 function getParsedAmount(value: string) {
   const parsed = Number.parseFloat(value);
@@ -31,6 +32,7 @@ function formatAmountCta(value: string) {
 export const Route = createFileRoute("/add-money/review")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     amount: typeof s.amount === "string" ? s.amount : "10",
+    speed: s.speed === "debit" || s.speed === "bank" ? s.speed : "bank",
   }),
   component: ReviewRoute,
   head: () => ({
@@ -50,10 +52,11 @@ function ReviewRoute() {
 }
 
 function ReviewPage() {
-  const { amount = "10" } = Route.useSearch();
+  const { amount = "10", speed = "bank" } = Route.useSearch();
   const navigate = useNavigate();
   const displayAmount = formatAmountDisplay(amount);
   const ctaAmount = formatAmountCta(amount);
+  const isDebit = speed === "debit";
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
@@ -71,52 +74,69 @@ function ReviewPage() {
       </header>
 
       <main className="flex-1 px-5 pb-32">
-        {/* Amount */}
         <p className="mt-8 text-center text-[44px] font-semibold text-[var(--pp-text)] leading-none">
           {displayAmount}
         </p>
 
-        {/* Speed cards (debit selected, read-only) */}
         <div className="mt-10 grid grid-cols-2 gap-3">
-          <div className="rounded-xl bg-white p-4 flex flex-col items-center gap-2 border-2 border-[var(--pp-blue)]">
+          <div
+            className={
+              "rounded-xl bg-white p-4 flex flex-col items-center gap-2 " +
+              (isDebit
+                ? "border-2 border-[var(--pp-blue)]"
+                : "border border-[color:var(--border)]")
+            }
+          >
             <div className="h-16 w-16 flex items-center justify-center">
               <RocketIcon />
             </div>
-            <p className="text-[15px] font-bold text-[var(--pp-text)]">in seconds</p>
+            <p className={"text-[15px] text-[var(--pp-text)] " + (isDebit ? "font-bold" : "")}>
+              in seconds
+            </p>
             <p className="text-[13px] text-[var(--pp-text-muted)]">with debit</p>
           </div>
-          <div className="rounded-xl bg-white p-4 flex flex-col items-center gap-2 border border-[color:var(--border)]">
+          <div
+            className={
+              "rounded-xl bg-white p-4 flex flex-col items-center gap-2 " +
+              (!isDebit
+                ? "border-2 border-[var(--pp-blue)]"
+                : "border border-[color:var(--border)]")
+            }
+          >
             <div className="h-16 w-16 flex items-center justify-center">
               <BalloonIcon />
             </div>
-            <p className="text-[15px] text-[var(--pp-text)]">in 3-5 days</p>
+            <p className={"text-[15px] text-[var(--pp-text)] " + (!isDebit ? "font-bold" : "")}>
+              in 3-5 days
+            </p>
             <p className="text-[13px] text-[var(--pp-text-muted)]">with your bank</p>
           </div>
         </div>
 
-        {/* Source row: Mastercard Debit ••••7109 */}
         <div className="mt-10 flex items-center gap-4">
-          <MastercardLogo />
+          {isDebit ? <MastercardLogo /> : <CapitalOneLogo />}
           <div className="flex-1">
             <p className="text-[17px] font-bold text-[var(--pp-text)] leading-tight">
-              Mastercard
+              {isDebit ? "Mastercard" : "CAPITAL ONE N.A."}
             </p>
-            <p className="text-[14px] text-[var(--pp-text-muted)]">Debit ••••7109</p>
+            <p className="text-[14px] text-[var(--pp-text-muted)]">
+              {isDebit ? "Debit ••••7109" : "Checking ••••1260"}
+            </p>
           </div>
           <button className="text-[16px] font-semibold text-[var(--pp-link)]">
             Change
           </button>
         </div>
 
-        {/* Fee */}
         <div className="mt-7 flex items-center justify-between">
           <p className="text-[15px] text-[var(--pp-text)]">Fee:</p>
           <p className="text-[15px] text-[var(--pp-text)]">No fees</p>
         </div>
 
-        {/* Disclaimer */}
         <p className="mt-10 text-[13px] leading-snug text-[var(--pp-text-muted)]">
-          Applies only to Visa or Mastercard debit cards. Transactions are subject to review. We may delay or decline a transaction if we identify an issue.
+          {isDebit
+            ? "Applies only to Visa or Mastercard debit cards. Transactions are subject to review. We may delay or decline a transaction if we identify an issue."
+            : "Transfers made after 7:00 PM ET or on weekends or holidays can take a little longer. All transactions are subject to review."}
         </p>
       </main>
 
@@ -167,6 +187,16 @@ function MastercardLogo() {
         <span className="absolute left-0 top-0 h-6 w-6 rounded-full" style={{ background: "var(--pp-mc-red)" }} />
         <span className="absolute right-0 top-0 h-6 w-6 rounded-full mix-blend-multiply" style={{ background: "var(--pp-mc-yellow)" }} />
       </div>
+    </div>
+  );
+}
+
+function CapitalOneLogo() {
+  return (
+    <div className="h-10 w-12 rounded-md bg-[oklch(0.22_0.08_265)] flex items-center justify-center">
+      <span className="text-white text-[8px] font-bold tracking-tight">
+        Capital<span className="text-[var(--pp-mc-red)]">One</span>
+      </span>
     </div>
   );
 }

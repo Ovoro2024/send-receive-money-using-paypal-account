@@ -3,11 +3,13 @@ import { useEffect } from "react";
 import { X } from "lucide-react";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 
-type Search = { amount?: string };
+type Speed = "debit" | "bank";
+type Search = { amount?: string; speed?: Speed };
 
 export const Route = createFileRoute("/security-check/confirmed")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     amount: typeof s.amount === "string" ? s.amount : "10",
+    speed: s.speed === "debit" || s.speed === "bank" ? s.speed : "bank",
   }),
   component: ConfirmedPage,
   head: () => ({
@@ -20,15 +22,15 @@ export const Route = createFileRoute("/security-check/confirmed")({
 
 function ConfirmedPage() {
   const navigate = useNavigate();
-  const { amount = "10" } = Route.useSearch();
+  const { amount = "10", speed = "bank" } = Route.useSearch();
 
   useEffect(() => {
     const t = setTimeout(
-      () => navigate({ to: "/add-money/review", search: { amount } }),
+      () => navigate({ to: "/add-money/review", search: { amount, speed } }),
       1800,
     );
     return () => clearTimeout(t);
-  }, [navigate, amount]);
+  }, [navigate, amount, speed]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
