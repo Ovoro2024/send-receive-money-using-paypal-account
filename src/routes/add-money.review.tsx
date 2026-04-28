@@ -58,6 +58,15 @@ function ReviewPage() {
   const displayAmount = formatAmountDisplay(amount);
   const ctaAmount = formatAmountCta(amount);
   const isDebit = speed === "debit";
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = () => {
+    if (loading) return;
+    setLoading(true);
+    window.setTimeout(() => {
+      navigate({ to: "/add-money/success", search: { amount } });
+    }, 1800);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
