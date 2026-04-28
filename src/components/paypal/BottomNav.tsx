@@ -24,7 +24,7 @@ export function BottomNav() {
                 className="flex flex-col items-center gap-1 py-1 select-none"
                 style={{ color }}
               >
-                <Icon size={22} strokeWidth={2.25} fill={active ? color : "none"} />
+                <Icon size={24} strokeWidth={2.5} fill={color} />
                 <span className="text-[11px] font-medium" style={{ color }}>
                   {label}
                 </span>
