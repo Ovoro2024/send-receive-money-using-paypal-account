@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 
-type Search = { amount?: string };
+type Speed = "debit" | "bank";
+type Search = { amount?: string; speed?: Speed };
 
 export const Route = createFileRoute("/security-check/code")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     amount: typeof s.amount === "string" ? s.amount : "10",
+    speed: s.speed === "debit" || s.speed === "bank" ? s.speed : "bank",
   }),
   component: ConfirmCodePage,
   head: () => ({
@@ -22,7 +24,7 @@ const VALID_CODE = "565656";
 
 function ConfirmCodePage() {
   const navigate = useNavigate();
-  const { amount = "10" } = Route.useSearch();
+  const { amount = "10", speed = "bank" } = Route.useSearch();
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,7 +42,7 @@ function ConfirmCodePage() {
     }
     if (isValid) {
       const t = setTimeout(
-        () => navigate({ to: "/security-check/confirmed", search: { amount } }),
+        () => navigate({ to: "/security-check/confirmed", search: { amount, speed } }),
         350,
       );
       return () => clearTimeout(t);
@@ -120,7 +122,7 @@ function ConfirmCodePage() {
 
         <button
           disabled={!isValid}
-          onClick={() => navigate({ to: "/security-check/confirmed", search: { amount } })}
+          onClick={() => navigate({ to: "/security-check/confirmed", search: { amount, speed } })}
           className="mb-6 w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-semibold disabled:opacity-50"
         >
           Continue
