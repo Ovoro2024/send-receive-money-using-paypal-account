@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 
@@ -57,6 +58,13 @@ function ReviewPage() {
   const displayAmount = formatAmountDisplay(amount);
   const ctaAmount = formatAmountCta(amount);
   const isDebit = speed === "debit";
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      navigate({ to: "/add-money/success", search: { amount } });
+    }, 1200);
+    return () => clearTimeout(t);
+  }, [navigate, amount]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
