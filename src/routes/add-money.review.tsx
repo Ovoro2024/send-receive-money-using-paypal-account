@@ -152,10 +152,18 @@ function ReviewPage() {
 
       <div className="sticky bottom-0 left-0 right-0 px-4 pb-5 pt-2 bg-[var(--pp-bg)]">
         <button
-          onClick={() => navigate({ to: "/add-money/success", search: { amount } })}
-          className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold"
+          onClick={handleConfirm}
+          disabled={loading}
+          className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-white text-[17px] font-bold flex items-center justify-center gap-2 disabled:opacity-90"
         >
-          Add {ctaAmount} Now
+          {loading ? (
+            <>
+              <Loader2 size={22} className="animate-spin" strokeWidth={2.5} />
+              <span>Processing…</span>
+            </>
+          ) : (
+            <span>Add {ctaAmount} Now</span>
+          )}
         </button>
       </div>
     </div>
