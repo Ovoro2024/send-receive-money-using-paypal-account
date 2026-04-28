@@ -38,7 +38,6 @@ function formatUsd(value: number) {
 function FinancesPage() {
   const [tab, setTab] = useState<Tab>("Balance");
   const { balance } = useBalance();
-  const { signOut } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
@@ -47,12 +46,6 @@ function FinancesPage() {
           <h1 className="text-[34px] font-bold leading-tight text-[var(--pp-text)]">
             Finances
           </h1>
-          <button
-            onClick={() => signOut()}
-            className="text-[14px] font-semibold text-[var(--pp-link)]"
-          >
-            Sign out
-          </button>
         </div>
 
         {/* Tabs */}
