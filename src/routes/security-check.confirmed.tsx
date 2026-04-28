@@ -26,7 +26,7 @@ function ConfirmedPage() {
 
   useEffect(() => {
     const t = setTimeout(
-      () => navigate({ to: "/add-money/success", search: { amount } }),
+      () => navigate({ to: "/add-money/review", search: { amount, speed } }),
       1800,
     );
     return () => clearTimeout(t);
