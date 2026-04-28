@@ -22,6 +22,7 @@ import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
 import { Route as SecurityCheckConfirmedRouteImport } from './routes/security-check.confirmed'
 import { Route as SecurityCheckCodeRouteImport } from './routes/security-check.code'
 import { Route as AddMoneySuccessRouteImport } from './routes/add-money.success'
+import { Route as AddMoneyReviewRouteImport } from './routes/add-money.review'
 import { Route as AddMoneyMethodRouteImport } from './routes/add-money.method'
 
 const WalletRoute = WalletRouteImport.update({
@@ -89,6 +90,11 @@ const AddMoneySuccessRoute = AddMoneySuccessRouteImport.update({
   path: '/success',
   getParentRoute: () => AddMoneyRoute,
 } as any)
+const AddMoneyReviewRoute = AddMoneyReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AddMoneyRoute,
+} as any)
 const AddMoneyMethodRoute = AddMoneyMethodRouteImport.update({
   id: '/method',
   path: '/method',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
+  '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
+  '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
+  '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/security-check'
     | '/wallet'
     | '/add-money/method'
+    | '/add-money/review'
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/wallet'
     | '/add-money/method'
+    | '/add-money/review'
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/security-check'
     | '/wallet'
     | '/add-money/method'
+    | '/add-money/review'
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
@@ -295,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddMoneySuccessRouteImport
       parentRoute: typeof AddMoneyRoute
     }
+    '/add-money/review': {
+      id: '/add-money/review'
+      path: '/review'
+      fullPath: '/add-money/review'
+      preLoaderRoute: typeof AddMoneyReviewRouteImport
+      parentRoute: typeof AddMoneyRoute
+    }
     '/add-money/method': {
       id: '/add-money/method'
       path: '/method'
@@ -307,12 +326,14 @@ declare module '@tanstack/react-router' {
 
 interface AddMoneyRouteChildren {
   AddMoneyMethodRoute: typeof AddMoneyMethodRoute
+  AddMoneyReviewRoute: typeof AddMoneyReviewRoute
   AddMoneySuccessRoute: typeof AddMoneySuccessRoute
   AddMoneyIndexRoute: typeof AddMoneyIndexRoute
 }
 
 const AddMoneyRouteChildren: AddMoneyRouteChildren = {
   AddMoneyMethodRoute: AddMoneyMethodRoute,
+  AddMoneyReviewRoute: AddMoneyReviewRoute,
   AddMoneySuccessRoute: AddMoneySuccessRoute,
   AddMoneyIndexRoute: AddMoneyIndexRoute,
 }
