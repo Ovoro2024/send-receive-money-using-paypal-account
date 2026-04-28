@@ -27,6 +27,7 @@ function IndexRoute() {
 
 function Index() {
   const { balance } = useBalance();
+  const { signOut } = useAuth();
   const balanceLabel = balance === null
     ? "—"
     : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance);
@@ -34,13 +35,21 @@ function Index() {
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       {/* Header */}
       <header className="flex items-center justify-between px-5 pt-6 pb-3">
-        <img
-          src={avatar}
-          alt="Profile"
-          width={40}
-          height={40}
-          className="h-10 w-10 rounded-full object-cover ring-1 ring-[color:var(--border)]"
-        />
+        <div className="flex items-center gap-3">
+          <img
+            src={avatar}
+            alt="Profile"
+            width={40}
+            height={40}
+            className="h-10 w-10 rounded-full object-cover ring-1 ring-[color:var(--border)]"
+          />
+          <button
+            onClick={() => signOut()}
+            className="text-[13px] font-semibold text-[var(--pp-link)]"
+          >
+            Sign out
+          </button>
+        </div>
         <div className="flex items-center gap-4 text-[var(--pp-blue)]">
           <Trophy size={22} strokeWidth={2.25} />
           <ScanLine size={22} strokeWidth={2.25} />
