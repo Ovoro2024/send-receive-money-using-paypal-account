@@ -159,13 +159,16 @@ function AccountCard({
   footer: React.ReactNode;
 }) {
   return (
-    <div className="snap-start min-w-[46%] flex-1 rounded-2xl bg-white border border-[color:var(--border)] p-4 flex flex-col gap-2">
+    <div className="snap-start min-w-[46%] max-w-[80%] flex-1 rounded-2xl bg-white border border-[color:var(--border)] p-4 flex flex-col gap-2 overflow-hidden">
       {icon}
-      <p className="text-[14px] text-[var(--pp-text-muted)] mt-1">{title}</p>
-      <p className="text-[26px] font-semibold text-[var(--pp-text)] leading-none">
+      <p className="text-[14px] text-[var(--pp-text-muted)] mt-1 truncate">{title}</p>
+      <p
+        className="text-[26px] font-semibold text-[var(--pp-text)] leading-tight truncate"
+        title={amount}
+      >
         {amount}
       </p>
-      <div className="mt-3 text-[14px]">{footer}</div>
+      <div className="mt-3 text-[14px] truncate">{footer}</div>
     </div>
   );
 }
