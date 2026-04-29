@@ -108,7 +108,7 @@ function TransferBankPage() {
     setRaw((p) => {
       const next = (p + k).replace(/^0+(?=\d)/, "");
       // Cap at 9 digits (=$9,999,999.99)
-      if (next.length > 9) return p;
+      if (next.length > 13) return p;
       return next;
     });
   };
