@@ -19,6 +19,7 @@ import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
+import { Route as TransferBankRouteImport } from './routes/transfer.bank'
 import { Route as SecurityCheckConfirmedRouteImport } from './routes/security-check.confirmed'
 import { Route as SecurityCheckCodeRouteImport } from './routes/security-check.code'
 import { Route as AddMoneySuccessRouteImport } from './routes/add-money.success'
@@ -75,6 +76,11 @@ const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AddMoneyRoute,
 } as any)
+const TransferBankRoute = TransferBankRouteImport.update({
+  id: '/transfer/bank',
+  path: '/transfer/bank',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SecurityCheckConfirmedRoute = SecurityCheckConfirmedRouteImport.update({
   id: '/confirmed',
   path: '/confirmed',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
+  '/transfer/bank': typeof TransferBankRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
 }
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
+  '/transfer/bank': typeof TransferBankRoute
   '/add-money': typeof AddMoneyIndexRoute
   '/security-check': typeof SecurityCheckIndexRoute
 }
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/add-money/success': typeof AddMoneySuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
+  '/transfer/bank': typeof TransferBankRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
 }
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
+    | '/transfer/bank'
     | '/add-money/'
     | '/security-check/'
   fileRoutesByTo: FileRoutesByTo
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
+    | '/transfer/bank'
     | '/add-money'
     | '/security-check'
   id:
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/add-money/success'
     | '/security-check/code'
     | '/security-check/confirmed'
+    | '/transfer/bank'
     | '/add-money/'
     | '/security-check/'
   fileRoutesById: FileRoutesById
@@ -212,6 +224,7 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   SecurityCheckRoute: typeof SecurityCheckRouteWithChildren
   WalletRoute: typeof WalletRoute
+  TransferBankRoute: typeof TransferBankRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/add-money/'
       preLoaderRoute: typeof AddMoneyIndexRouteImport
       parentRoute: typeof AddMoneyRoute
+    }
+    '/transfer/bank': {
+      id: '/transfer/bank'
+      path: '/transfer/bank'
+      fullPath: '/transfer/bank'
+      preLoaderRoute: typeof TransferBankRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/security-check/confirmed': {
       id: '/security-check/confirmed'
@@ -367,6 +387,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   SecurityCheckRoute: SecurityCheckRouteWithChildren,
   WalletRoute: WalletRoute,
+  TransferBankRoute: TransferBankRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

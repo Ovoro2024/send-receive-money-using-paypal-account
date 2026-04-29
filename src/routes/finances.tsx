@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { ArrowLeftRight, X, Database, Globe2 } from "lucide-react";
 import { BottomNav } from "@/components/paypal/BottomNav";
-import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import debitCardImg from "@/assets/debit-card.jpg";
