@@ -37,5 +37,16 @@ export function useBalance() {
     [],
   );
 
-  return { balance, loading, refresh, addMoney };
+  const transferMoney = useCallback(
+    async (amount: number) => {
+      const { data, error } = await supabase.rpc("transfer_money", { p_amount: amount });
+      if (error) return { error: error.message, newBalance: null as number | null };
+      const newBalance = data === null ? null : Number(data);
+      if (newBalance !== null) setBalance(newBalance);
+      return { error: null, newBalance };
+    },
+    [],
+  );
+
+  return { balance, loading, refresh, addMoney, transferMoney };
 }
