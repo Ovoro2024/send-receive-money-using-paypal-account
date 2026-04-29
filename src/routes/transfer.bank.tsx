@@ -206,7 +206,6 @@ function TransferBankPage() {
             </button>
           );
         })()}
-        </button>
         <p className="mt-2 text-center text-[13px] text-[var(--pp-text-muted)]">
           Available balance: {fmt(available)}
         </p>
