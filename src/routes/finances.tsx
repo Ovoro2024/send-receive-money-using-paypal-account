@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
+import debitCardImg from "@/assets/debit-card.jpg";
 
 export const Route = createFileRoute("/finances")({
   component: FinancesRoute,
@@ -100,34 +101,11 @@ function FinancesPage() {
         </Link>
 
         {/* Debit card visual */}
-        <div className="mt-5 rounded-2xl bg-[var(--pp-blue-dark)] p-5 relative overflow-hidden">
-          <div className="flex items-center gap-2">
-            <PayPalLogo className="h-6 w-6" />
-            <span className="text-white font-semibold text-[18px]">Debit Card</span>
-          </div>
-
-          {/* Big stylised P */}
-          <div className="flex justify-center -mt-1">
-            <BigP />
-          </div>
-
-          <div className="flex items-end justify-between mt-2">
-            <p className="text-white font-semibold text-[17px]">
-              Use your balance anywhere.
-            </p>
-            {/* Mastercard logo */}
-            <div className="relative h-7 w-12 shrink-0">
-              <span
-                className="absolute left-0 top-0 h-7 w-7 rounded-full"
-                style={{ background: "var(--pp-mc-red)" }}
-              />
-              <span
-                className="absolute right-0 top-0 h-7 w-7 rounded-full mix-blend-multiply"
-                style={{ background: "var(--pp-mc-yellow)" }}
-              />
-            </div>
-          </div>
-        </div>
+        <img
+          src={debitCardImg}
+          alt="PayPal Debit Card"
+          className="mt-5 w-full rounded-2xl block"
+        />
 
         {/* Get a PayPal Debit Card */}
         <button className="mt-5 w-full rounded-full bg-[var(--pp-yellow)] py-4 text-[var(--pp-text)] text-[16px] font-semibold">
