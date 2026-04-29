@@ -38,7 +38,9 @@ function formatUsd(value: number) {
 
 function FinancesPage() {
   const [tab, setTab] = useState<Tab>("Balance");
+  const [transferOpen, setTransferOpen] = useState(false);
   const { balance } = useBalance();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
