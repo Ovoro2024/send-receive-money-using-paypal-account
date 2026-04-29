@@ -70,9 +70,23 @@ function FinancesPage() {
         </div>
 
         {/* Total balance */}
-        <div className="mt-7">
+        <div className="mt-7 w-full overflow-hidden">
           <p className="text-[15px] text-[var(--pp-text)]">Total PayPal Balance</p>
-          <p className="mt-2 text-[44px] font-semibold leading-none text-[var(--pp-text)]">
+          <p
+            className={
+              "mt-2 font-semibold leading-none text-[var(--pp-text)] tracking-tight whitespace-nowrap " +
+              (() => {
+                const s = balance === null ? "—" : formatUsd(balance);
+                const len = s.length;
+                if (len <= 9) return "text-[44px]";
+                if (len <= 12) return "text-[36px]";
+                if (len <= 15) return "text-[28px]";
+                if (len <= 18) return "text-[22px]";
+                return "text-[18px]";
+              })()
+            }
+            title={balance === null ? undefined : formatUsd(balance)}
+          >
             {balance === null ? "—" : formatUsd(balance)}
           </p>
         </div>
