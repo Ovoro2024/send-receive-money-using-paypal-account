@@ -108,7 +108,7 @@ function TransferBankPage() {
     setRaw((p) => {
       const next = (p + k).replace(/^0+(?=\d)/, "");
       // Cap at 9 digits (=$9,999,999.99)
-      if (next.length > 9) return p;
+      if (next.length > 13) return p;
       return next;
     });
   };
@@ -162,28 +162,50 @@ function TransferBankPage() {
 
       <main className="flex-1 px-5 pb-32">
         {/* Amount */}
-        <button
-          onClick={() => setKeypadOpen(true)}
-          className="mt-6 w-full flex items-start justify-center gap-1"
-        >
-          <span className="text-[34px] font-light text-[var(--pp-text)] mt-2">$</span>
-          <span className="text-[58px] font-light leading-none text-[var(--pp-text)] tracking-tight">
-            {amount === 0 ? "0" : fmtBig(amount)}
-          </span>
-          {amount > 0 && (
-            <span
-              role="button"
-              aria-label="Clear"
-              onClick={(e) => {
-                e.stopPropagation();
-                setRaw("");
-              }}
-              className="mt-4 ml-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-[oklch(0.85_0_0)] text-white"
+        {(() => {
+          const display = amount === 0 ? "0" : fmtBig(amount);
+          const len = display.length;
+          // Scale: full-size for short, progressively shrink as digits grow
+          const amountSize =
+            len <= 6 ? "text-[58px]"
+            : len <= 9 ? "text-[48px]"
+            : len <= 12 ? "text-[38px]"
+            : len <= 15 ? "text-[30px]"
+            : len <= 18 ? "text-[24px]"
+            : "text-[20px]";
+          const dollarSize =
+            len <= 6 ? "text-[34px] mt-2"
+            : len <= 9 ? "text-[28px] mt-2"
+            : len <= 12 ? "text-[22px] mt-2"
+            : len <= 15 ? "text-[18px] mt-1.5"
+            : "text-[15px] mt-1";
+          return (
+            <button
+              onClick={() => setKeypadOpen(true)}
+              className="mt-6 w-full flex items-start justify-center gap-1 overflow-hidden"
             >
-              <X size={14} strokeWidth={3} />
-            </span>
-          )}
-        </button>
+              <span className={`${dollarSize} font-light text-[var(--pp-text)] shrink-0`}>$</span>
+              <span
+                className={`${amountSize} font-light leading-none text-[var(--pp-text)] tracking-tight whitespace-nowrap`}
+              >
+                {display}
+              </span>
+              {amount > 0 && (
+                <span
+                  role="button"
+                  aria-label="Clear"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setRaw("");
+                  }}
+                  className="mt-3 ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[oklch(0.85_0_0)] text-white shrink-0"
+                >
+                  <X size={12} strokeWidth={3} />
+                </span>
+              )}
+            </button>
+          );
+        })()}
         <p className="mt-2 text-center text-[13px] text-[var(--pp-text-muted)]">
           Available balance: {fmt(available)}
         </p>
