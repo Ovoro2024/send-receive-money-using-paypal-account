@@ -83,6 +83,7 @@ export type Database = {
     }
     Functions: {
       add_money: { Args: { p_amount: number }; Returns: number }
+      transfer_money: { Args: { p_amount: number }; Returns: number }
     }
     Enums: {
       [_ in never]: never
