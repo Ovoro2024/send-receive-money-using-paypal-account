@@ -167,24 +167,28 @@ function TransferBankPage() {
           const len = display.length;
           // Scale: full-size for short, progressively shrink as digits grow
           const amountSize =
-            len <= 6 ? "text-[58px]"
-            : len <= 9 ? "text-[48px]"
-            : len <= 12 ? "text-[38px]"
-            : len <= 15 ? "text-[30px]"
-            : len <= 18 ? "text-[24px]"
-            : "text-[20px]";
+            len <= 6 ? "text-[64px]"
+            : len <= 9 ? "text-[52px]"
+            : len <= 12 ? "text-[40px]"
+            : len <= 15 ? "text-[32px]"
+            : len <= 18 ? "text-[26px]"
+            : "text-[22px]";
           const dollarSize =
-            len <= 6 ? "text-[34px] mt-2"
-            : len <= 9 ? "text-[28px] mt-2"
-            : len <= 12 ? "text-[22px] mt-2"
-            : len <= 15 ? "text-[18px] mt-1.5"
-            : "text-[15px] mt-1";
+            len <= 6 ? "text-[26px]"
+            : len <= 9 ? "text-[22px]"
+            : len <= 12 ? "text-[18px]"
+            : "text-[15px]";
           return (
-            <button
+            <div
+              role="button"
+              tabIndex={0}
               onClick={() => setKeypadOpen(true)}
-              className="mt-6 w-full flex items-start justify-center gap-1 overflow-hidden"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setKeypadOpen(true);
+              }}
+              className="mt-8 w-full flex items-start justify-center gap-1 overflow-hidden cursor-pointer select-none"
             >
-              <span className={`${dollarSize} font-light text-[var(--pp-text)] shrink-0`}>$</span>
+              <span className={`${dollarSize} font-light text-[var(--pp-text)] shrink-0 leading-none mt-2`}>$</span>
               <span
                 className={`${amountSize} font-light leading-none text-[var(--pp-text)] tracking-tight whitespace-nowrap`}
               >
@@ -193,17 +197,24 @@ function TransferBankPage() {
               {amount > 0 && (
                 <span
                   role="button"
-                  aria-label="Clear"
+                  aria-label="Clear amount"
+                  tabIndex={0}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setRaw("");
+                    setRaw("0");
                   }}
-                  className="mt-3 ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[oklch(0.85_0_0)] text-white shrink-0"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.stopPropagation();
+                      setRaw("0");
+                    }
+                  }}
+                  className="ml-2 mt-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[oklch(0.78_0_0)] text-white shrink-0"
                 >
                   <X size={12} strokeWidth={3} />
                 </span>
               )}
-            </button>
+            </div>
           );
         })()}
         <p className="mt-2 text-center text-[13px] text-[var(--pp-text-muted)]">
