@@ -160,3 +160,18 @@
     color: var(--color-foreground);
   }
 }
+
+/* PayPal blinking caret */
+.pp-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.95em;
+  margin-left: 2px;
+  background-color: var(--pp-blue, #0070ba);
+  animation: pp-caret-blink 1s steps(1) infinite;
+  vertical-align: -0.05em;
+}
+@keyframes pp-caret-blink {
+  0%, 50% { opacity: 1; }
+  50.01%, 100% { opacity: 0; }
+}
