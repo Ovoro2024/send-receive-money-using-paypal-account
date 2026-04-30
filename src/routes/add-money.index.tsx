@@ -123,7 +123,7 @@ function AddMoneyPage() {
             onClick={() => goNext(normalizedAmount!)}
             className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-[17px] font-bold text-white"
           >
-            Add Money
+            Next
           </button>
         </div>
       )}
