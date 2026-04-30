@@ -77,11 +77,11 @@ function AddMoneyPage() {
         onClick={focusInput}
         className="mt-10 flex w-full flex-col items-center px-4 text-center"
       >
-        <div className="flex items-center justify-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
+        <div className="relative flex items-center justify-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
           <span>$</span>
+          <span className="pp-caret" aria-hidden="true" />
           <span className="relative">
             {amount}
-            {/* hidden native input invokes the phone numeric keyboard */}
             <input
               ref={inputRef}
               type="text"
@@ -91,7 +91,7 @@ function AddMoneyPage() {
               value={amount}
               onChange={(e) => setAmount(sanitize(e.target.value))}
               aria-label="Amount"
-              className="absolute inset-0 h-full w-full opacity-0 outline-none"
+              className="absolute inset-0 h-full w-full opacity-0 outline-none caret-transparent"
             />
           </span>
         </div>
