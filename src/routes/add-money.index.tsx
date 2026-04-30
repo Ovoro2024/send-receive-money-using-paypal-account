@@ -79,7 +79,6 @@ function AddMoneyPage() {
       >
         <div className="relative flex items-center justify-center tabular-nums text-[44px] font-semibold leading-none text-[var(--pp-text)]">
           <span>$</span>
-          <span className="pp-caret" aria-hidden="true" />
           <span className="relative">
             {amount}
             <input
@@ -94,6 +93,7 @@ function AddMoneyPage() {
               className="absolute inset-0 h-full w-full opacity-0 outline-none caret-transparent"
             />
           </span>
+          <span className="pp-caret" aria-hidden="true" />
         </div>
         <p className="mt-3 text-[14px] text-[var(--pp-text-muted)]">
           PayPal balance: {balance === null ? "—" : `$${balance.toFixed(2)}`}
