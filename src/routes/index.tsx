@@ -148,9 +148,12 @@ function Index() {
         <button className="rounded-full bg-[var(--pp-yellow)] py-3.5 text-[17px] font-bold text-[var(--pp-text)]">
           Send
         </button>
-        <button className="rounded-full bg-[var(--pp-yellow)] py-3.5 text-[17px] font-bold text-[var(--pp-text)]">
+        <Link
+          to="/request"
+          className="text-center rounded-full bg-[var(--pp-yellow)] py-3.5 text-[17px] font-bold text-[var(--pp-text)]"
+        >
           Request
-        </button>
+        </Link>
       </div>
 
       <BottomNav />
