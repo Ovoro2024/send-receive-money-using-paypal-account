@@ -220,6 +220,16 @@ function ReviewSheet({
 }) {
   const { balance } = useBalance();
   const [paymentType, setPaymentType] = useState<"friends" | "goods">("friends");
+  const [showTypeSheet, setShowTypeSheet] = useState(false);
+  const [showMethodSheet, setShowMethodSheet] = useState(false);
+  const [method, setMethod] = useState<"balance" | "mc7109" | "co1260">("balance");
+
+  const methodLabel =
+    method === "balance"
+      ? `PayPal balance · ${balance === null ? "—" : fmtUSD(balance)}`
+      : method === "mc7109"
+        ? "Mastercard Debit ending in 7109"
+        : "Capital One N.A. ending in 1260";
 
   return (
     <div className="fixed inset-0 z-50 flex items-end">
@@ -247,21 +257,23 @@ function ReviewSheet({
 
         {/* Payment method */}
         <div className="mt-5 rounded-xl border border-[color:var(--border)] divide-y divide-[color:var(--border)]">
-          <button type="button" className="w-full flex items-center gap-3 px-4 py-3.5 text-left">
+          <button
+            type="button"
+            onClick={() => setShowMethodSheet(true)}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
+          >
             <PayPalLogo className="h-6 w-6" />
             <div className="flex-1 min-w-0">
               <p className="text-[13px] text-[var(--pp-text-muted)]">Pay with</p>
               <p className="text-[15px] font-semibold text-[var(--pp-text)] truncate">
-                PayPal balance · {balance === null ? "—" : fmtUSD(balance)}
+                {methodLabel}
               </p>
             </div>
             <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
           </button>
           <button
             type="button"
-            onClick={() =>
-              setPaymentType((p) => (p === "friends" ? "goods" : "friends"))
-            }
+            onClick={() => setShowTypeSheet(true)}
             className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
           >
             <div className="h-6 w-6 rounded-full bg-[var(--pp-blue-light)]/15 flex items-center justify-center text-[var(--pp-blue)] text-[13px] font-bold">
@@ -291,6 +303,218 @@ function ReviewSheet({
           Send {fmtUSD(amount)}
         </button>
       </div>
+
+      {showTypeSheet && (
+        <PaymentTypeSheet
+          value={paymentType}
+          onSelect={(v) => {
+            setPaymentType(v);
+            setShowTypeSheet(false);
+          }}
+          onClose={() => setShowTypeSheet(false)}
+        />
+      )}
+      {showMethodSheet && (
+        <PaymentMethodSheet
+          value={method}
+          balance={balance}
+          onSelect={(v) => {
+            setMethod(v);
+            setShowMethodSheet(false);
+          }}
+          onClose={() => setShowMethodSheet(false)}
+        />
+      )}
     </div>
+  );
+}
+
+function PaymentTypeSheet({
+  value,
+  onSelect,
+  onClose,
+}: {
+  value: "friends" | "goods";
+  onSelect: (v: "friends" | "goods") => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="absolute inset-0 z-10 flex items-end">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
+      <div className="relative w-full bg-white rounded-t-2xl px-5 pt-4 pb-6 animate-in slide-in-from-bottom duration-200">
+        <div className="flex items-center justify-between">
+          <span className="w-6" />
+          <h3 className="text-[16px] font-semibold text-[var(--pp-text)]">Sending to</h3>
+          <button onClick={onClose} aria-label="Close" className="text-[var(--pp-text)]">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="mt-4 space-y-2">
+          <TypeOption
+            title="Friends and family"
+            desc="For sending money to people you know and trust. No fees."
+            selected={value === "friends"}
+            onClick={() => onSelect("friends")}
+          />
+          <TypeOption
+            title="Goods and services"
+            desc="For paying a seller. You're covered by Purchase Protection."
+            selected={value === "goods"}
+            onClick={() => onSelect("goods")}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TypeOption({
+  title,
+  desc,
+  selected,
+  onClick,
+}: {
+  title: string;
+  desc: string;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full text-left rounded-xl border border-[color:var(--border)] px-4 py-3.5 flex items-start gap-3"
+    >
+      <div className="flex-1 min-w-0">
+        <p className="text-[15px] font-semibold text-[var(--pp-text)]">{title}</p>
+        <p className="mt-0.5 text-[13px] text-[var(--pp-text-muted)] leading-snug">{desc}</p>
+      </div>
+      <div
+        className={
+          "mt-1 h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 " +
+          (selected
+            ? "border-[var(--pp-blue)]"
+            : "border-[color:var(--border)]")
+        }
+      >
+        {selected && <div className="h-2.5 w-2.5 rounded-full bg-[var(--pp-blue)]" />}
+      </div>
+    </button>
+  );
+}
+
+function PaymentMethodSheet({
+  value,
+  balance,
+  onSelect,
+  onClose,
+}: {
+  value: "balance" | "mc7109" | "co1260";
+  balance: number | null;
+  onSelect: (v: "balance" | "mc7109" | "co1260") => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="absolute inset-0 z-10 flex items-end">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
+      <div className="relative w-full bg-white rounded-t-2xl px-5 pt-4 pb-6 animate-in slide-in-from-bottom duration-200">
+        <div className="flex items-center justify-between">
+          <span className="w-6" />
+          <h3 className="text-[16px] font-semibold text-[var(--pp-text)]">Pay with</h3>
+          <button onClick={onClose} aria-label="Close" className="text-[var(--pp-text)]">
+            <X size={20} />
+          </button>
+        </div>
+        <div className="mt-4 rounded-xl border border-[color:var(--border)] divide-y divide-[color:var(--border)]">
+          <MethodRow
+            selected={value === "balance"}
+            onClick={() => onSelect("balance")}
+            icon={<PayPalLogo className="h-7 w-7" />}
+            title="PayPal balance"
+            subtitle={balance === null ? "—" : fmtUSD(balance)}
+          />
+          <MethodRow
+            selected={value === "mc7109"}
+            onClick={() => onSelect("mc7109")}
+            icon={<MastercardMark />}
+            title="Mastercard Debit"
+            subtitle="Ending in 7109"
+          />
+          <MethodRow
+            selected={value === "co1260"}
+            onClick={() => onSelect("co1260")}
+            icon={<BankMark />}
+            title="Capital One N.A."
+            subtitle="Ending in 1260"
+          />
+        </div>
+        <p className="mt-3 text-[12px] text-[var(--pp-text-muted)] leading-relaxed">
+          Bank transfers may take a few business days. Card payments are instant.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function MethodRow({
+  selected,
+  onClick,
+  icon,
+  title,
+  subtitle,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
+    >
+      <div className="h-8 w-8 flex items-center justify-center shrink-0">{icon}</div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[15px] font-semibold text-[var(--pp-text)] truncate">{title}</p>
+        <p className="text-[13px] text-[var(--pp-text-muted)] truncate">{subtitle}</p>
+      </div>
+      <div
+        className={
+          "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 " +
+          (selected
+            ? "border-[var(--pp-blue)]"
+            : "border-[color:var(--border)]")
+        }
+      >
+        {selected && <div className="h-2.5 w-2.5 rounded-full bg-[var(--pp-blue)]" />}
+      </div>
+    </button>
+  );
+}
+
+function MastercardMark() {
+  return (
+    <div className="relative h-5 w-8">
+      <span
+        className="absolute left-0 top-0 h-5 w-5 rounded-full"
+        style={{ background: "var(--pp-mc-red)" }}
+      />
+      <span
+        className="absolute right-0 top-0 h-5 w-5 rounded-full mix-blend-multiply"
+        style={{ background: "var(--pp-mc-yellow)" }}
+      />
+    </div>
+  );
+}
+
+function BankMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-[var(--pp-blue-dark)]" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M3 10 L12 4 L21 10" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 10 V18 M9 10 V18 M15 10 V18 M19 10 V18" />
+      <path d="M3 19 H21" strokeLinecap="round" />
+    </svg>
   );
 }
