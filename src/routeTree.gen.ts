@@ -17,10 +17,13 @@ import { Route as DealsRouteImport } from './routes/deals'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SendIndexRouteImport } from './routes/send.index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as RequestIndexRouteImport } from './routes/request.index'
 import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
 import { Route as TransferBankRouteImport } from './routes/transfer.bank'
+import { Route as SendSuccessRouteImport } from './routes/send.success'
+import { Route as SendAmountRouteImport } from './routes/send.amount'
 import { Route as SecurityCheckConfirmedRouteImport } from './routes/security-check.confirmed'
 import { Route as SecurityCheckCodeRouteImport } from './routes/security-check.code'
 import { Route as RequestSuccessRouteImport } from './routes/request.success'
@@ -69,6 +72,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SendIndexRoute = SendIndexRouteImport.update({
+  id: '/send/',
+  path: '/send/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SecurityCheckIndexRoute = SecurityCheckIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -87,6 +95,16 @@ const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
 const TransferBankRoute = TransferBankRouteImport.update({
   id: '/transfer/bank',
   path: '/transfer/bank',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SendSuccessRoute = SendSuccessRouteImport.update({
+  id: '/send/success',
+  path: '/send/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SendAmountRoute = SendAmountRouteImport.update({
+  id: '/send/amount',
+  path: '/send/amount',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SecurityCheckConfirmedRoute = SecurityCheckConfirmedRouteImport.update({
@@ -141,10 +159,13 @@ export interface FileRoutesByFullPath {
   '/request/success': typeof RequestSuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
+  '/send/amount': typeof SendAmountRoute
+  '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
+  '/send/': typeof SendIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,10 +181,13 @@ export interface FileRoutesByTo {
   '/request/success': typeof RequestSuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
+  '/send/amount': typeof SendAmountRoute
+  '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
   '/add-money': typeof AddMoneyIndexRoute
   '/request': typeof RequestIndexRoute
   '/security-check': typeof SecurityCheckIndexRoute
+  '/send': typeof SendIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -182,10 +206,13 @@ export interface FileRoutesById {
   '/request/success': typeof RequestSuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
   '/security-check/confirmed': typeof SecurityCheckConfirmedRoute
+  '/send/amount': typeof SendAmountRoute
+  '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
+  '/send/': typeof SendIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -205,10 +232,13 @@ export interface FileRouteTypes {
     | '/request/success'
     | '/security-check/code'
     | '/security-check/confirmed'
+    | '/send/amount'
+    | '/send/success'
     | '/transfer/bank'
     | '/add-money/'
     | '/request/'
     | '/security-check/'
+    | '/send/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -224,10 +254,13 @@ export interface FileRouteTypes {
     | '/request/success'
     | '/security-check/code'
     | '/security-check/confirmed'
+    | '/send/amount'
+    | '/send/success'
     | '/transfer/bank'
     | '/add-money'
     | '/request'
     | '/security-check'
+    | '/send'
   id:
     | '__root__'
     | '/'
@@ -245,10 +278,13 @@ export interface FileRouteTypes {
     | '/request/success'
     | '/security-check/code'
     | '/security-check/confirmed'
+    | '/send/amount'
+    | '/send/success'
     | '/transfer/bank'
     | '/add-money/'
     | '/request/'
     | '/security-check/'
+    | '/send/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,8 +298,11 @@ export interface RootRouteChildren {
   WalletRoute: typeof WalletRoute
   RequestAmountRoute: typeof RequestAmountRoute
   RequestSuccessRoute: typeof RequestSuccessRoute
+  SendAmountRoute: typeof SendAmountRoute
+  SendSuccessRoute: typeof SendSuccessRoute
   TransferBankRoute: typeof TransferBankRoute
   RequestIndexRoute: typeof RequestIndexRoute
+  SendIndexRoute: typeof SendIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -324,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/send/': {
+      id: '/send/'
+      path: '/send'
+      fullPath: '/send/'
+      preLoaderRoute: typeof SendIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/security-check/': {
       id: '/security-check/'
       path: '/'
@@ -350,6 +396,20 @@ declare module '@tanstack/react-router' {
       path: '/transfer/bank'
       fullPath: '/transfer/bank'
       preLoaderRoute: typeof TransferBankRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/send/success': {
+      id: '/send/success'
+      path: '/send/success'
+      fullPath: '/send/success'
+      preLoaderRoute: typeof SendSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/send/amount': {
+      id: '/send/amount'
+      path: '/send/amount'
+      fullPath: '/send/amount'
+      preLoaderRoute: typeof SendAmountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/security-check/confirmed': {
@@ -449,8 +509,11 @@ const rootRouteChildren: RootRouteChildren = {
   WalletRoute: WalletRoute,
   RequestAmountRoute: RequestAmountRoute,
   RequestSuccessRoute: RequestSuccessRoute,
+  SendAmountRoute: SendAmountRoute,
+  SendSuccessRoute: SendSuccessRoute,
   TransferBankRoute: TransferBankRoute,
   RequestIndexRoute: RequestIndexRoute,
+  SendIndexRoute: SendIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
