@@ -31,10 +31,10 @@ export function BottomNav() {
                 <img
                   src={icon}
                   alt={label}
-                  width={26}
-                  height={26}
-                  className="h-[26px] w-auto object-contain"
-                  style={{ opacity: active ? 1 : 0.65 }}
+                  width={28}
+                  height={28}
+                  className="h-7 w-7 object-contain"
+                  style={{ opacity: active ? 1 : 0.7 }}
                 />
                 <span className="text-[11px] font-medium" style={{ color }}>
                   {label}
