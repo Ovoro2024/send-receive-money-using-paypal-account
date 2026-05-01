@@ -145,9 +145,12 @@ function Index() {
 
       {/* Send / Request - sticky above bottom nav */}
       <div className="sticky bottom-[72px] left-0 right-0 z-20 bg-[var(--pp-bg)] px-4 pt-3 pb-2 grid grid-cols-2 gap-3">
-        <button className="rounded-full bg-[var(--pp-yellow)] py-3.5 text-[17px] font-bold text-[var(--pp-text)]">
+        <Link
+          to="/send"
+          className="text-center rounded-full bg-[var(--pp-yellow)] py-3.5 text-[17px] font-bold text-[var(--pp-text)]"
+        >
           Send
-        </button>
+        </Link>
         <Link
           to="/request"
           className="text-center rounded-full bg-[var(--pp-yellow)] py-3.5 text-[17px] font-bold text-[var(--pp-text)]"
