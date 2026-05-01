@@ -106,6 +106,9 @@ function FinancesPage() {
         <img
           src={debitCardImg}
           alt="PayPal Debit Card"
+          loading="eager"
+          decoding="sync"
+          fetchPriority="high"
           className="mt-5 w-full rounded-2xl block"
         />
 
