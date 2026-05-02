@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WalletRouteImport } from './routes/wallet'
+import { Route as SplashRouteImport } from './routes/splash'
 import { Route as SecurityCheckRouteImport } from './routes/security-check'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as FinancesRouteImport } from './routes/finances'
@@ -35,6 +36,11 @@ import { Route as AddMoneyMethodRouteImport } from './routes/add-money.method'
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
   path: '/wallet',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplashRoute = SplashRouteImport.update({
+  id: '/splash',
+  path: '/splash',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SecurityCheckRoute = SecurityCheckRouteImport.update({
@@ -151,6 +157,7 @@ export interface FileRoutesByFullPath {
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
+  '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
+  '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/finances': typeof FinancesRoute
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
+  '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/finances'
     | '/payments'
     | '/security-check'
+    | '/splash'
     | '/wallet'
     | '/add-money/method'
     | '/add-money/review'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/deals'
     | '/finances'
     | '/payments'
+    | '/splash'
     | '/wallet'
     | '/add-money/method'
     | '/add-money/review'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/finances'
     | '/payments'
     | '/security-check'
+    | '/splash'
     | '/wallet'
     | '/add-money/method'
     | '/add-money/review'
@@ -295,6 +307,7 @@ export interface RootRouteChildren {
   FinancesRoute: typeof FinancesRoute
   PaymentsRoute: typeof PaymentsRoute
   SecurityCheckRoute: typeof SecurityCheckRouteWithChildren
+  SplashRoute: typeof SplashRoute
   WalletRoute: typeof WalletRoute
   RequestAmountRoute: typeof RequestAmountRoute
   RequestSuccessRoute: typeof RequestSuccessRoute
@@ -312,6 +325,13 @@ declare module '@tanstack/react-router' {
       path: '/wallet'
       fullPath: '/wallet'
       preLoaderRoute: typeof WalletRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/splash': {
+      id: '/splash'
+      path: '/splash'
+      fullPath: '/splash'
+      preLoaderRoute: typeof SplashRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/security-check': {
@@ -506,6 +526,7 @@ const rootRouteChildren: RootRouteChildren = {
   FinancesRoute: FinancesRoute,
   PaymentsRoute: PaymentsRoute,
   SecurityCheckRoute: SecurityCheckRouteWithChildren,
+  SplashRoute: SplashRoute,
   WalletRoute: WalletRoute,
   RequestAmountRoute: RequestAmountRoute,
   RequestSuccessRoute: RequestSuccessRoute,

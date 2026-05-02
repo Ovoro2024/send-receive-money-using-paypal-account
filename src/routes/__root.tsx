@@ -2,6 +2,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/auth/AuthProvider";
+import { SplashGate } from "@/components/paypal/SplashGate";
 
 function NotFoundComponent() {
   return (
@@ -68,7 +69,9 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <AuthProvider>
-      <Outlet />
+      <SplashGate>
+        <Outlet />
+      </SplashGate>
     </AuthProvider>
   );
 }
