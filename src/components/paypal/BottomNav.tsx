@@ -20,28 +20,38 @@ export function BottomNav() {
       <ul className="flex items-end justify-between">
         {items.map(({ to, label, icon }) => {
           const active = pathname === to;
-          const color = active ? "var(--pp-blue)" : "var(--pp-text-muted)";
+          const color = "var(--pp-blue-dark)";
           return (
             <li key={to} className="flex-1">
               <Link
                 to={to}
                 className="flex flex-col items-center gap-1 py-1 select-none"
                 style={{ color }}
+                aria-label={label}
               >
-                <img
-                  src={icon}
-                  alt={label}
-                  width={28}
-                  height={28}
-                  className="h-7 w-7 object-contain"
+                <span
+                  role="img"
+                  aria-hidden
+                  className="h-7 w-7 inline-block"
                   style={{
-                    opacity: active ? 1 : 0.85,
-                    filter: active
-                      ? "none"
-                      : "grayscale(1) brightness(0.75) contrast(1.05)",
+                    backgroundColor: color,
+                    WebkitMaskImage: `url(${icon})`,
+                    maskImage: `url(${icon})`,
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskPosition: "center",
+                    maskPosition: "center",
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
                   }}
                 />
-                <span className="text-[11px] font-medium" style={{ color }}>
+                <span
+                  className="text-[11px]"
+                  style={{
+                    color,
+                    fontWeight: active ? 700 : 500,
+                  }}
+                >
                   {label}
                 </span>
               </Link>
