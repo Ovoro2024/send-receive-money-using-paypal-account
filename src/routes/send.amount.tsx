@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, useSearch, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, X, Delete, ChevronRight } from "lucide-react";
+import { ArrowLeft, X, Delete, ChevronRight, Check, Info, Store, Users, Image as ImageIcon, Sticker } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
@@ -30,12 +30,12 @@ function fmtUSD(n: number) {
 }
 
 function fmtAmount(raw: string) {
-  if (!raw) return "0";
+  if (!raw) return "0.00";
   const [intPart, decPart] = raw.split(".");
   const intNum = Number.parseInt(intPart || "0", 10);
   const intFmt = Number.isFinite(intNum) ? intNum.toLocaleString("en-US") : "0";
-  if (decPart === undefined) return intFmt;
-  return `${intFmt}.${decPart}`;
+  if (decPart === undefined) return `${intFmt}.00`;
+  return `${intFmt}.${decPart.padEnd(2, "0").slice(0, 2)}`;
 }
 
 function SendAmountRoute() {
@@ -46,18 +46,17 @@ function SendAmountRoute() {
   );
 }
 
+type Stage = "amount" | "message";
+
 function SendAmountPage() {
   const navigate = useNavigate();
   const { to } = useSearch({ from: "/send/amount" });
   const [raw, setRaw] = useState("0");
+  const [stage, setStage] = useState<Stage>("amount");
   const [showReview, setShowReview] = useState(false);
   const [note, setNote] = useState("");
 
-  const numeric = useMemo(() => {
-    const n = Number.parseFloat(raw || "0");
-    return Number.isFinite(n) ? n : 0;
-  }, [raw]);
-
+  const numeric = useMemo(() => Number.parseFloat(raw || "0") || 0, [raw]);
   const canNext = numeric > 0;
 
   const press = (k: string) => {
@@ -83,112 +82,161 @@ function SendAmountPage() {
 
   const display = `$${fmtAmount(raw)}`;
   const sizeClass =
-    display.length <= 6
-      ? "text-[64px]"
-      : display.length <= 9
-        ? "text-[52px]"
-        : display.length <= 12
-          ? "text-[40px]"
-          : "text-[32px]";
+    display.length <= 7 ? "text-[68px]" : display.length <= 10 ? "text-[52px]" : "text-[40px]";
 
   const submit = () => {
-    navigate({
-      to: "/send/success",
-      search: { to, amount: numeric.toFixed(2) },
-    });
+    navigate({ to: "/send/success", search: { to, amount: numeric.toFixed(2) } });
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <header className="relative flex items-center justify-center px-4 pt-4 pb-3">
-        <Link to="/send" className="absolute left-3 top-4 p-1 text-[var(--pp-text)]" aria-label="Back">
+        <Link to="/payments" className="absolute left-3 top-4 p-1 text-[var(--pp-text)]" aria-label="Back">
           <ArrowLeft size={24} strokeWidth={2.25} />
         </Link>
-        <h1 className="text-[16px] font-semibold text-[var(--pp-text)]">Send money</h1>
+        <h1 className="text-[16px] font-medium text-[var(--pp-text)] truncate max-w-[70%]">
+          Send {to || "recipient"}
+        </h1>
       </header>
 
-      <div className="px-5 pt-2">
-        <div className="h-12 w-12 rounded-full bg-[var(--pp-blue-dark)] flex items-center justify-center text-white">
-          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3.3 0-8 1.7-8 5v1h16v-1c0-3.3-4.7-5-8-5z" />
-          </svg>
-        </div>
-        <p className="mt-3 text-[22px] font-bold leading-tight text-[var(--pp-text)] break-words">
-          To {to || "recipient"}
-        </p>
+      {stage === "amount" ? (
+        <>
+          <div className="px-5 pt-6 pb-4 text-center">
+            <p className={`tabular-nums font-light text-[var(--pp-text)] leading-none ${sizeClass}`}>
+              <span className="align-top text-[28px] font-light mr-1">$</span>
+              <span>{fmtAmount(raw)}</span>
+            </p>
+            <span className="inline-block mt-3 px-3 py-1 rounded-md bg-[var(--pp-bg)] text-[12px] font-semibold text-[var(--pp-text-muted)]">
+              USD
+            </span>
+          </div>
 
-        <div className="mt-5 flex items-baseline justify-between gap-3">
-          <p className={`tabular-nums font-semibold text-[var(--pp-text)] leading-none ${sizeClass}`}>
-            {display}
-          </p>
-          <span className="text-[15px] font-bold text-[var(--pp-blue)]">USD</span>
-        </div>
-      </div>
+          <div className="flex-1" />
 
-      <div className="flex-1" />
+          <div className="px-4 pb-3 flex items-center gap-3">
+            <input
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              onFocus={() => canNext && setStage("message")}
+              placeholder="Add a message"
+              className="flex-1 h-12 rounded-full bg-[#f4ecdc] px-5 text-[15px] text-[var(--pp-text)] placeholder:text-[var(--pp-text-muted)] outline-none"
+            />
+            <button
+              type="button"
+              disabled={!canNext}
+              onClick={() => setStage("message")}
+              className="h-12 px-7 rounded-full bg-[var(--pp-blue-dark)] text-white text-[15px] font-bold disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
 
-      <div className="px-4 pb-3 flex items-center gap-3">
-        <input
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="What's it for?"
-          className="flex-1 h-12 rounded-full bg-[#fdf3d9] px-4 text-[15px] text-[var(--pp-text)] placeholder:text-[var(--pp-text-muted)] outline-none"
-        />
-        <button
-          type="button"
-          disabled={!canNext}
-          onClick={() => setShowReview(true)}
-          className="h-12 px-7 rounded-full bg-[var(--pp-yellow)] text-[var(--pp-text)] text-[15px] font-bold disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+          <Numpad press={press} />
+        </>
+      ) : (
+        <>
+          <div className="px-5 pt-2">
+            <textarea
+              autoFocus
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder="What's it for?"
+              className="w-full min-h-[160px] resize-none text-[16px] text-[var(--pp-blue-dark)] placeholder:text-[var(--pp-text-muted)] outline-none bg-transparent"
+            />
+          </div>
 
-      <div className="bg-[#d8dde6] pt-1.5 pb-2 px-1 grid grid-cols-3 gap-1.5">
-        {[
-          ["1", ""], ["2", "ABC"], ["3", "DEF"],
-          ["4", "GHI"], ["5", "JKL"], ["6", "MNO"],
-          ["7", "PQRS"], ["8", "TUV"], ["9", "WXYZ"],
-        ].map(([n, sub]) => (
-          <NumKey key={n} onPress={() => press(n)}>
-            <span className="text-[26px] font-medium text-[var(--pp-text)] leading-none">{n}</span>
-            {sub && (
-              <span className="text-[10px] tracking-widest text-[var(--pp-text-muted)] mt-0.5">
-                {sub}
-              </span>
-            )}
-          </NumKey>
-        ))}
-        <button
-          type="button"
-          onClick={() => press(".")}
-          className="h-14 flex items-center justify-center text-[28px] text-[var(--pp-text)]"
-          aria-label="decimal"
-        >
-          .
-        </button>
-        <NumKey onPress={() => press("0")}>
-          <span className="text-[26px] font-medium text-[var(--pp-text)] leading-none">0</span>
-        </NumKey>
-        <button
-          type="button"
-          onClick={() => press("back")}
-          className="h-14 flex items-center justify-center text-[var(--pp-text)]"
-          aria-label="backspace"
-        >
-          <Delete size={24} strokeWidth={2} />
-        </button>
-      </div>
+          <div className="flex-1" />
+
+          {/* Sticker tray */}
+          <div className="px-4 pt-2 border-t border-[color:var(--border)]">
+            <div className="flex items-center gap-3 overflow-x-auto py-3">
+              <Sticker360 emoji="🫶" bg="oklch(0.55 0.22 25)" />
+              <Sticker360 emoji="✌️" bg="oklch(0.35 0.16 295)" />
+              <Sticker360 emoji="🔥" bg="oklch(0.65 0.2 60)" />
+              <Sticker360 emoji="💸" bg="oklch(0.6 0.18 150)" />
+              <Sticker360 emoji="🎉" bg="oklch(0.6 0.18 30)" />
+            </div>
+            <div className="flex items-center justify-between pb-3">
+              <div className="flex items-center gap-2">
+                <button className="h-8 px-3 rounded-md bg-[var(--pp-bg)] text-[11px] font-bold text-[var(--pp-text-muted)]">GIF</button>
+                <button className="h-8 w-8 rounded-md bg-[var(--pp-bg)] flex items-center justify-center text-[var(--pp-text-muted)]" aria-label="Image">
+                  <ImageIcon size={16} />
+                </button>
+                <button className="h-8 w-8 rounded-md bg-[var(--pp-bg)] flex items-center justify-center text-[var(--pp-text-muted)]" aria-label="Sticker">
+                  <Sticker size={16} />
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowReview(true)}
+                className="h-11 px-7 rounded-full bg-[var(--pp-blue-dark)] text-white text-[15px] font-bold"
+              >
+                Review
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {showReview && (
         <ReviewSheet
           amount={numeric}
           to={to}
-          note={note}
           onClose={() => setShowReview(false)}
           onConfirm={submit}
         />
       )}
+    </div>
+  );
+}
+
+function Sticker360({ emoji, bg }: { emoji: string; bg: string }) {
+  return (
+    <div
+      className="h-14 w-14 rounded-xl shrink-0 flex items-center justify-center text-[28px]"
+      style={{ background: bg }}
+    >
+      {emoji}
+    </div>
+  );
+}
+
+function Numpad({ press }: { press: (k: string) => void }) {
+  return (
+    <div className="bg-[#d8dde6] pt-1.5 pb-2 px-1 grid grid-cols-3 gap-1.5">
+      {[
+        ["1", ""], ["2", "ABC"], ["3", "DEF"],
+        ["4", "GHI"], ["5", "JKL"], ["6", "MNO"],
+        ["7", "PQRS"], ["8", "TUV"], ["9", "WXYZ"],
+      ].map(([n, sub]) => (
+        <NumKey key={n} onPress={() => press(n)}>
+          <span className="text-[26px] font-medium text-[var(--pp-text)] leading-none">{n}</span>
+          {sub && (
+            <span className="text-[10px] tracking-widest text-[var(--pp-text-muted)] mt-0.5">
+              {sub}
+            </span>
+          )}
+        </NumKey>
+      ))}
+      <button
+        type="button"
+        onClick={() => press(".")}
+        className="h-14 flex items-center justify-center text-[28px] text-[var(--pp-text)]"
+        aria-label="decimal"
+      >
+        .
+      </button>
+      <NumKey onPress={() => press("0")}>
+        <span className="text-[26px] font-medium text-[var(--pp-text)] leading-none">0</span>
+      </NumKey>
+      <button
+        type="button"
+        onClick={() => press("back")}
+        className="h-14 flex items-center justify-center text-[var(--pp-text)]"
+        aria-label="backspace"
+      >
+        <Delete size={24} strokeWidth={2} />
+      </button>
     </div>
   );
 }
@@ -208,13 +256,11 @@ function NumKey({ children, onPress }: { children: React.ReactNode; onPress: () 
 function ReviewSheet({
   amount,
   to,
-  note,
   onClose,
   onConfirm,
 }: {
   amount: number;
   to: string;
-  note: string;
   onClose: () => void;
   onConfirm: () => void;
 }) {
@@ -224,107 +270,145 @@ function ReviewSheet({
   const [showMethodSheet, setShowMethodSheet] = useState(false);
   const [method, setMethod] = useState<"balance" | "mc7109" | "co1260">("balance");
 
-  const methodLabel =
-    method === "balance"
-      ? `PayPal balance · ${balance === null ? "—" : fmtUSD(balance)}`
-      : method === "mc7109"
-        ? "Mastercard Debit ending in 7109"
-        : "Capital One N.A. ending in 1260";
+  const fee = paymentType === "goods" ? Math.round(amount * 0.0349 * 100) / 100 : 0;
+  const total = amount + fee;
+  void to;
+
+  const methodTitle =
+    method === "balance" ? "Balance" : method === "mc7109" ? "SoFi MasterCard" : "CAPITAL ONE N.A.";
 
   return (
     <div className="fixed inset-0 z-50 flex items-end">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <div className="relative w-full bg-white rounded-t-2xl px-5 pt-4 pb-6 shadow-2xl animate-in slide-in-from-bottom duration-200 max-h-[92vh] overflow-y-auto">
-        <div className="flex items-center justify-between">
-          <span className="w-6" />
-          <h3 className="text-[16px] font-semibold text-[var(--pp-text)]">Review</h3>
-          <button onClick={onClose} aria-label="Close" className="text-[var(--pp-text)]">
+      <div className="relative w-full bg-white rounded-t-2xl pt-3 pb-5 shadow-2xl animate-in slide-in-from-bottom duration-200 max-h-[92vh] overflow-y-auto">
+        <div className="relative flex items-center justify-center px-5 pb-2">
+          <h3 className="text-[16px] font-medium text-[var(--pp-text)]">Review</h3>
+          <button onClick={onClose} aria-label="Close" className="absolute right-4 top-0 text-[var(--pp-text)]">
             <X size={22} />
           </button>
         </div>
 
-        <div className="mt-4 text-center">
-          <p className="text-[36px] font-bold tabular-nums text-[var(--pp-text)] leading-none">
-            {fmtUSD(amount)}
-          </p>
-          <p className="mt-2 text-[14px] text-[var(--pp-text-muted)]">
-            To <span className="font-semibold text-[var(--pp-text)]">{to}</span>
-          </p>
-          {note && (
-            <p className="mt-1 text-[13px] text-[var(--pp-text-muted)] truncate">"{note}"</p>
-          )}
-        </div>
-
-        {/* Payment method */}
-        <div className="mt-5 rounded-xl border border-[color:var(--border)] divide-y divide-[color:var(--border)]">
-          <button
-            type="button"
-            onClick={() => setShowMethodSheet(true)}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
-          >
-            <PayPalLogo className="h-6 w-6" />
-            <div className="flex-1 min-w-0">
-              <p className="text-[13px] text-[var(--pp-text-muted)]">Pay with</p>
-              <p className="text-[15px] font-semibold text-[var(--pp-text)] truncate">
-                {methodLabel}
-              </p>
-            </div>
-            <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowTypeSheet(true)}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
-          >
-            <div className="h-6 w-6 rounded-full bg-[var(--pp-blue-light)]/15 flex items-center justify-center text-[var(--pp-blue)] text-[13px] font-bold">
-              i
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[13px] text-[var(--pp-text-muted)]">Sending to</p>
-              <p className="text-[15px] font-semibold text-[var(--pp-text)] truncate">
-                {paymentType === "friends" ? "Friends and family" : "Goods and services"}
-              </p>
-            </div>
-            <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
-          </button>
-        </div>
-
-        <p className="mt-3 text-[12px] text-[var(--pp-text-muted)] leading-relaxed">
-          {paymentType === "friends"
-            ? "No fees apply. Payments are not protected by Purchase Protection."
-            : "Buyer protection applies. Seller may pay a small fee."}
-        </p>
-
+        {/* Balance row */}
         <button
           type="button"
-          onClick={onConfirm}
-          className="mt-5 w-full rounded-full bg-[var(--pp-yellow)] py-4 text-[17px] font-bold text-[var(--pp-text)]"
+          onClick={() => setShowMethodSheet(true)}
+          className="w-full flex items-center gap-4 px-5 py-3.5 text-left"
         >
-          Send {fmtUSD(amount)}
+          <MethodIcon kind={method} />
+          <span className="flex-1 text-[17px] font-medium text-[var(--pp-text)]">{methodTitle}</span>
+          <ChevronRight size={20} className="text-[var(--pp-text-muted)]" />
         </button>
-      </div>
 
-      {showTypeSheet && (
-        <PaymentTypeSheet
-          value={paymentType}
-          onSelect={(v) => {
-            setPaymentType(v);
-            setShowTypeSheet(false);
-          }}
-          onClose={() => setShowTypeSheet(false)}
-        />
-      )}
-      {showMethodSheet && (
-        <PaymentMethodSheet
-          value={method}
-          balance={balance}
-          onSelect={(v) => {
-            setMethod(v);
-            setShowMethodSheet(false);
-          }}
-          onClose={() => setShowMethodSheet(false)}
-        />
-      )}
+        {/* Payment type row */}
+        <button
+          type="button"
+          onClick={() => setShowTypeSheet(true)}
+          className="w-full flex items-center gap-4 px-5 py-3.5 text-left"
+        >
+          <div className="h-8 w-8 flex items-center justify-center text-[var(--pp-text)]">
+            {paymentType === "friends" ? <Users size={22} /> : <Store size={22} />}
+          </div>
+          <span className="flex-1 text-[17px] font-medium text-[var(--pp-text)]">
+            {paymentType === "friends" ? "Friends and Family" : "Goods and Services"}
+          </span>
+          <ChevronRight size={20} className="text-[var(--pp-text-muted)]" />
+        </button>
+
+        <div className="px-5 mt-2">
+          <p className="text-[13px] text-[var(--pp-text-muted)] leading-relaxed">
+            {paymentType === "friends"
+              ? "Purchase Protection doesn't apply for this payment."
+              : "You're covered by Purchase Protection on eligible items."}{" "}
+            <a className="text-[var(--pp-link)] font-semibold" href="#">
+              More on Purchase Protection
+            </a>
+          </p>
+        </div>
+
+        <div className="mx-5 my-4 border-t border-[color:var(--border)]" />
+
+        <div className="px-5 space-y-2">
+          <Row left={<span className="flex items-center gap-1.5">PayPal fee <Info size={14} className="text-[var(--pp-text-muted)]" /></span>} right={`${fmtUSD(fee)} USD`} muted />
+          <Row left="Total" right={`${fmtUSD(total)} USD`} bold />
+          <Row left="Payment delivery" right="In seconds" muted />
+        </div>
+
+        <div className="px-5 mt-5">
+          <button
+            type="button"
+            onClick={onConfirm}
+            className="w-full rounded-full bg-[var(--pp-blue-dark)] py-4 text-[17px] font-bold text-white"
+          >
+            Send
+          </button>
+        </div>
+
+        {showTypeSheet && (
+          <PaymentTypeSheet
+            value={paymentType}
+            onSelect={(v) => {
+              setPaymentType(v);
+              setShowTypeSheet(false);
+            }}
+            onClose={() => setShowTypeSheet(false)}
+          />
+        )}
+        {showMethodSheet && (
+          <PaymentMethodSheet
+            value={method}
+            balance={balance}
+            onSelect={(v) => setMethod(v)}
+            onClose={() => setShowMethodSheet(false)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Row({ left, right, bold, muted }: { left: React.ReactNode; right: React.ReactNode; bold?: boolean; muted?: boolean }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span
+        className="text-[15px]"
+        style={{
+          color: muted ? "var(--pp-text-muted)" : "var(--pp-text)",
+          fontWeight: bold ? 700 : 400,
+        }}
+      >
+        {left}
+      </span>
+      <span
+        className="text-[15px]"
+        style={{
+          color: muted ? "var(--pp-text-muted)" : "var(--pp-text)",
+          fontWeight: bold ? 700 : 400,
+        }}
+      >
+        {right}
+      </span>
+    </div>
+  );
+}
+
+function MethodIcon({ kind }: { kind: "balance" | "mc7109" | "co1260" }) {
+  if (kind === "balance") {
+    return (
+      <div className="h-9 w-9 rounded-md bg-[#eef3fb] flex items-center justify-center">
+        <PayPalLogo className="h-5 w-5" />
+      </div>
+    );
+  }
+  if (kind === "co1260") {
+    return (
+      <div className="h-9 w-9 rounded-md bg-[#eef6fb] flex items-center justify-center text-[var(--pp-blue-dark)]">
+        <BankMark />
+      </div>
+    );
+  }
+  return (
+    <div className="h-9 w-9 rounded-md bg-[#eef3fb] flex items-center justify-center">
+      <MastercardMark />
     </div>
   );
 }
@@ -341,64 +425,63 @@ function PaymentTypeSheet({
   return (
     <div className="absolute inset-0 z-10 flex items-end">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <div className="relative w-full bg-white rounded-t-2xl px-5 pt-4 pb-6 animate-in slide-in-from-bottom duration-200">
-        <div className="flex items-center justify-between">
-          <span className="w-6" />
-          <h3 className="text-[16px] font-semibold text-[var(--pp-text)]">Sending to</h3>
-          <button onClick={onClose} aria-label="Close" className="text-[var(--pp-text)]">
+      <div className="relative w-full bg-white rounded-t-2xl pt-3 pb-6 animate-in slide-in-from-bottom duration-200">
+        <div className="relative flex items-center justify-center px-5 pb-3">
+          <button onClick={onClose} aria-label="Back" className="absolute left-4 top-0 text-[var(--pp-text)]">
+            <ArrowLeft size={20} />
+          </button>
+          <h3 className="text-[16px] font-medium text-[var(--pp-text)]">Payment type</h3>
+          <button onClick={onClose} aria-label="Close" className="absolute right-4 top-0 text-[var(--pp-text)]">
             <X size={20} />
           </button>
         </div>
-        <div className="mt-4 space-y-2">
-          <TypeOption
-            title="Friends and family"
-            desc="For sending money to people you know and trust. No fees."
-            selected={value === "friends"}
-            onClick={() => onSelect("friends")}
-          />
-          <TypeOption
-            title="Goods and services"
-            desc="For paying a seller. You're covered by Purchase Protection."
-            selected={value === "goods"}
-            onClick={() => onSelect("goods")}
-          />
-        </div>
+        <TypeOption
+          icon={<Store size={22} />}
+          title="For goods and services"
+          desc={
+            <>
+              Get a full refund if an eligible item gets lost or damaged. Seller pays a small fee.
+              <br />
+              <a className="text-[var(--pp-link)] font-semibold" href="#">More on Purchase Protection</a>
+            </>
+          }
+          selected={value === "goods"}
+          onClick={() => onSelect("goods")}
+        />
+        <div className="mx-5 border-t border-[color:var(--border)]" />
+        <TypeOption
+          icon={<Users size={22} />}
+          title="For friends and family"
+          desc="Purchase Protection doesn't apply for this payment."
+          selected={value === "friends"}
+          onClick={() => onSelect("friends")}
+        />
       </div>
     </div>
   );
 }
 
 function TypeOption({
+  icon,
   title,
   desc,
   selected,
   onClick,
 }: {
+  icon: React.ReactNode;
   title: string;
-  desc: string;
+  desc: React.ReactNode;
   selected: boolean;
   onClick: () => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full text-left rounded-xl border border-[color:var(--border)] px-4 py-3.5 flex items-start gap-3"
-    >
+    <button type="button" onClick={onClick} className="w-full text-left px-5 py-4 flex items-start gap-4">
+      <span className="text-[var(--pp-text)] mt-0.5">{icon}</span>
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-semibold text-[var(--pp-text)]">{title}</p>
-        <p className="mt-0.5 text-[13px] text-[var(--pp-text-muted)] leading-snug">{desc}</p>
+        <p className="text-[16px] font-bold text-[var(--pp-text)]">{title}</p>
+        <p className="mt-1 text-[13px] text-[var(--pp-text-muted)] leading-snug">{desc}</p>
       </div>
-      <div
-        className={
-          "mt-1 h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 " +
-          (selected
-            ? "border-[var(--pp-blue)]"
-            : "border-[color:var(--border)]")
-        }
-      >
-        {selected && <div className="h-2.5 w-2.5 rounded-full bg-[var(--pp-blue)]" />}
-      </div>
+      {selected && <Check size={22} className="text-[var(--pp-success)] mt-1 shrink-0" strokeWidth={2.5} />}
     </button>
   );
 }
@@ -414,43 +497,64 @@ function PaymentMethodSheet({
   onSelect: (v: "balance" | "mc7109" | "co1260") => void;
   onClose: () => void;
 }) {
+  const [pending, setPending] = useState(value);
+  void balance;
   return (
-    <div className="absolute inset-0 z-10 flex items-end">
+    <div className="absolute inset-0 z-10 flex flex-col items-stretch justify-end">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <div className="relative w-full bg-white rounded-t-2xl px-5 pt-4 pb-6 animate-in slide-in-from-bottom duration-200">
-        <div className="flex items-center justify-between">
-          <span className="w-6" />
-          <h3 className="text-[16px] font-semibold text-[var(--pp-text)]">Pay with</h3>
-          <button onClick={onClose} aria-label="Close" className="text-[var(--pp-text)]">
+      <div className="relative w-full bg-white rounded-t-2xl pt-3 pb-4 animate-in slide-in-from-bottom duration-200">
+        <div className="relative flex items-center justify-center px-5 pb-1">
+          <button onClick={onClose} aria-label="Back" className="absolute left-4 top-0 text-[var(--pp-text)]">
+            <ArrowLeft size={20} />
+          </button>
+          <h3 className="text-[18px] font-bold text-[var(--pp-text)]">Choose a way to pay</h3>
+          <button onClick={onClose} aria-label="Close" className="absolute right-4 top-0 text-[var(--pp-text)]">
             <X size={20} />
           </button>
         </div>
-        <div className="mt-4 rounded-xl border border-[color:var(--border)] divide-y divide-[color:var(--border)]">
-          <MethodRow
-            selected={value === "balance"}
-            onClick={() => onSelect("balance")}
-            icon={<PayPalLogo className="h-7 w-7" />}
-            title="PayPal balance"
-            subtitle={balance === null ? "—" : fmtUSD(balance)}
-          />
-          <MethodRow
-            selected={value === "mc7109"}
-            onClick={() => onSelect("mc7109")}
-            icon={<MastercardMark />}
-            title="Mastercard Debit"
-            subtitle="Ending in 7109"
-          />
-          <MethodRow
-            selected={value === "co1260"}
-            onClick={() => onSelect("co1260")}
-            icon={<BankMark />}
-            title="Capital One N.A."
-            subtitle="Ending in 1260"
-          />
-        </div>
-        <p className="mt-3 text-[12px] text-[var(--pp-text-muted)] leading-relaxed">
-          Bank transfers may take a few business days. Card payments are instant.
+        <p className="text-center text-[13px] text-[var(--pp-text-muted)] mt-1 mb-3">
+          We'll remember it for next time.
         </p>
+
+        <MethodRow
+          selected={pending === "balance"}
+          onClick={() => setPending("balance")}
+          icon={<MethodIcon kind="balance" />}
+          title="Balance"
+          subtitle="No fee"
+        />
+        <MethodRow
+          selected={pending === "co1260"}
+          onClick={() => setPending("co1260")}
+          icon={<MethodIcon kind="co1260" />}
+          title="CAPITAL ONE N.A."
+          subtitle={<>Checking ••••1260<br /><span className="text-[13px] text-[var(--pp-text-muted)]">No fee</span></>}
+        />
+        <MethodRow
+          selected={pending === "mc7109"}
+          onClick={() => setPending("mc7109")}
+          icon={<MethodIcon kind="mc7109" />}
+          title="SoFi MasterCard"
+          subtitle={<>Debit ••••7109<br /><span className="text-[13px] text-[var(--pp-text-muted)]">+ $0.45 fee</span></>}
+        />
+
+        <button className="w-full flex items-center gap-4 px-5 py-3.5 text-left">
+          <div className="h-9 w-9 rounded-md bg-[var(--pp-bg)] flex items-center justify-center text-[var(--pp-text)] text-[20px] font-light">+</div>
+          <span className="text-[15px] font-medium text-[var(--pp-text)]">Link a bank or card</span>
+        </button>
+
+        <div className="px-5 mt-2">
+          <button
+            type="button"
+            onClick={() => {
+              onSelect(pending);
+              onClose();
+            }}
+            className="w-full rounded-full bg-[var(--pp-blue-dark)] py-3.5 text-[16px] font-bold text-white"
+          >
+            Done
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -467,51 +571,32 @@ function MethodRow({
   onClick: () => void;
   icon: React.ReactNode;
   title: string;
-  subtitle: string;
+  subtitle: React.ReactNode;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full flex items-center gap-3 px-4 py-3.5 text-left"
-    >
-      <div className="h-8 w-8 flex items-center justify-center shrink-0">{icon}</div>
+    <button type="button" onClick={onClick} className="w-full flex items-start gap-4 px-5 py-3 text-left">
+      <div className="shrink-0">{icon}</div>
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-semibold text-[var(--pp-text)] truncate">{title}</p>
-        <p className="text-[13px] text-[var(--pp-text-muted)] truncate">{subtitle}</p>
+        <p className="text-[16px] font-medium text-[var(--pp-text)] truncate">{title}</p>
+        <p className="text-[13px] text-[var(--pp-text-muted)]">{subtitle}</p>
       </div>
-      <div
-        className={
-          "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 " +
-          (selected
-            ? "border-[var(--pp-blue)]"
-            : "border-[color:var(--border)]")
-        }
-      >
-        {selected && <div className="h-2.5 w-2.5 rounded-full bg-[var(--pp-blue)]" />}
-      </div>
+      {selected && <Check size={20} className="text-[var(--pp-success)] mt-1 shrink-0" strokeWidth={2.5} />}
     </button>
   );
 }
 
 function MastercardMark() {
   return (
-    <div className="relative h-5 w-8">
-      <span
-        className="absolute left-0 top-0 h-5 w-5 rounded-full"
-        style={{ background: "var(--pp-mc-red)" }}
-      />
-      <span
-        className="absolute right-0 top-0 h-5 w-5 rounded-full mix-blend-multiply"
-        style={{ background: "var(--pp-mc-yellow)" }}
-      />
+    <div className="relative h-5 w-7">
+      <span className="absolute left-0 top-0 h-5 w-5 rounded-full" style={{ background: "var(--pp-mc-red)" }} />
+      <span className="absolute right-0 top-0 h-5 w-5 rounded-full mix-blend-multiply" style={{ background: "var(--pp-mc-yellow)" }} />
     </div>
   );
 }
 
 function BankMark() {
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 text-[var(--pp-blue-dark)]" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path d="M3 10 L12 4 L21 10" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M5 10 V18 M9 10 V18 M15 10 V18 M19 10 V18" />
       <path d="M3 19 H21" strokeLinecap="round" />
