@@ -34,7 +34,12 @@ export function BottomNav() {
                   width={28}
                   height={28}
                   className="h-7 w-7 object-contain"
-                  style={{ opacity: active ? 1 : 0.7 }}
+                  style={{
+                    opacity: active ? 1 : 0.85,
+                    filter: active
+                      ? "none"
+                      : "grayscale(1) brightness(0.75) contrast(1.05)",
+                  }}
                 />
                 <span className="text-[11px] font-medium" style={{ color }}>
                   {label}
