@@ -150,11 +150,23 @@ function SendAmountPage() {
           {/* Sticker tray */}
           <div className="px-4 pt-2 border-t border-[color:var(--border)]">
             <div className="flex items-center gap-3 overflow-x-auto py-3">
-              <Sticker360 emoji="🫶" bg="oklch(0.55 0.22 25)" />
-              <Sticker360 emoji="✌️" bg="oklch(0.35 0.16 295)" />
-              <Sticker360 emoji="🔥" bg="oklch(0.65 0.2 60)" />
-              <Sticker360 emoji="💸" bg="oklch(0.6 0.18 150)" />
-              <Sticker360 emoji="🎉" bg="oklch(0.6 0.18 30)" />
+              {[
+                { e: "🫶", bg: "oklch(0.55 0.22 25)" },
+                { e: "✌️", bg: "oklch(0.35 0.16 295)" },
+                { e: "🔥", bg: "oklch(0.65 0.2 60)" },
+                { e: "💸", bg: "oklch(0.6 0.18 150)" },
+                { e: "🎉", bg: "oklch(0.6 0.18 30)" },
+                { e: "❤️", bg: "oklch(0.5 0.22 20)" },
+                { e: "😂", bg: "oklch(0.7 0.18 90)" },
+                { e: "🙏", bg: "oklch(0.55 0.16 260)" },
+              ].map((s) => (
+                <Sticker360
+                  key={s.e}
+                  emoji={s.e}
+                  bg={s.bg}
+                  onPick={() => setNote((n) => (n ? `${n} ${s.e}` : s.e))}
+                />
+              ))}
             </div>
             <div className="flex items-center justify-between pb-3">
               <div className="flex items-center gap-2">
@@ -190,14 +202,17 @@ function SendAmountPage() {
   );
 }
 
-function Sticker360({ emoji, bg }: { emoji: string; bg: string }) {
+function Sticker360({ emoji, bg, onPick }: { emoji: string; bg: string; onPick?: () => void }) {
   return (
-    <div
-      className="h-14 w-14 rounded-xl shrink-0 flex items-center justify-center text-[28px]"
+    <button
+      type="button"
+      onClick={onPick}
+      className="h-14 w-14 rounded-xl shrink-0 flex items-center justify-center text-[28px] active:scale-95 transition-transform"
       style={{ background: bg }}
+      aria-label={`Add ${emoji}`}
     >
       {emoji}
-    </div>
+    </button>
   );
 }
 
