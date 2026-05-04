@@ -202,14 +202,17 @@ function SendAmountPage() {
   );
 }
 
-function Sticker360({ emoji, bg }: { emoji: string; bg: string }) {
+function Sticker360({ emoji, bg, onPick }: { emoji: string; bg: string; onPick?: () => void }) {
   return (
-    <div
-      className="h-14 w-14 rounded-xl shrink-0 flex items-center justify-center text-[28px]"
+    <button
+      type="button"
+      onClick={onPick}
+      className="h-14 w-14 rounded-xl shrink-0 flex items-center justify-center text-[28px] active:scale-95 transition-transform"
       style={{ background: bg }}
+      aria-label={`Add ${emoji}`}
     >
       {emoji}
-    </div>
+    </button>
   );
 }
 
