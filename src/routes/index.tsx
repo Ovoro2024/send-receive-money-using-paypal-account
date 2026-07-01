@@ -4,6 +4,7 @@ import { BottomNav } from "@/components/paypal/BottomNav";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
+import { useSavings } from "@/auth/useSavings";
 import { useAuth } from "@/auth/AuthProvider";
 import avatar from "@/assets/avatar.jpg";
 
@@ -27,10 +28,13 @@ function IndexRoute() {
 
 function Index() {
   const { balance } = useBalance();
+  const { savings } = useSavings();
   const { signOut } = useAuth();
-  const balanceLabel = balance === null
-    ? "—"
-    : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(balance);
+  const fmt = (v: number) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+  const totalBalance = (balance ?? 0) + (savings ?? 0);
+  const balanceLabel = balance === null ? "—" : fmt(totalBalance);
+  const savingsLabel = savings === null ? "$0.00" : fmt(savings);
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       {/* Header */}
@@ -75,7 +79,7 @@ function Index() {
               </div>
             }
             title="PayPal Savings"
-            amount="$0.00"
+            amount={savingsLabel}
             footer={
               <span className="flex items-center gap-1 font-bold text-[var(--pp-text)]">
                 <ArrowUp size={14} strokeWidth={3} />
