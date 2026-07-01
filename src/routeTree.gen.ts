@@ -22,6 +22,7 @@ import { Route as SendIndexRouteImport } from './routes/send.index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as RequestIndexRouteImport } from './routes/request.index'
 import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
+import { Route as TransferSavingsRouteImport } from './routes/transfer.savings'
 import { Route as TransferBankRouteImport } from './routes/transfer.bank'
 import { Route as SendSuccessRouteImport } from './routes/send.success'
 import { Route as SendAmountRouteImport } from './routes/send.amount'
@@ -98,6 +99,11 @@ const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AddMoneyRoute,
 } as any)
+const TransferSavingsRoute = TransferSavingsRouteImport.update({
+  id: '/transfer/savings',
+  path: '/transfer/savings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TransferBankRoute = TransferBankRouteImport.update({
   id: '/transfer/bank',
   path: '/transfer/bank',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/send/amount': typeof SendAmountRoute
   '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
+  '/transfer/savings': typeof TransferSavingsRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/send/amount': typeof SendAmountRoute
   '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
+  '/transfer/savings': typeof TransferSavingsRoute
   '/add-money': typeof AddMoneyIndexRoute
   '/request': typeof RequestIndexRoute
   '/security-check': typeof SecurityCheckIndexRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/send/amount': typeof SendAmountRoute
   '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
+  '/transfer/savings': typeof TransferSavingsRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
@@ -245,6 +254,7 @@ export interface FileRouteTypes {
     | '/send/amount'
     | '/send/success'
     | '/transfer/bank'
+    | '/transfer/savings'
     | '/add-money/'
     | '/request/'
     | '/security-check/'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/send/amount'
     | '/send/success'
     | '/transfer/bank'
+    | '/transfer/savings'
     | '/add-money'
     | '/request'
     | '/security-check'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/send/amount'
     | '/send/success'
     | '/transfer/bank'
+    | '/transfer/savings'
     | '/add-money/'
     | '/request/'
     | '/security-check/'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   SendAmountRoute: typeof SendAmountRoute
   SendSuccessRoute: typeof SendSuccessRoute
   TransferBankRoute: typeof TransferBankRoute
+  TransferSavingsRoute: typeof TransferSavingsRoute
   RequestIndexRoute: typeof RequestIndexRoute
   SendIndexRoute: typeof SendIndexRoute
 }
@@ -410,6 +423,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/add-money/'
       preLoaderRoute: typeof AddMoneyIndexRouteImport
       parentRoute: typeof AddMoneyRoute
+    }
+    '/transfer/savings': {
+      id: '/transfer/savings'
+      path: '/transfer/savings'
+      fullPath: '/transfer/savings'
+      preLoaderRoute: typeof TransferSavingsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/transfer/bank': {
       id: '/transfer/bank'
@@ -533,6 +553,7 @@ const rootRouteChildren: RootRouteChildren = {
   SendAmountRoute: SendAmountRoute,
   SendSuccessRoute: SendSuccessRoute,
   TransferBankRoute: TransferBankRoute,
+  TransferSavingsRoute: TransferSavingsRoute,
   RequestIndexRoute: RequestIndexRoute,
   SendIndexRoute: SendIndexRoute,
 }
