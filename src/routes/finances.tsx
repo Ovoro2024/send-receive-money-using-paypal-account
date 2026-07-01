@@ -42,7 +42,9 @@ function FinancesPage() {
   const [transferOpen, setTransferOpen] = useState(false);
   const { balance } = useBalance();
   const { savings } = useSavings();
-  const displayValue = tab === "Savings" ? savings : balance;
+  const combined = (balance ?? 0) + (savings ?? 0);
+  const displayValue =
+    tab === "Savings" ? savings : balance === null && savings === null ? null : combined;
   const displayLabel = tab === "Savings" ? "PayPal Savings Balance" : "Total PayPal Balance";
   const navigate = useNavigate();
 
