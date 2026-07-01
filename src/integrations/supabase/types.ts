@@ -53,6 +53,24 @@ export type Database = {
         }
         Relationships: []
       }
+      savings: {
+        Row: {
+          amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number
@@ -84,6 +102,13 @@ export type Database = {
     Functions: {
       add_money: { Args: { p_amount: number }; Returns: number }
       transfer_money: { Args: { p_amount: number }; Returns: number }
+      transfer_to_savings: {
+        Args: { p_amount: number }
+        Returns: {
+          new_balance: number
+          new_savings: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

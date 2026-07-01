@@ -4,6 +4,7 @@ import { ArrowLeftRight, X, Database, Globe2 } from "lucide-react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
+import { useSavings } from "@/auth/useSavings";
 import debitCardImg from "@/assets/debit-card.jpg";
 
 export const Route = createFileRoute("/finances")({
@@ -40,6 +41,9 @@ function FinancesPage() {
   const [tab, setTab] = useState<Tab>("Balance");
   const [transferOpen, setTransferOpen] = useState(false);
   const { balance } = useBalance();
+  const { savings } = useSavings();
+  const displayValue = tab === "Savings" ? savings : balance;
+  const displayLabel = tab === "Savings" ? "PayPal Savings Balance" : "Total PayPal Balance";
   const navigate = useNavigate();
 
   return (
@@ -74,12 +78,12 @@ function FinancesPage() {
 
         {/* Total balance */}
         <div className="mt-7 w-full overflow-hidden">
-          <p className="text-[15px] text-[var(--pp-text)]">Total PayPal Balance</p>
+          <p className="text-[15px] text-[var(--pp-text)]">{displayLabel}</p>
           <p
             className={
               "mt-2 font-semibold leading-none text-[var(--pp-text)] tracking-tight whitespace-nowrap " +
               (() => {
-                const s = balance === null ? "—" : formatUsd(balance);
+                const s = displayValue === null ? "—" : formatUsd(displayValue);
                 const len = s.length;
                 if (len <= 9) return "text-[44px]";
                 if (len <= 12) return "text-[36px]";
@@ -88,11 +92,21 @@ function FinancesPage() {
                 return "text-[18px]";
               })()
             }
-            title={balance === null ? undefined : formatUsd(balance)}
+            title={displayValue === null ? undefined : formatUsd(displayValue)}
           >
-            {balance === null ? "—" : formatUsd(balance)}
+            {displayValue === null ? "—" : formatUsd(displayValue)}
           </p>
         </div>
+
+        {tab === "Savings" && (
+          <button
+            onClick={() => navigate({ to: "/transfer/savings" })}
+            className="mt-7 block w-full rounded-full py-4 text-center text-[17px] font-bold"
+            style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}
+          >
+            Transfer to Savings
+          </button>
+        )}
 
         {/* Add Money button */}
         <Link
@@ -229,6 +243,10 @@ function FinancesPage() {
               <SheetRow
                 icon={<Database size={22} className="text-[var(--pp-blue-dark)]" />}
                 title="Transfer to PayPal Savings"
+                onClick={() => {
+                  setTransferOpen(false);
+                  navigate({ to: "/transfer/savings" });
+                }}
               />
               <SheetRow
                 icon={<Globe2 size={22} className="text-[var(--pp-blue-dark)]" />}
