@@ -74,23 +74,32 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          counterparty: string | null
           created_at: string
           id: string
           kind: string
+          note: string | null
+          status: string
           user_id: string
         }
         Insert: {
           amount: number
+          counterparty?: string | null
           created_at?: string
           id?: string
           kind?: string
+          note?: string | null
+          status?: string
           user_id: string
         }
         Update: {
           amount?: number
+          counterparty?: string | null
           created_at?: string
           id?: string
           kind?: string
+          note?: string | null
+          status?: string
           user_id?: string
         }
         Relationships: []
@@ -101,6 +110,17 @@ export type Database = {
     }
     Functions: {
       add_money: { Args: { p_amount: number }; Returns: number }
+      record_request: {
+        Args: { p_amount: number; p_from: string; p_note?: string }
+        Returns: string
+      }
+      send_money: {
+        Args: { p_amount: number; p_note?: string; p_to: string }
+        Returns: {
+          new_balance: number
+          transaction_id: string
+        }[]
+      }
       transfer_money: { Args: { p_amount: number }; Returns: number }
       transfer_to_savings: {
         Args: { p_amount: number }
