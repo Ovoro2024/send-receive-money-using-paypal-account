@@ -17,11 +17,13 @@ import { Route as FinancesRouteImport } from './routes/finances'
 import { Route as DealsRouteImport } from './routes/deals'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
+import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SendIndexRouteImport } from './routes/send.index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as RequestIndexRouteImport } from './routes/request.index'
 import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
+import { Route as ActivityIndexRouteImport } from './routes/activity.index'
 import { Route as TransferSavingsRouteImport } from './routes/transfer.savings'
 import { Route as TransferBankRouteImport } from './routes/transfer.bank'
 import { Route as SendSuccessRouteImport } from './routes/send.success'
@@ -33,6 +35,7 @@ import { Route as RequestAmountRouteImport } from './routes/request.amount'
 import { Route as AddMoneySuccessRouteImport } from './routes/add-money.success'
 import { Route as AddMoneyReviewRouteImport } from './routes/add-money.review'
 import { Route as AddMoneyMethodRouteImport } from './routes/add-money.method'
+import { Route as ActivityIdRouteImport } from './routes/activity.$id'
 
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
@@ -74,6 +77,11 @@ const AddMoneyRoute = AddMoneyRouteImport.update({
   path: '/add-money',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivityRoute = ActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -98,6 +106,11 @@ const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AddMoneyRoute,
+} as any)
+const ActivityIndexRoute = ActivityIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ActivityRoute,
 } as any)
 const TransferSavingsRoute = TransferSavingsRouteImport.update({
   id: '/transfer/savings',
@@ -154,9 +167,15 @@ const AddMoneyMethodRoute = AddMoneyMethodRouteImport.update({
   path: '/method',
   getParentRoute: () => AddMoneyRoute,
 } as any)
+const ActivityIdRoute = ActivityIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ActivityRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRouteWithChildren
   '/add-money': typeof AddMoneyRouteWithChildren
   '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
@@ -165,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
+  '/activity/$id': typeof ActivityIdRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
@@ -176,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
   '/transfer/savings': typeof TransferSavingsRoute
+  '/activity/': typeof ActivityIndexRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
@@ -189,6 +210,7 @@ export interface FileRoutesByTo {
   '/payments': typeof PaymentsRoute
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
+  '/activity/$id': typeof ActivityIdRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
@@ -200,6 +222,7 @@ export interface FileRoutesByTo {
   '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
   '/transfer/savings': typeof TransferSavingsRoute
+  '/activity': typeof ActivityIndexRoute
   '/add-money': typeof AddMoneyIndexRoute
   '/request': typeof RequestIndexRoute
   '/security-check': typeof SecurityCheckIndexRoute
@@ -208,6 +231,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activity': typeof ActivityRouteWithChildren
   '/add-money': typeof AddMoneyRouteWithChildren
   '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
@@ -216,6 +240,7 @@ export interface FileRoutesById {
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
+  '/activity/$id': typeof ActivityIdRoute
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
@@ -227,6 +252,7 @@ export interface FileRoutesById {
   '/send/success': typeof SendSuccessRoute
   '/transfer/bank': typeof TransferBankRoute
   '/transfer/savings': typeof TransferSavingsRoute
+  '/activity/': typeof ActivityIndexRoute
   '/add-money/': typeof AddMoneyIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
@@ -236,6 +262,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/activity'
     | '/add-money'
     | '/auth'
     | '/deals'
@@ -244,6 +271,7 @@ export interface FileRouteTypes {
     | '/security-check'
     | '/splash'
     | '/wallet'
+    | '/activity/$id'
     | '/add-money/method'
     | '/add-money/review'
     | '/add-money/success'
@@ -255,6 +283,7 @@ export interface FileRouteTypes {
     | '/send/success'
     | '/transfer/bank'
     | '/transfer/savings'
+    | '/activity/'
     | '/add-money/'
     | '/request/'
     | '/security-check/'
@@ -268,6 +297,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/splash'
     | '/wallet'
+    | '/activity/$id'
     | '/add-money/method'
     | '/add-money/review'
     | '/add-money/success'
@@ -279,6 +309,7 @@ export interface FileRouteTypes {
     | '/send/success'
     | '/transfer/bank'
     | '/transfer/savings'
+    | '/activity'
     | '/add-money'
     | '/request'
     | '/security-check'
@@ -286,6 +317,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/activity'
     | '/add-money'
     | '/auth'
     | '/deals'
@@ -294,6 +326,7 @@ export interface FileRouteTypes {
     | '/security-check'
     | '/splash'
     | '/wallet'
+    | '/activity/$id'
     | '/add-money/method'
     | '/add-money/review'
     | '/add-money/success'
@@ -305,6 +338,7 @@ export interface FileRouteTypes {
     | '/send/success'
     | '/transfer/bank'
     | '/transfer/savings'
+    | '/activity/'
     | '/add-money/'
     | '/request/'
     | '/security-check/'
@@ -313,6 +347,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivityRoute: typeof ActivityRouteWithChildren
   AddMoneyRoute: typeof AddMoneyRouteWithChildren
   AuthRoute: typeof AuthRoute
   DealsRoute: typeof DealsRoute
@@ -389,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddMoneyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activity': {
+      id: '/activity'
+      path: '/activity'
+      fullPath: '/activity'
+      preLoaderRoute: typeof ActivityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -423,6 +465,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/add-money/'
       preLoaderRoute: typeof AddMoneyIndexRouteImport
       parentRoute: typeof AddMoneyRoute
+    }
+    '/activity/': {
+      id: '/activity/'
+      path: '/'
+      fullPath: '/activity/'
+      preLoaderRoute: typeof ActivityIndexRouteImport
+      parentRoute: typeof ActivityRoute
     }
     '/transfer/savings': {
       id: '/transfer/savings'
@@ -501,8 +550,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AddMoneyMethodRouteImport
       parentRoute: typeof AddMoneyRoute
     }
+    '/activity/$id': {
+      id: '/activity/$id'
+      path: '/$id'
+      fullPath: '/activity/$id'
+      preLoaderRoute: typeof ActivityIdRouteImport
+      parentRoute: typeof ActivityRoute
+    }
   }
 }
+
+interface ActivityRouteChildren {
+  ActivityIdRoute: typeof ActivityIdRoute
+  ActivityIndexRoute: typeof ActivityIndexRoute
+}
+
+const ActivityRouteChildren: ActivityRouteChildren = {
+  ActivityIdRoute: ActivityIdRoute,
+  ActivityIndexRoute: ActivityIndexRoute,
+}
+
+const ActivityRouteWithChildren = ActivityRoute._addFileChildren(
+  ActivityRouteChildren,
+)
 
 interface AddMoneyRouteChildren {
   AddMoneyMethodRoute: typeof AddMoneyMethodRoute
@@ -540,6 +610,7 @@ const SecurityCheckRouteWithChildren = SecurityCheckRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivityRoute: ActivityRouteWithChildren,
   AddMoneyRoute: AddMoneyRouteWithChildren,
   AuthRoute: AuthRoute,
   DealsRoute: DealsRoute,

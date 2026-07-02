@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowLeftRight, X, Database, Globe2 } from "lucide-react";
 import { BottomNav } from "@/components/paypal/BottomNav";
+import { RecentActivity } from "@/components/paypal/RecentActivity";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
@@ -184,26 +185,14 @@ function FinancesPage() {
         </div>
 
         {/* Recent activity */}
-        <h2 className="mt-8 text-[17px] font-semibold text-[var(--pp-text)]">
-          Recent activity
-        </h2>
-        <div className="mt-3 space-y-2">
-          <ActivityRow
-            icon={<MasterCardActivity />}
-            title="MasterCard Debit Card..."
-            date="Mar 13"
-            note="Transfer using card · Completed"
-            amount="+$10"
-            positive
-          />
-          <ActivityRow
-            icon={<SuttonBankActivity />}
-            title="SUTTON BANK"
-            date="Mar 12"
-            note="Transfer to bank · Completed"
-            amount="-$3"
-          />
+        <div className="mt-8 flex items-center justify-between">
+          <h2 className="text-[17px] font-semibold text-[var(--pp-text)]">Recent activity</h2>
+          <Link to="/activity" className="text-[13px] font-bold text-[var(--pp-blue-dark)]">
+            See all
+          </Link>
         </div>
+        <RecentActivity />
+
       </main>
 
       {/* Transfer Money bottom sheet */}

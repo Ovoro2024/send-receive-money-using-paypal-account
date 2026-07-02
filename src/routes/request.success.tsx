@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { RequireAuth } from "@/auth/RequireAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 type Search = { to: string; amount: string };
 
@@ -36,6 +38,16 @@ function SuccessPage() {
   const { to, amount } = useSearch({ from: "/request/success" });
   const n = Number.parseFloat(amount) || 0;
   const firstName = (to || "them").split(/\s|@/)[0];
+  const recorded = useRef(false);
+
+  useEffect(() => {
+    if (recorded.current || !to || n <= 0) return;
+    recorded.current = true;
+    const key = `req:${to}:${amount}:${Math.floor(Date.now() / 60000)}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    supabase.rpc("record_request", { p_amount: n, p_from: to }).then(() => {});
+  }, [to, amount, n]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
