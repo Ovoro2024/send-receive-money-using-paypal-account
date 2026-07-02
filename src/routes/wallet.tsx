@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, ChevronRight, Shield, Gift, CreditCard, Building2, QrCode } from "lucide-react";
+import { Plus, ChevronRight, HelpCircle } from "lucide-react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
+import { useSavings } from "@/auth/useSavings";
+import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 
 export const Route = createFileRoute("/wallet")({
   component: () => (
@@ -29,111 +31,144 @@ function formatUsd(value: number) {
 
 function WalletPage() {
   const { balance } = useBalance();
-  const value = balance ?? 30.71;
+  const { savings } = useSavings();
+  const bal = balance ?? 0;
+  const sav = savings ?? 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
-      <main className="flex-1 px-5 pt-10 pb-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-[34px] font-bold leading-tight text-[var(--pp-text)]">Wallet</h1>
-          <button
-            aria-label="QR code"
-            className="h-10 w-10 rounded-full bg-[var(--pp-card)] border border-[color:var(--border)] flex items-center justify-center"
-          >
-            <QrCode className="h-5 w-5 text-[var(--pp-text)]" />
-          </button>
-        </div>
+      {/* Header */}
+      <header className="px-5 pt-6 pb-2 flex items-center justify-between">
+        <h1 className="text-[28px] font-bold text-[var(--pp-text)]">Wallet</h1>
+        <button aria-label="Help" className="text-[var(--pp-text)]">
+          <HelpCircle className="h-6 w-6" strokeWidth={1.75} />
+        </button>
+      </header>
 
-        {/* PayPal balance card (yellow accent) */}
-        <Link
-          to="/finances"
-          className="mt-5 block rounded-3xl p-5"
-          style={{ background: "var(--pp-yellow)" }}
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[13px] font-bold uppercase tracking-wide" style={{ color: "var(--pp-blue-dark)" }}>
-              PayPal balance
-            </span>
-            <ChevronRight className="h-5 w-5" style={{ color: "var(--pp-blue-dark)" }} />
-          </div>
-          <div className="mt-2 text-[34px] font-bold leading-none" style={{ color: "var(--pp-blue-dark)" }}>
-            {formatUsd(value)}
-          </div>
-          <div className="mt-3 flex gap-2">
+      <main className="flex-1 px-5 pb-8">
+        {/* Balance section */}
+        <section className="mt-3">
+          <p className="text-[15px] text-[var(--pp-text)]">PayPal balance</p>
+          <p className="mt-1 text-[36px] font-bold leading-none text-[var(--pp-text)] tracking-tight">
+            {formatUsd(bal)}
+          </p>
+          <div className="mt-4 flex gap-3">
             <Link
               to="/add-money"
-              className="inline-flex items-center gap-1 px-4 h-9 rounded-full text-[13px] font-semibold"
+              className="flex-1 text-center rounded-full py-3 text-[15px] font-bold"
               style={{ background: "var(--pp-blue-dark)", color: "white" }}
             >
-              <Plus className="h-4 w-4" /> Add money
+              Add money
             </Link>
             <Link
               to="/transfer/bank"
-              className="inline-flex items-center px-4 h-9 rounded-full text-[13px] font-semibold border"
+              className="flex-1 text-center rounded-full py-3 text-[15px] font-bold border-2"
               style={{ borderColor: "var(--pp-blue-dark)", color: "var(--pp-blue-dark)" }}
             >
               Transfer
             </Link>
           </div>
+        </section>
+
+        {/* PayPal Savings */}
+        <SectionTitle>PayPal Savings</SectionTitle>
+        <Link
+          to="/transfer/savings"
+          className="block rounded-2xl bg-white border border-[color:var(--border)] px-4 py-4"
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="h-11 w-11 rounded-full flex items-center justify-center"
+              style={{ background: "var(--pp-yellow)" }}
+            >
+              <PiggyGlyph />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-[15px] font-bold text-[var(--pp-text)]">PayPal Savings</p>
+              <p className="text-[12px] text-[var(--pp-text-muted)]">
+                4.30% APY · No fees, no minimums
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-[15px] font-bold text-[var(--pp-text)]">{formatUsd(sav)}</p>
+              <ChevronRight className="ml-auto h-4 w-4 text-[var(--pp-text-muted)]" />
+            </div>
+          </div>
         </Link>
 
         {/* Banks and cards */}
-        <SectionHeader title="Banks and cards" action="Link new" />
-        <div className="rounded-2xl bg-[var(--pp-card)] border border-[color:var(--border)] divide-y divide-[color:var(--border)]">
-          <CardRow
+        <SectionTitle>Banks and cards</SectionTitle>
+        <div className="rounded-2xl bg-white border border-[color:var(--border)] divide-y divide-[color:var(--border)] overflow-hidden">
+          <MethodRow
             mark={<MastercardMark />}
-            title="Mastercard debit"
-            sub="Ending in 7109 · Preferred"
+            title="Mastercard Debit"
+            sub="Debit ••••7109 · Preferred"
           />
-          <CardRow
-            mark={<BankMark letters="C1" bg="oklch(0.55 0.18 28)" />}
-            title="Capital One N.A."
-            sub="Bank account ending in 1260"
+          <MethodRow
+            mark={<CapitalOneMark />}
+            title="CAPITAL ONE N.A."
+            sub="Checking ••••1260"
           />
-          <CardRow
-            mark={<BankMark letters="SB" bg="oklch(0.55 0.18 260)" />}
-            title="Sutton Bank"
-            sub="Direct deposit set up"
+          <MethodRow
+            mark={<SuttonMark />}
+            title="SUTTON BANK"
+            sub="Checking ••••7402 · Direct deposit"
           />
-          <button className="w-full flex items-center gap-3 px-4 py-3.5 text-left">
-            <div className="h-10 w-10 rounded-full bg-[var(--pp-bg)] flex items-center justify-center">
-              <Plus className="h-5 w-5 text-[var(--pp-blue)]" />
-            </div>
-            <span className="text-[15px] font-semibold" style={{ color: "var(--pp-blue)" }}>
-              Link a bank or card
-            </span>
-          </button>
         </div>
+
+        <button className="mt-3 w-full rounded-2xl bg-white border border-[color:var(--border)] px-4 py-3.5 flex items-center gap-3 text-left">
+          <div className="h-9 w-9 rounded-full bg-[var(--pp-bg)] flex items-center justify-center">
+            <Plus className="h-5 w-5 text-[var(--pp-blue-dark)]" strokeWidth={2.25} />
+          </div>
+          <span className="text-[15px] font-semibold text-[var(--pp-text)]">Link a bank or card</span>
+        </button>
+
+        {/* PayPal Debit Card */}
+        <SectionTitle>PayPal Debit Card</SectionTitle>
+        <Link
+          to="/finances"
+          className="block rounded-2xl overflow-hidden"
+          style={{ background: "var(--pp-blue-dark)" }}
+        >
+          <div className="p-5 relative min-h-[170px] flex flex-col justify-between text-white">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wide opacity-80">
+                  PayPal Debit Card
+                </p>
+                <div className="mt-1">
+                  <PayPalLogo className="h-6 w-6" />
+                </div>
+              </div>
+              <MastercardMark large />
+            </div>
+            <div>
+              <p className="text-[13px] tracking-[0.3em] font-mono opacity-90">
+                •••• •••• •••• 7109
+              </p>
+              <p className="mt-1 text-[11px] opacity-70">Use your balance anywhere.</p>
+            </div>
+          </div>
+        </Link>
 
         {/* Rewards */}
-        <SectionHeader title="Rewards" />
-        <div className="grid grid-cols-2 gap-3">
-          <RewardTile
-            icon={<Gift className="h-5 w-5" />}
-            title="Cash back"
+        <SectionTitle>Rewards & offers</SectionTitle>
+        <div className="rounded-2xl bg-white border border-[color:var(--border)] divide-y divide-[color:var(--border)] overflow-hidden">
+          <RewardRow
+            label="Cash back this month"
             value="$12.40"
-            sub="This month"
+            sub="From offers you activated"
           />
-          <RewardTile
-            icon={<Shield className="h-5 w-5" />}
-            title="Purchase Protection"
-            value="On"
-            sub="Eligible items"
+          <RewardRow
+            label="Gift cards"
+            value="0"
+            sub="Buy discounted gift cards"
           />
-        </div>
-
-        {/* Manage */}
-        <SectionHeader title="Manage" />
-        <div className="rounded-2xl bg-[var(--pp-card)] border border-[color:var(--border)] divide-y divide-[color:var(--border)]">
-          <ManageRow icon={<CreditCard className="h-5 w-5" />} label="PayPal Debit Card" />
-          <ManageRow icon={<Building2 className="h-5 w-5" />} label="Direct deposit" />
-          <ManageRow icon={<Shield className="h-5 w-5" />} label="Security and privacy" />
         </div>
 
         <p className="mt-6 text-[11px] leading-relaxed text-[var(--pp-text-muted)]">
-          PayPal balance is held with our partner bank. Funds added are typically available within
-          minutes. See the user agreement for details.
+          PayPal Savings offered by Synchrony Bank, Member FDIC. PayPal balance is held with our
+          partner bank. Rates and terms may change.
         </p>
       </main>
       <BottomNav />
@@ -141,94 +176,77 @@ function WalletPage() {
   );
 }
 
-function SectionHeader({ title, action }: { title: string; action?: string }) {
+function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-6 mb-2 flex items-center justify-between">
-      <h3 className="text-[17px] font-bold text-[var(--pp-text)]">{title}</h3>
-      {action && (
-        <button className="text-[13px] font-semibold" style={{ color: "var(--pp-blue)" }}>
-          {action}
-        </button>
-      )}
-    </div>
+    <h2 className="mt-7 mb-2 text-[15px] font-semibold text-[var(--pp-text)]">{children}</h2>
   );
 }
 
-function CardRow({ mark, title, sub }: { mark: React.ReactNode; title: string; sub: string }) {
+function MethodRow({ mark, title, sub }: { mark: React.ReactNode; title: string; sub: string }) {
   return (
     <button className="w-full flex items-center gap-3 px-4 py-3.5 text-left">
-      <div className="h-10 w-12 rounded-md bg-white border border-[color:var(--border)] flex items-center justify-center overflow-hidden">
+      <div className="h-10 w-12 rounded-md bg-white border border-[color:var(--border)] flex items-center justify-center overflow-hidden shrink-0">
         {mark}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-[14px] font-semibold text-[var(--pp-text)] truncate">{title}</div>
-        <div className="text-[12px] text-[var(--pp-text-muted)] truncate">{sub}</div>
+        <p className="text-[15px] font-bold text-[var(--pp-text)] truncate">{title}</p>
+        <p className="text-[12px] text-[var(--pp-text-muted)] truncate">{sub}</p>
       </div>
       <ChevronRight className="h-4 w-4 text-[var(--pp-text-muted)]" />
     </button>
   );
 }
 
-function ManageRow({ icon, label }: { icon: React.ReactNode; label: string }) {
+function RewardRow({ label, value, sub }: { label: string; value: string; sub: string }) {
   return (
     <button className="w-full flex items-center gap-3 px-4 py-3.5 text-left">
-      <div className="h-9 w-9 rounded-full bg-[var(--pp-bg)] flex items-center justify-center text-[var(--pp-blue)]">
-        {icon}
+      <div className="flex-1 min-w-0">
+        <p className="text-[15px] font-semibold text-[var(--pp-text)]">{label}</p>
+        <p className="text-[12px] text-[var(--pp-text-muted)]">{sub}</p>
       </div>
-      <span className="flex-1 text-[14px] font-semibold text-[var(--pp-text)]">{label}</span>
+      <span className="text-[15px] font-bold text-[var(--pp-text)]">{value}</span>
       <ChevronRight className="h-4 w-4 text-[var(--pp-text-muted)]" />
     </button>
   );
 }
 
-function RewardTile({
-  icon,
-  title,
-  value,
-  sub,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  value: string;
-  sub: string;
-}) {
+function PiggyGlyph() {
   return (
-    <div className="rounded-2xl bg-[var(--pp-card)] border border-[color:var(--border)] p-4">
-      <div
-        className="h-9 w-9 rounded-full flex items-center justify-center"
-        style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}
-      >
-        {icon}
-      </div>
-      <div className="mt-3 text-[12px] text-[var(--pp-text-muted)]">{title}</div>
-      <div className="text-[18px] font-bold text-[var(--pp-text)]">{value}</div>
-      <div className="text-[11px] text-[var(--pp-text-muted)]">{sub}</div>
-    </div>
+    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="var(--pp-blue-dark)">
+      <path d="M20 10c0-3.3-3.6-6-8-6-3.5 0-6.5 1.7-7.6 4.1L2 8v4l2.4.2c.2.6.5 1.1.9 1.6L4 16h3l1-1.3c.6.2 1.2.3 1.9.3H12l1 2h2v-2h1.5c1.9 0 3.5-1.2 3.5-3v-1h1v-1h-1zm-5-1a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+    </svg>
   );
 }
 
-function MastercardMark() {
+function MastercardMark({ large }: { large?: boolean }) {
+  const size = large ? "h-6 w-6" : "h-5 w-5";
   return (
-    <div className="flex items-center">
+    <div className="relative flex items-center">
+      <span className={`block ${size} rounded-full`} style={{ background: "var(--pp-mc-red)" }} />
       <span
-        className="block h-5 w-5 rounded-full"
-        style={{ background: "var(--pp-mc-red)" }}
-      />
-      <span
-        className="block h-5 w-5 rounded-full -ml-2 mix-blend-multiply"
+        className={`block ${size} rounded-full -ml-2 mix-blend-multiply`}
         style={{ background: "var(--pp-mc-yellow)" }}
       />
     </div>
   );
 }
 
-function BankMark({ letters, bg }: { letters: string; bg: string }) {
+function CapitalOneMark() {
   return (
-    <span
-      className="text-[10px] font-bold text-white px-1.5 py-0.5 rounded-sm"
-      style={{ background: bg }}
-    >
-      {letters}
-    </span>
+    <div className="h-10 w-12 flex items-center justify-center" style={{ background: "oklch(0.22 0.08 265)" }}>
+      <span className="text-white text-[8px] font-bold tracking-tight">
+        Capital<span style={{ color: "var(--pp-mc-red)" }}>One</span>
+      </span>
+    </div>
+  );
+}
+
+function SuttonMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-[var(--pp-blue-dark)]" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M3 10 L12 4 L21 10" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 10 V18 M9 10 V18 M15 10 V18 M19 10 V18" />
+      <path d="M3 19 H21" strokeLinecap="round" />
+    </svg>
   );
 }
