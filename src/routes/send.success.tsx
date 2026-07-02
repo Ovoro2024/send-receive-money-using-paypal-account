@@ -46,7 +46,7 @@ function SuccessPage() {
     const key = `send:${to}:${amount}:${Math.floor(Date.now() / 60000)}`;
     if (sessionStorage.getItem(key)) return;
     sessionStorage.setItem(key, "1");
-    supabase.rpc("send_money", { p_amount: n, p_to: to, p_note: null }).then(() => {});
+    supabase.rpc("send_money", { p_amount: n, p_to: to }).then(() => {});
   }, [to, amount, n]);
 
 
