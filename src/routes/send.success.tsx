@@ -38,6 +38,17 @@ function SuccessPage() {
   const navigate = useNavigate();
   const { to, amount } = useSearch({ from: "/send/success" });
   const n = Number.parseFloat(amount) || 0;
+  const recorded = useRef(false);
+
+  useEffect(() => {
+    if (recorded.current || !to || n <= 0) return;
+    recorded.current = true;
+    const key = `send:${to}:${amount}:${Math.floor(Date.now() / 60000)}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    supabase.rpc("send_money", { p_amount: n, p_to: to, p_note: null }).then(() => {});
+  }, [to, amount, n]);
+
 
   return (
     <div className="min-h-screen flex flex-col bg-white px-6 pt-16 pb-10">
