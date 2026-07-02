@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trophy, ScanLine, X, ArrowUp, Landmark } from "lucide-react";
 import { BottomNav } from "@/components/paypal/BottomNav";
+import { RecentActivity } from "@/components/paypal/RecentActivity";
 import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
