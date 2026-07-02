@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { Check } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { RequireAuth } from "@/auth/RequireAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 type Search = { to: string; amount: string };
 
