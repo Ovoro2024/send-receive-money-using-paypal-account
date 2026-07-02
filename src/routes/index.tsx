@@ -128,22 +128,14 @@ function Index() {
         </div>
 
         {/* Recent activity */}
-        <h2 className="mt-6 text-[18px] font-semibold text-[var(--pp-text)]">
-          Recent activity
-        </h2>
-        <div className="mt-3 flex items-center gap-3 pb-2">
-          <div className="h-10 w-10 rounded-full bg-[var(--pp-blue)] flex items-center justify-center text-white">
-            <Landmark size={20} />
-          </div>
-          <div className="flex-1">
-            <p className="text-[15px] font-bold text-[var(--pp-text)]">SUTTON BANK</p>
-            <p className="text-[13px] text-[var(--pp-text-muted)]">Feb 14</p>
-            <p className="text-[13px] text-[var(--pp-text-muted)]">
-              Transfer to bank · Completed
-            </p>
-          </div>
-          <p className="text-[15px] font-semibold text-[var(--pp-text)]">-$3</p>
+        <div className="mt-6 flex items-center justify-between">
+          <h2 className="text-[18px] font-semibold text-[var(--pp-text)]">Recent activity</h2>
+          <Link to="/activity" className="text-[13px] font-bold text-[var(--pp-blue-dark)]">
+            See all
+          </Link>
         </div>
+        <RecentActivity />
+
 
       </main>
 
