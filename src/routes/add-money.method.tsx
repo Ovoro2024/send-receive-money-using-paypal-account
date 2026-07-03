@@ -165,6 +165,7 @@ function MethodPage() {
 
             <button
               onClick={() => {
+                setSelectedLinkedId(null);
                 setSpeed("bank");
                 setSheetOpen(false);
               }}
@@ -179,15 +180,39 @@ function MethodPage() {
                   Checking ••••1260
                 </p>
               </div>
-              <Check size={22} className="text-[var(--pp-text)]" />
+              {!selectedLinked && <Check size={22} className="text-[var(--pp-text)]" />}
             </button>
 
-            <button className="w-full mt-6 flex items-center gap-4">
+            {accounts.map((a) => (
+              <button
+                key={a.id}
+                onClick={() => {
+                  setSelectedLinkedId(a.id);
+                  setSpeed(a.kind === "card" ? "debit" : "bank");
+                  setSheetOpen(false);
+                }}
+                className="w-full mt-5 flex items-center gap-4"
+              >
+                <LinkedIcon kind={a.kind} />
+                <div className="flex-1 text-left">
+                  <p className="text-[16px] font-bold text-[var(--pp-text)]">{a.institution}</p>
+                  <p className="text-[13px] text-[var(--pp-text-muted)]">
+                    {(a.account_type ?? (a.kind === "card" ? "Card" : "Checking"))} ••••{a.last4}
+                  </p>
+                </div>
+                {selectedLinked?.id === a.id && <Check size={22} className="text-[var(--pp-text)]" />}
+              </button>
+            ))}
+
+            <button
+              onClick={() => navigate({ to: "/link-account", search: { returnTo: "/add-money/method" } })}
+              className="w-full mt-6 flex items-center gap-4"
+            >
               <div className="h-10 w-12 rounded-md bg-[oklch(0.96_0.01_250)] flex items-center justify-center">
                 <Plus size={22} className="text-[var(--pp-text)]" />
               </div>
               <p className="flex-1 text-left text-[16px] text-[var(--pp-text)]">
-                Link a bank account
+                Link a bank or card
               </p>
             </button>
 
@@ -197,6 +222,14 @@ function MethodPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function LinkedIcon({ kind }: { kind: LinkedAccount["kind"] }) {
+  return (
+    <div className="h-10 w-12 rounded-md bg-[oklch(0.96_0.01_250)] flex items-center justify-center text-[var(--pp-blue-dark)]">
+      {kind === "card" ? <CreditCard size={20} /> : <Building2 size={20} />}
     </div>
   );
 }
