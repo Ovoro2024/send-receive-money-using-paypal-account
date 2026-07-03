@@ -519,17 +519,19 @@ function PaymentMethodSheet({
   onSelect,
   onClose,
 }: {
-  value: "balance" | "mc7109" | "co1260";
+  value: string;
   balance: number | null;
-  onSelect: (v: "balance" | "mc7109" | "co1260") => void;
+  onSelect: (v: string) => void;
   onClose: () => void;
 }) {
-  const [pending, setPending] = useState(value);
+  const [pending, setPending] = useState<string>(value);
+  const { accounts } = useLinkedAccounts();
+  const navigate = useNavigate();
   void balance;
   return (
     <div className="absolute inset-0 z-10 flex flex-col items-stretch justify-end">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <div className="relative w-full bg-white rounded-t-2xl pt-3 pb-4 animate-in slide-in-from-bottom duration-200">
+      <div className="relative w-full bg-white rounded-t-2xl pt-3 pb-4 animate-in slide-in-from-bottom duration-200 max-h-[85vh] overflow-y-auto">
         <div className="relative flex items-center justify-center px-5 pb-1">
           <button onClick={onClose} aria-label="Back" className="absolute left-4 top-0 text-[var(--pp-text)]">
             <ArrowLeft size={20} />
@@ -565,7 +567,25 @@ function PaymentMethodSheet({
           subtitle={<>Debit ••••7109<br /><span className="text-[13px] text-[var(--pp-text-muted)]">+ $0.45 fee</span></>}
         />
 
-        <button className="w-full flex items-center gap-4 px-5 py-3.5 text-left">
+        {accounts.map((a) => (
+          <MethodRow
+            key={a.id}
+            selected={pending === `linked:${a.id}`}
+            onClick={() => setPending(`linked:${a.id}`)}
+            icon={
+              <div className="h-9 w-9 rounded-md bg-[var(--pp-bg)] flex items-center justify-center text-[var(--pp-blue-dark)]">
+                {a.kind === "card" ? <CreditCard size={20} /> : <Building2 size={20} />}
+              </div>
+            }
+            title={a.institution}
+            subtitle={<>{(a.account_type ?? (a.kind === "card" ? "Card" : "Checking"))} ••••{a.last4}<br /><span className="text-[13px] text-[var(--pp-text-muted)]">No fee</span></>}
+          />
+        ))}
+
+        <button
+          onClick={() => navigate({ to: "/link-account", search: { returnTo: "/send/amount" } })}
+          className="w-full flex items-center gap-4 px-5 py-3.5 text-left"
+        >
           <div className="h-9 w-9 rounded-md bg-[var(--pp-bg)] flex items-center justify-center text-[var(--pp-text)] text-[20px] font-light">+</div>
           <span className="text-[15px] font-medium text-[var(--pp-text)]">Link a bank or card</span>
         </button>
@@ -586,6 +606,7 @@ function PaymentMethodSheet({
     </div>
   );
 }
+
 
 function MethodRow({
   selected,
