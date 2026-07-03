@@ -116,12 +116,16 @@ function WalletPage() {
           />
         </div>
 
-        <button className="mt-3 w-full rounded-2xl bg-white border border-[color:var(--border)] px-4 py-3.5 flex items-center gap-3 text-left">
+        <Link
+          to="/link-account"
+          search={{ returnTo: "/wallet" }}
+          className="mt-3 w-full rounded-2xl bg-white border border-[color:var(--border)] px-4 py-3.5 flex items-center gap-3 text-left"
+        >
           <div className="h-9 w-9 rounded-full bg-[var(--pp-bg)] flex items-center justify-center">
             <Plus className="h-5 w-5 text-[var(--pp-blue-dark)]" strokeWidth={2.25} />
           </div>
           <span className="text-[15px] font-semibold text-[var(--pp-text)]">Link a bank or card</span>
-        </button>
+        </Link>
 
         {/* PayPal Debit Card */}
         <SectionTitle>PayPal Debit Card</SectionTitle>
