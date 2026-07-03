@@ -6,6 +6,7 @@ import { RecentActivity } from "@/components/paypal/RecentActivity";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
+import { useAuth } from "@/auth/AuthProvider";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -235,7 +236,8 @@ function CryptoIcon() {
   );
 }
 
-function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () => void; onSignOut: () => void }) {
+function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { signOut } = useAuth();
   const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string }[] }[] = [
     {
       items: [
@@ -309,7 +311,7 @@ function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () =
           ))}
           <div className="px-5 py-4 mt-2 border-t border-[color:var(--border)]">
             <button
-              onClick={onSignOut}
+              onClick={() => { onClose(); void signOut(); }}
               className="w-full flex items-center gap-3 text-[15px] font-semibold text-[var(--pp-link)]"
             >
               <LogOut size={20} />
