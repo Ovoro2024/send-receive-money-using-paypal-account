@@ -55,7 +55,7 @@ function Index() {
         </div>
       </header>
 
-      <PayPalMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSignOut={() => { setMenuOpen(false); signOut(); }} />
+      <PayPalMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <main className="flex-1 px-4 pb-4">
         {/* Account cards row (horizontal scroll) */}
@@ -277,7 +277,6 @@ function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () =
           </button>
         </div>
         <div className="px-5 pb-4 flex items-center gap-3 border-b border-[color:var(--border)]">
-          <img src={avatar} alt="" className="h-12 w-12 rounded-full object-cover" />
           <div className="min-w-0">
             <p className="text-[17px] font-semibold text-[var(--pp-text)] truncate">Your account</p>
             <p className="text-[13px] text-[var(--pp-text-muted)]">Manage profile</p>
