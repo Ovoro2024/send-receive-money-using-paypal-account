@@ -1,13 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trophy, ScanLine, X, ArrowUp, Landmark } from "lucide-react";
+import { Trophy, ScanLine, X, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
+import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { RecentActivity } from "@/components/paypal/RecentActivity";
-import { PayPalLogo } from "@/components/paypal/PayPalLogo";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
 import { useAuth } from "@/auth/AuthProvider";
 import avatar from "@/assets/avatar.jpg";
+import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
   component: IndexRoute,
