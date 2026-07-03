@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, X, Check, Plus } from "lucide-react";
+import { ArrowLeft, X, Check, Plus, Building2, CreditCard } from "lucide-react";
+import { useLinkedAccounts, type LinkedAccount } from "@/auth/useLinkedAccounts";
 
 type Search = { amount?: string };
 
@@ -46,12 +47,16 @@ type Speed = "debit" | "bank";
 function MethodPage() {
   const { amount = "10" } = Route.useSearch();
   const navigate = useNavigate();
+  const { accounts } = useLinkedAccounts();
   const [speed, setSpeed] = useState<Speed>("bank");
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [selectedLinkedId, setSelectedLinkedId] = useState<string | null>(null);
   const displayAmount = formatAmountDisplay(amount);
   const ctaAmount = formatAmountCta(amount);
 
+  const selectedLinked = accounts.find((a) => a.id === selectedLinkedId) ?? null;
   const isDebit = speed === "debit";
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)] relative">
@@ -91,13 +96,17 @@ function MethodPage() {
 
         {/* Source row */}
         <div className="mt-10 flex items-center gap-4">
-          {isDebit ? <MastercardLogo /> : <CapitalOneLogo />}
+          {selectedLinked ? (
+            <LinkedIcon kind={selectedLinked.kind} />
+          ) : isDebit ? <MastercardLogo /> : <CapitalOneLogo />}
           <div className="flex-1">
             <p className="text-[17px] font-bold text-[var(--pp-text)] leading-tight">
-              {isDebit ? "Mastercard" : "CAPITAL ONE N.A."}
+              {selectedLinked ? selectedLinked.institution : isDebit ? "Mastercard" : "CAPITAL ONE N.A."}
             </p>
             <p className="text-[14px] text-[var(--pp-text-muted)]">
-              {isDebit ? "Debit ••••7109" : "Checking ••••1260"}
+              {selectedLinked
+                ? `${selectedLinked.account_type ?? (selectedLinked.kind === "card" ? "Card" : "Checking")} ••••${selectedLinked.last4}`
+                : isDebit ? "Debit ••••7109" : "Checking ••••1260"}
             </p>
           </div>
           <button
@@ -107,6 +116,7 @@ function MethodPage() {
             Change
           </button>
         </div>
+
 
         {/* Fee */}
         <div className="mt-7 flex items-center justify-between">
