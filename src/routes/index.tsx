@@ -66,7 +66,7 @@ function Index() {
         {/* Account cards row (horizontal scroll) */}
         <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2 snap-x">
           <AccountCard
-            icon={<PayPalLogo className="h-7 w-7" />}
+            icon={<img src={paypalPLogo.url} alt="PayPal" className="h-7 w-7 rounded-md object-contain" />}
             title="PayPal balance"
             amount={balanceLabel}
             footer={<Link to="/add-money" className="text-[var(--pp-link)] font-semibold">Add money</Link>}
