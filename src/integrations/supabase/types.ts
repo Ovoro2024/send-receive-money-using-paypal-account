@@ -32,6 +32,39 @@ export type Database = {
         }
         Relationships: []
       }
+      linked_accounts: {
+        Row: {
+          account_type: string | null
+          brand: string | null
+          created_at: string
+          id: string
+          institution: string
+          kind: string
+          last4: string
+          user_id: string
+        }
+        Insert: {
+          account_type?: string | null
+          brand?: string | null
+          created_at?: string
+          id?: string
+          institution: string
+          kind: string
+          last4: string
+          user_id: string
+        }
+        Update: {
+          account_type?: string | null
+          brand?: string | null
+          created_at?: string
+          id?: string
+          institution?: string
+          kind?: string
+          last4?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
