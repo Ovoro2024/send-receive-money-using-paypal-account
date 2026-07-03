@@ -249,3 +249,92 @@ function CryptoIcon() {
     </svg>
   );
 }
+
+function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () => void; onSignOut: () => void }) {
+  const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string }[] }[] = [
+    {
+      items: [
+        { icon: <Bell size={20} />, label: "Notifications" },
+        { icon: <Users size={20} />, label: "Invite friends", sub: "Earn rewards" },
+      ],
+    },
+    {
+      title: "Account",
+      items: [
+        { icon: <CreditCard size={20} />, label: "Wallet" },
+        { icon: <FileText size={20} />, label: "Activity" },
+        { icon: <Gift size={20} />, label: "Rewards" },
+      ],
+    },
+    {
+      title: "Settings",
+      items: [
+        { icon: <Shield size={20} />, label: "Security" },
+        { icon: <Settings size={20} />, label: "Account settings" },
+        { icon: <HelpCircle size={20} />, label: "Help center" },
+      ],
+    },
+  ];
+  return (
+    <>
+      <div
+        onClick={onClose}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity ${open ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+      />
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-[86%] max-w-[340px] bg-white shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"} flex flex-col`}
+        aria-hidden={!open}
+      >
+        <div className="flex items-center justify-between px-5 pt-6 pb-4">
+          <img src={paypalPLogo.url} alt="PayPal" className="h-10 w-10 rounded-lg object-contain" />
+          <button onClick={onClose} aria-label="Close menu" className="text-[var(--pp-text)]">
+            <X size={24} />
+          </button>
+        </div>
+        <div className="px-5 pb-4 flex items-center gap-3 border-b border-[color:var(--border)]">
+          <img src={avatar} alt="" className="h-12 w-12 rounded-full object-cover" />
+          <div className="min-w-0">
+            <p className="text-[17px] font-semibold text-[var(--pp-text)] truncate">Your account</p>
+            <p className="text-[13px] text-[var(--pp-text-muted)]">Manage profile</p>
+          </div>
+          <ChevronRight size={20} className="ml-auto text-[var(--pp-text-muted)]" />
+        </div>
+        <nav className="flex-1 overflow-y-auto py-2">
+          {sections.map((sec, i) => (
+            <div key={i} className="py-1">
+              {sec.title && (
+                <p className="px-5 pt-3 pb-1 text-[12px] font-semibold uppercase tracking-wide text-[var(--pp-text-muted)]">
+                  {sec.title}
+                </p>
+              )}
+              {sec.items.map((it) => (
+                <button
+                  key={it.label}
+                  onClick={onClose}
+                  className="w-full flex items-center gap-4 px-5 py-3 text-left hover:bg-[var(--pp-bg)]"
+                >
+                  <span className="text-[var(--pp-blue-dark)]">{it.icon}</span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-[15px] font-medium text-[var(--pp-text)]">{it.label}</span>
+                    {it.sub && <span className="block text-[12px] text-[var(--pp-text-muted)]">{it.sub}</span>}
+                  </span>
+                  <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
+                </button>
+              ))}
+            </div>
+          ))}
+          <div className="px-5 py-4 mt-2 border-t border-[color:var(--border)]">
+            <button
+              onClick={onSignOut}
+              className="w-full flex items-center gap-3 text-[15px] font-semibold text-[var(--pp-link)]"
+            >
+              <LogOut size={20} />
+              Sign out
+            </button>
+          </div>
+          <p className="px-5 py-4 text-[12px] text-[var(--pp-text-muted)]">PayPal · v2024.6</p>
+        </nav>
+      </aside>
+    </>
+  );
+}
