@@ -51,7 +51,7 @@ function AuthPage() {
     <div className="min-h-screen flex flex-col bg-white">
       <main className="flex-1 flex flex-col px-7 pt-16">
         <div className="flex justify-center">
-          <img src={paypalWelcomeLogo.url} alt="PayPal" className="h-16 w-16 rounded-2xl object-contain" />
+          <img src={paypalWelcomeLogo.url} alt="PayPal" className="h-16 w-16 object-contain bg-white" />
         </div>
         <h1 className="mt-6 text-center text-[28px] font-semibold text-[var(--pp-text)]">
           {mode === "signin" ? "Welcome back" : "Create your account"}

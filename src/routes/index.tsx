@@ -50,19 +50,6 @@ function Index() {
           >
             <Menu size={26} strokeWidth={2.25} />
           </button>
-          <img
-            src={avatar}
-            alt="Profile"
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-full object-cover ring-1 ring-[color:var(--border)]"
-          />
-          <button
-            onClick={() => signOut()}
-            className="text-[13px] font-semibold text-[var(--pp-link)]"
-          >
-            Sign out
-          </button>
         </div>
         <div className="flex items-center gap-4 text-[var(--pp-blue)]">
           <Trophy size={22} strokeWidth={2.25} />
