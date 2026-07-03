@@ -6,8 +6,6 @@ import { RecentActivity } from "@/components/paypal/RecentActivity";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
-import { useAuth } from "@/auth/AuthProvider";
-import avatar from "@/assets/avatar.jpg";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -31,13 +29,13 @@ function IndexRoute() {
 function Index() {
   const { balance } = useBalance();
   const { savings } = useSavings();
-  const { signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const fmt = (v: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
   const totalBalance = (balance ?? 0) + (savings ?? 0);
   const balanceLabel = balance === null ? "—" : fmt(totalBalance);
   const savingsLabel = savings === null ? "$0.00" : fmt(savings);
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       {/* Header */}
