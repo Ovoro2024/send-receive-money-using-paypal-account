@@ -13,6 +13,7 @@ import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as SplashRouteImport } from './routes/splash'
 import { Route as SecurityCheckRouteImport } from './routes/security-check'
 import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as LinkAccountRouteImport } from './routes/link-account'
 import { Route as FinancesRouteImport } from './routes/finances'
 import { Route as DealsRouteImport } from './routes/deals'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -55,6 +56,11 @@ const SecurityCheckRoute = SecurityCheckRouteImport.update({
 const PaymentsRoute = PaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LinkAccountRoute = LinkAccountRouteImport.update({
+  id: '/link-account',
+  path: '/link-account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FinancesRoute = FinancesRouteImport.update({
@@ -180,6 +186,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
+  '/link-account': typeof LinkAccountRoute
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
@@ -207,6 +214,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
+  '/link-account': typeof LinkAccountRoute
   '/payments': typeof PaymentsRoute
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
+  '/link-account': typeof LinkAccountRoute
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
@@ -267,6 +276,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/deals'
     | '/finances'
+    | '/link-account'
     | '/payments'
     | '/security-check'
     | '/splash'
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/deals'
     | '/finances'
+    | '/link-account'
     | '/payments'
     | '/splash'
     | '/wallet'
@@ -322,6 +333,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/deals'
     | '/finances'
+    | '/link-account'
     | '/payments'
     | '/security-check'
     | '/splash'
@@ -352,6 +364,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   DealsRoute: typeof DealsRoute
   FinancesRoute: typeof FinancesRoute
+  LinkAccountRoute: typeof LinkAccountRoute
   PaymentsRoute: typeof PaymentsRoute
   SecurityCheckRoute: typeof SecurityCheckRouteWithChildren
   SplashRoute: typeof SplashRoute
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       path: '/payments'
       fullPath: '/payments'
       preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/link-account': {
+      id: '/link-account'
+      path: '/link-account'
+      fullPath: '/link-account'
+      preLoaderRoute: typeof LinkAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/finances': {
@@ -615,6 +635,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   DealsRoute: DealsRoute,
   FinancesRoute: FinancesRoute,
+  LinkAccountRoute: LinkAccountRoute,
   PaymentsRoute: PaymentsRoute,
   SecurityCheckRoute: SecurityCheckRouteWithChildren,
   SplashRoute: SplashRoute,

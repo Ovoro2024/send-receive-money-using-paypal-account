@@ -7,7 +7,6 @@ import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
 import { useAuth } from "@/auth/AuthProvider";
-import avatar from "@/assets/avatar.jpg";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
 
 export const Route = createFileRoute("/")({
@@ -31,13 +30,13 @@ function IndexRoute() {
 function Index() {
   const { balance } = useBalance();
   const { savings } = useSavings();
-  const { signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const fmt = (v: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
   const totalBalance = (balance ?? 0) + (savings ?? 0);
   const balanceLabel = balance === null ? "—" : fmt(totalBalance);
   const savingsLabel = savings === null ? "$0.00" : fmt(savings);
+
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
       {/* Header */}
@@ -50,19 +49,6 @@ function Index() {
           >
             <Menu size={26} strokeWidth={2.25} />
           </button>
-          <img
-            src={avatar}
-            alt="Profile"
-            width={36}
-            height={36}
-            className="h-9 w-9 rounded-full object-cover ring-1 ring-[color:var(--border)]"
-          />
-          <button
-            onClick={() => signOut()}
-            className="text-[13px] font-semibold text-[var(--pp-link)]"
-          >
-            Sign out
-          </button>
         </div>
         <div className="flex items-center gap-4 text-[var(--pp-blue)]">
           <Trophy size={22} strokeWidth={2.25} />
@@ -70,7 +56,7 @@ function Index() {
         </div>
       </header>
 
-      <PayPalMenu open={menuOpen} onClose={() => setMenuOpen(false)} onSignOut={() => { setMenuOpen(false); signOut(); }} />
+      <PayPalMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <main className="flex-1 px-4 pb-4">
         {/* Account cards row (horizontal scroll) */}
@@ -250,7 +236,8 @@ function CryptoIcon() {
   );
 }
 
-function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () => void; onSignOut: () => void }) {
+function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { signOut } = useAuth();
   const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string }[] }[] = [
     {
       items: [
@@ -292,7 +279,6 @@ function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () =
           </button>
         </div>
         <div className="px-5 pb-4 flex items-center gap-3 border-b border-[color:var(--border)]">
-          <img src={avatar} alt="" className="h-12 w-12 rounded-full object-cover" />
           <div className="min-w-0">
             <p className="text-[17px] font-semibold text-[var(--pp-text)] truncate">Your account</p>
             <p className="text-[13px] text-[var(--pp-text-muted)]">Manage profile</p>
@@ -325,7 +311,7 @@ function PayPalMenu({ open, onClose, onSignOut }: { open: boolean; onClose: () =
           ))}
           <div className="px-5 py-4 mt-2 border-t border-[color:var(--border)]">
             <button
-              onClick={onSignOut}
+              onClick={() => { onClose(); void signOut(); }}
               className="w-full flex items-center gap-3 text-[15px] font-semibold text-[var(--pp-link)]"
             >
               <LogOut size={20} />

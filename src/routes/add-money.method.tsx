@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, X, Check, Plus } from "lucide-react";
+import { ArrowLeft, X, Check, Plus, Building2, CreditCard } from "lucide-react";
+import { useLinkedAccounts, type LinkedAccount } from "@/auth/useLinkedAccounts";
 
 type Search = { amount?: string };
 
@@ -46,12 +47,16 @@ type Speed = "debit" | "bank";
 function MethodPage() {
   const { amount = "10" } = Route.useSearch();
   const navigate = useNavigate();
+  const { accounts } = useLinkedAccounts();
   const [speed, setSpeed] = useState<Speed>("bank");
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [selectedLinkedId, setSelectedLinkedId] = useState<string | null>(null);
   const displayAmount = formatAmountDisplay(amount);
   const ctaAmount = formatAmountCta(amount);
 
+  const selectedLinked = accounts.find((a) => a.id === selectedLinkedId) ?? null;
   const isDebit = speed === "debit";
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)] relative">
@@ -91,13 +96,17 @@ function MethodPage() {
 
         {/* Source row */}
         <div className="mt-10 flex items-center gap-4">
-          {isDebit ? <MastercardLogo /> : <CapitalOneLogo />}
+          {selectedLinked ? (
+            <LinkedIcon kind={selectedLinked.kind} />
+          ) : isDebit ? <MastercardLogo /> : <CapitalOneLogo />}
           <div className="flex-1">
             <p className="text-[17px] font-bold text-[var(--pp-text)] leading-tight">
-              {isDebit ? "Mastercard" : "CAPITAL ONE N.A."}
+              {selectedLinked ? selectedLinked.institution : isDebit ? "Mastercard" : "CAPITAL ONE N.A."}
             </p>
             <p className="text-[14px] text-[var(--pp-text-muted)]">
-              {isDebit ? "Debit ••••7109" : "Checking ••••1260"}
+              {selectedLinked
+                ? `${selectedLinked.account_type ?? (selectedLinked.kind === "card" ? "Card" : "Checking")} ••••${selectedLinked.last4}`
+                : isDebit ? "Debit ••••7109" : "Checking ••••1260"}
             </p>
           </div>
           <button
@@ -107,6 +116,7 @@ function MethodPage() {
             Change
           </button>
         </div>
+
 
         {/* Fee */}
         <div className="mt-7 flex items-center justify-between">
@@ -155,6 +165,7 @@ function MethodPage() {
 
             <button
               onClick={() => {
+                setSelectedLinkedId(null);
                 setSpeed("bank");
                 setSheetOpen(false);
               }}
@@ -169,15 +180,39 @@ function MethodPage() {
                   Checking ••••1260
                 </p>
               </div>
-              <Check size={22} className="text-[var(--pp-text)]" />
+              {!selectedLinked && <Check size={22} className="text-[var(--pp-text)]" />}
             </button>
 
-            <button className="w-full mt-6 flex items-center gap-4">
+            {accounts.map((a) => (
+              <button
+                key={a.id}
+                onClick={() => {
+                  setSelectedLinkedId(a.id);
+                  setSpeed(a.kind === "card" ? "debit" : "bank");
+                  setSheetOpen(false);
+                }}
+                className="w-full mt-5 flex items-center gap-4"
+              >
+                <LinkedIcon kind={a.kind} />
+                <div className="flex-1 text-left">
+                  <p className="text-[16px] font-bold text-[var(--pp-text)]">{a.institution}</p>
+                  <p className="text-[13px] text-[var(--pp-text-muted)]">
+                    {(a.account_type ?? (a.kind === "card" ? "Card" : "Checking"))} ••••{a.last4}
+                  </p>
+                </div>
+                {selectedLinked?.id === a.id && <Check size={22} className="text-[var(--pp-text)]" />}
+              </button>
+            ))}
+
+            <button
+              onClick={() => navigate({ to: "/link-account", search: { returnTo: "/add-money/method" } })}
+              className="w-full mt-6 flex items-center gap-4"
+            >
               <div className="h-10 w-12 rounded-md bg-[oklch(0.96_0.01_250)] flex items-center justify-center">
                 <Plus size={22} className="text-[var(--pp-text)]" />
               </div>
               <p className="flex-1 text-left text-[16px] text-[var(--pp-text)]">
-                Link a bank account
+                Link a bank or card
               </p>
             </button>
 
@@ -187,6 +222,14 @@ function MethodPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function LinkedIcon({ kind }: { kind: LinkedAccount["kind"] }) {
+  return (
+    <div className="h-10 w-12 rounded-md bg-[oklch(0.96_0.01_250)] flex items-center justify-center text-[var(--pp-blue-dark)]">
+      {kind === "card" ? <CreditCard size={20} /> : <Building2 size={20} />}
     </div>
   );
 }
