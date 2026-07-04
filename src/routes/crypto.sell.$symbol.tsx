@@ -36,8 +36,8 @@ function SellCrypto() {
   }
 
   function confirm() {
-    sell(coin.symbol, units);
-    navigate({ to: "/crypto/success", search: { symbol: coin.symbol, units: units.toString(), usd: usd.toString(), side: "sell" } });
+    sell(coin!.symbol, units);
+    navigate({ to: "/crypto/success", search: { symbol: coin!.symbol, units: units.toString(), usd: usd.toString(), side: "sell" } });
   }
 
   if (stage === "review") {

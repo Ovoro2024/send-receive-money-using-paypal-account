@@ -44,8 +44,8 @@ function BuyCrypto() {
   }
 
   function confirm() {
-    buy(coin.symbol, units);
-    navigate({ to: "/crypto/success", search: { symbol: coin.symbol, units: units.toString(), usd: usd.toString(), side: "buy" } });
+    buy(coin!.symbol, units);
+    navigate({ to: "/crypto/success", search: { symbol: coin!.symbol, units: units.toString(), usd: usd.toString(), side: "buy" } });
   }
 
   if (stage === "review") {
