@@ -85,16 +85,18 @@ function Index() {
               </span>
             }
           />
-          <AccountCard
-            icon={
-              <div className="h-7 w-7 rounded-full bg-[var(--pp-blue-light)] flex items-center justify-center text-white font-bold text-[13px]">
-                C
-              </div>
-            }
-            title="Crypto"
-            amount="$0.00"
-            footer={<span className="text-[var(--pp-link)] font-semibold">Buy</span>}
-          />
+          <Link to="/crypto" className="block">
+            <AccountCard
+              icon={
+                <div className="h-7 w-7 rounded-full bg-[var(--pp-blue-light)] flex items-center justify-center text-white font-bold text-[13px]">
+                  C
+                </div>
+              }
+              title="Crypto"
+              amount="$0.00"
+              footer={<span className="text-[var(--pp-link)] font-semibold">Buy</span>}
+            />
+          </Link>
         </div>
 
         {/* Set up your account */}
@@ -109,7 +111,7 @@ function Index() {
         </div>
 
         {/* Crypto promo */}
-        <div className="mt-3 rounded-2xl bg-white border border-[color:var(--border)] p-4 flex items-start gap-3">
+        <Link to="/crypto" className="mt-3 rounded-2xl bg-white border border-[color:var(--border)] p-4 flex items-start gap-3">
           <CryptoIcon />
           <div className="flex-1">
             <p className="text-[16px] font-semibold text-[var(--pp-text)] leading-snug">
@@ -117,13 +119,7 @@ function Index() {
             </p>
             <p className="mt-1 text-[13px] text-[var(--pp-text-muted)]">Terms apply.</p>
           </div>
-          <button
-            aria-label="Dismiss"
-            className="text-[var(--pp-text-muted)] -mt-1"
-          >
-            <X size={20} />
-          </button>
-        </div>
+        </Link>
 
         {/* Recent activity */}
         <div className="mt-6 flex items-center justify-between">

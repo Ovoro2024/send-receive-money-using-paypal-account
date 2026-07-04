@@ -16,6 +16,7 @@ import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as LinkAccountRouteImport } from './routes/link-account'
 import { Route as FinancesRouteImport } from './routes/finances'
 import { Route as DealsRouteImport } from './routes/deals'
+import { Route as CryptoRouteImport } from './routes/crypto'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as ActivityRouteImport } from './routes/activity'
@@ -23,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SendIndexRouteImport } from './routes/send.index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as RequestIndexRouteImport } from './routes/request.index'
+import { Route as CryptoIndexRouteImport } from './routes/crypto.index'
 import { Route as AddMoneyIndexRouteImport } from './routes/add-money.index'
 import { Route as ActivityIndexRouteImport } from './routes/activity.index'
 import { Route as TransferSavingsRouteImport } from './routes/transfer.savings'
@@ -33,10 +35,14 @@ import { Route as SecurityCheckConfirmedRouteImport } from './routes/security-ch
 import { Route as SecurityCheckCodeRouteImport } from './routes/security-check.code'
 import { Route as RequestSuccessRouteImport } from './routes/request.success'
 import { Route as RequestAmountRouteImport } from './routes/request.amount'
+import { Route as CryptoSuccessRouteImport } from './routes/crypto.success'
+import { Route as CryptoSymbolRouteImport } from './routes/crypto.$symbol'
 import { Route as AddMoneySuccessRouteImport } from './routes/add-money.success'
 import { Route as AddMoneyReviewRouteImport } from './routes/add-money.review'
 import { Route as AddMoneyMethodRouteImport } from './routes/add-money.method'
 import { Route as ActivityIdRouteImport } from './routes/activity.$id'
+import { Route as CryptoSellSymbolRouteImport } from './routes/crypto.sell.$symbol'
+import { Route as CryptoBuySymbolRouteImport } from './routes/crypto.buy.$symbol'
 
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
@@ -73,6 +79,11 @@ const DealsRoute = DealsRouteImport.update({
   path: '/deals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CryptoRoute = CryptoRouteImport.update({
+  id: '/crypto',
+  path: '/crypto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -107,6 +118,11 @@ const RequestIndexRoute = RequestIndexRouteImport.update({
   id: '/request/',
   path: '/request/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CryptoIndexRoute = CryptoIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CryptoRoute,
 } as any)
 const AddMoneyIndexRoute = AddMoneyIndexRouteImport.update({
   id: '/',
@@ -158,6 +174,16 @@ const RequestAmountRoute = RequestAmountRouteImport.update({
   path: '/request/amount',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CryptoSuccessRoute = CryptoSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => CryptoRoute,
+} as any)
+const CryptoSymbolRoute = CryptoSymbolRouteImport.update({
+  id: '/$symbol',
+  path: '/$symbol',
+  getParentRoute: () => CryptoRoute,
+} as any)
 const AddMoneySuccessRoute = AddMoneySuccessRouteImport.update({
   id: '/success',
   path: '/success',
@@ -178,12 +204,23 @@ const ActivityIdRoute = ActivityIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ActivityRoute,
 } as any)
+const CryptoSellSymbolRoute = CryptoSellSymbolRouteImport.update({
+  id: '/sell/$symbol',
+  path: '/sell/$symbol',
+  getParentRoute: () => CryptoRoute,
+} as any)
+const CryptoBuySymbolRoute = CryptoBuySymbolRouteImport.update({
+  id: '/buy/$symbol',
+  path: '/buy/$symbol',
+  getParentRoute: () => CryptoRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activity': typeof ActivityRouteWithChildren
   '/add-money': typeof AddMoneyRouteWithChildren
   '/auth': typeof AuthRoute
+  '/crypto': typeof CryptoRouteWithChildren
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/link-account': typeof LinkAccountRoute
@@ -195,6 +232,8 @@ export interface FileRoutesByFullPath {
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
+  '/crypto/$symbol': typeof CryptoSymbolRoute
+  '/crypto/success': typeof CryptoSuccessRoute
   '/request/amount': typeof RequestAmountRoute
   '/request/success': typeof RequestSuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
@@ -205,9 +244,12 @@ export interface FileRoutesByFullPath {
   '/transfer/savings': typeof TransferSavingsRoute
   '/activity/': typeof ActivityIndexRoute
   '/add-money/': typeof AddMoneyIndexRoute
+  '/crypto/': typeof CryptoIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
   '/send/': typeof SendIndexRoute
+  '/crypto/buy/$symbol': typeof CryptoBuySymbolRoute
+  '/crypto/sell/$symbol': typeof CryptoSellSymbolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -222,6 +264,8 @@ export interface FileRoutesByTo {
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
+  '/crypto/$symbol': typeof CryptoSymbolRoute
+  '/crypto/success': typeof CryptoSuccessRoute
   '/request/amount': typeof RequestAmountRoute
   '/request/success': typeof RequestSuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
@@ -232,9 +276,12 @@ export interface FileRoutesByTo {
   '/transfer/savings': typeof TransferSavingsRoute
   '/activity': typeof ActivityIndexRoute
   '/add-money': typeof AddMoneyIndexRoute
+  '/crypto': typeof CryptoIndexRoute
   '/request': typeof RequestIndexRoute
   '/security-check': typeof SecurityCheckIndexRoute
   '/send': typeof SendIndexRoute
+  '/crypto/buy/$symbol': typeof CryptoBuySymbolRoute
+  '/crypto/sell/$symbol': typeof CryptoSellSymbolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -242,6 +289,7 @@ export interface FileRoutesById {
   '/activity': typeof ActivityRouteWithChildren
   '/add-money': typeof AddMoneyRouteWithChildren
   '/auth': typeof AuthRoute
+  '/crypto': typeof CryptoRouteWithChildren
   '/deals': typeof DealsRoute
   '/finances': typeof FinancesRoute
   '/link-account': typeof LinkAccountRoute
@@ -253,6 +301,8 @@ export interface FileRoutesById {
   '/add-money/method': typeof AddMoneyMethodRoute
   '/add-money/review': typeof AddMoneyReviewRoute
   '/add-money/success': typeof AddMoneySuccessRoute
+  '/crypto/$symbol': typeof CryptoSymbolRoute
+  '/crypto/success': typeof CryptoSuccessRoute
   '/request/amount': typeof RequestAmountRoute
   '/request/success': typeof RequestSuccessRoute
   '/security-check/code': typeof SecurityCheckCodeRoute
@@ -263,9 +313,12 @@ export interface FileRoutesById {
   '/transfer/savings': typeof TransferSavingsRoute
   '/activity/': typeof ActivityIndexRoute
   '/add-money/': typeof AddMoneyIndexRoute
+  '/crypto/': typeof CryptoIndexRoute
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
   '/send/': typeof SendIndexRoute
+  '/crypto/buy/$symbol': typeof CryptoBuySymbolRoute
+  '/crypto/sell/$symbol': typeof CryptoSellSymbolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -274,6 +327,7 @@ export interface FileRouteTypes {
     | '/activity'
     | '/add-money'
     | '/auth'
+    | '/crypto'
     | '/deals'
     | '/finances'
     | '/link-account'
@@ -285,6 +339,8 @@ export interface FileRouteTypes {
     | '/add-money/method'
     | '/add-money/review'
     | '/add-money/success'
+    | '/crypto/$symbol'
+    | '/crypto/success'
     | '/request/amount'
     | '/request/success'
     | '/security-check/code'
@@ -295,9 +351,12 @@ export interface FileRouteTypes {
     | '/transfer/savings'
     | '/activity/'
     | '/add-money/'
+    | '/crypto/'
     | '/request/'
     | '/security-check/'
     | '/send/'
+    | '/crypto/buy/$symbol'
+    | '/crypto/sell/$symbol'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -312,6 +371,8 @@ export interface FileRouteTypes {
     | '/add-money/method'
     | '/add-money/review'
     | '/add-money/success'
+    | '/crypto/$symbol'
+    | '/crypto/success'
     | '/request/amount'
     | '/request/success'
     | '/security-check/code'
@@ -322,15 +383,19 @@ export interface FileRouteTypes {
     | '/transfer/savings'
     | '/activity'
     | '/add-money'
+    | '/crypto'
     | '/request'
     | '/security-check'
     | '/send'
+    | '/crypto/buy/$symbol'
+    | '/crypto/sell/$symbol'
   id:
     | '__root__'
     | '/'
     | '/activity'
     | '/add-money'
     | '/auth'
+    | '/crypto'
     | '/deals'
     | '/finances'
     | '/link-account'
@@ -342,6 +407,8 @@ export interface FileRouteTypes {
     | '/add-money/method'
     | '/add-money/review'
     | '/add-money/success'
+    | '/crypto/$symbol'
+    | '/crypto/success'
     | '/request/amount'
     | '/request/success'
     | '/security-check/code'
@@ -352,9 +419,12 @@ export interface FileRouteTypes {
     | '/transfer/savings'
     | '/activity/'
     | '/add-money/'
+    | '/crypto/'
     | '/request/'
     | '/security-check/'
     | '/send/'
+    | '/crypto/buy/$symbol'
+    | '/crypto/sell/$symbol'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -362,6 +432,7 @@ export interface RootRouteChildren {
   ActivityRoute: typeof ActivityRouteWithChildren
   AddMoneyRoute: typeof AddMoneyRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CryptoRoute: typeof CryptoRouteWithChildren
   DealsRoute: typeof DealsRoute
   FinancesRoute: typeof FinancesRoute
   LinkAccountRoute: typeof LinkAccountRoute
@@ -430,6 +501,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DealsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crypto': {
+      id: '/crypto'
+      path: '/crypto'
+      fullPath: '/crypto'
+      preLoaderRoute: typeof CryptoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -478,6 +556,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/request/'
       preLoaderRoute: typeof RequestIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/crypto/': {
+      id: '/crypto/'
+      path: '/'
+      fullPath: '/crypto/'
+      preLoaderRoute: typeof CryptoIndexRouteImport
+      parentRoute: typeof CryptoRoute
     }
     '/add-money/': {
       id: '/add-money/'
@@ -549,6 +634,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequestAmountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/crypto/success': {
+      id: '/crypto/success'
+      path: '/success'
+      fullPath: '/crypto/success'
+      preLoaderRoute: typeof CryptoSuccessRouteImport
+      parentRoute: typeof CryptoRoute
+    }
+    '/crypto/$symbol': {
+      id: '/crypto/$symbol'
+      path: '/$symbol'
+      fullPath: '/crypto/$symbol'
+      preLoaderRoute: typeof CryptoSymbolRouteImport
+      parentRoute: typeof CryptoRoute
+    }
     '/add-money/success': {
       id: '/add-money/success'
       path: '/success'
@@ -576,6 +675,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/activity/$id'
       preLoaderRoute: typeof ActivityIdRouteImport
       parentRoute: typeof ActivityRoute
+    }
+    '/crypto/sell/$symbol': {
+      id: '/crypto/sell/$symbol'
+      path: '/sell/$symbol'
+      fullPath: '/crypto/sell/$symbol'
+      preLoaderRoute: typeof CryptoSellSymbolRouteImport
+      parentRoute: typeof CryptoRoute
+    }
+    '/crypto/buy/$symbol': {
+      id: '/crypto/buy/$symbol'
+      path: '/buy/$symbol'
+      fullPath: '/crypto/buy/$symbol'
+      preLoaderRoute: typeof CryptoBuySymbolRouteImport
+      parentRoute: typeof CryptoRoute
     }
   }
 }
@@ -612,6 +725,25 @@ const AddMoneyRouteWithChildren = AddMoneyRoute._addFileChildren(
   AddMoneyRouteChildren,
 )
 
+interface CryptoRouteChildren {
+  CryptoSymbolRoute: typeof CryptoSymbolRoute
+  CryptoSuccessRoute: typeof CryptoSuccessRoute
+  CryptoIndexRoute: typeof CryptoIndexRoute
+  CryptoBuySymbolRoute: typeof CryptoBuySymbolRoute
+  CryptoSellSymbolRoute: typeof CryptoSellSymbolRoute
+}
+
+const CryptoRouteChildren: CryptoRouteChildren = {
+  CryptoSymbolRoute: CryptoSymbolRoute,
+  CryptoSuccessRoute: CryptoSuccessRoute,
+  CryptoIndexRoute: CryptoIndexRoute,
+  CryptoBuySymbolRoute: CryptoBuySymbolRoute,
+  CryptoSellSymbolRoute: CryptoSellSymbolRoute,
+}
+
+const CryptoRouteWithChildren =
+  CryptoRoute._addFileChildren(CryptoRouteChildren)
+
 interface SecurityCheckRouteChildren {
   SecurityCheckCodeRoute: typeof SecurityCheckCodeRoute
   SecurityCheckConfirmedRoute: typeof SecurityCheckConfirmedRoute
@@ -633,6 +765,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActivityRoute: ActivityRouteWithChildren,
   AddMoneyRoute: AddMoneyRouteWithChildren,
   AuthRoute: AuthRoute,
+  CryptoRoute: CryptoRouteWithChildren,
   DealsRoute: DealsRoute,
   FinancesRoute: FinancesRoute,
   LinkAccountRoute: LinkAccountRoute,
