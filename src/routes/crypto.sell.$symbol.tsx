@@ -18,6 +18,7 @@ function SellCrypto() {
   const [stage, setStage] = useState<"amount" | "review">("amount");
 
   if (!coin) return null;
+  const c = coin;
 
   const owned = holdings[coin.symbol] ?? 0;
   const ownedValue = owned * coin.price;
