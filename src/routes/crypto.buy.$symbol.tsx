@@ -27,6 +27,7 @@ function BuyCrypto() {
   >({ kind: "balance" });
 
   if (!coin) return null;
+  const c = coin;
 
   const usd = Math.max(0, Number.parseFloat(amount) || 0);
   const units = coin.price > 0 ? usd / coin.price : 0;
