@@ -59,7 +59,7 @@ function SuccessPage() {
         You sent {fmtUSD(n)} to {to}
       </h1>
       <p className="mt-4 text-center text-[14px] text-[var(--pp-text-muted)] leading-relaxed">
-        We'll let {to} know right away. You can see the details in your Activity.
+        Your payment is being reviewed and is currently pending. We’re waiting for the recipient to pay the required fee to accept the payment. If the payment is not accepted within 5 days the funds will be returned to your account.
       </p>
 
       <div className="flex-1" />
