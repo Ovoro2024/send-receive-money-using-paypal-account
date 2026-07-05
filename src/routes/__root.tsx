@@ -76,6 +76,43 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  useEffect(() => {
+    const prevent = (e: Event) => e.preventDefault();
+    const preventWheel = (e: WheelEvent) => {
+      if (e.ctrlKey) e.preventDefault();
+    };
+    const preventKey = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && ["+", "-", "=", "0"].includes(e.key)) {
+        e.preventDefault();
+      }
+    };
+    let lastTouchEnd = 0;
+    const preventDoubleTap = (e: TouchEvent) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 350) e.preventDefault();
+      lastTouchEnd = now;
+    };
+    const preventMultiTouch = (e: TouchEvent) => {
+      if (e.touches.length > 1) e.preventDefault();
+    };
+    document.addEventListener("gesturestart", prevent);
+    document.addEventListener("gesturechange", prevent);
+    document.addEventListener("gestureend", prevent);
+    document.addEventListener("wheel", preventWheel, { passive: false });
+    document.addEventListener("keydown", preventKey);
+    document.addEventListener("touchend", preventDoubleTap, { passive: false });
+    document.addEventListener("touchmove", preventMultiTouch, { passive: false });
+    return () => {
+      document.removeEventListener("gesturestart", prevent);
+      document.removeEventListener("gesturechange", prevent);
+      document.removeEventListener("gestureend", prevent);
+      document.removeEventListener("wheel", preventWheel);
+      document.removeEventListener("keydown", preventKey);
+      document.removeEventListener("touchend", preventDoubleTap);
+      document.removeEventListener("touchmove", preventMultiTouch);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <SplashGate>
