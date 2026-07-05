@@ -102,7 +102,7 @@ function SendPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && isEmail(trimmed)) choose(trimmed);
+              if (e.key === "Enter" && trimmed) choose(trimmed);
             }}
             placeholder="Name, username, email, mobile"
             className="w-full h-11 rounded-full border-2 border-[var(--pp-blue)] bg-white px-4 text-[14px] text-[var(--pp-text)] placeholder:text-[var(--pp-text-muted)] outline-none"
@@ -124,16 +124,23 @@ function SendPage() {
           </span>
         </button>
 
-        {trimmed && isEmail(trimmed) && (
+        {trimmed && (
           <button
             type="button"
             onClick={() => choose(trimmed)}
             className="mt-4 w-full flex items-center gap-3 rounded-xl bg-[var(--pp-bg)] px-3 py-3 text-left"
           >
-            <Avatar text={trimmed[0]?.toUpperCase() ?? "?"} className="bg-[var(--pp-blue-dark)]" />
-            <div className="min-w-0">
-              <p className="text-[15px] font-semibold text-[var(--pp-text)] truncate">Send to</p>
-              <p className="text-[13px] text-[var(--pp-text-muted)] truncate">{trimmed}</p>
+            <Avatar
+              text={(trimmed.replace(/^@/, "")[0] ?? "?").toUpperCase()}
+              className="bg-[var(--pp-blue-dark)]"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="text-[15px] font-semibold text-[var(--pp-text)] break-all">
+                Send to {trimmed}
+              </p>
+              <p className="text-[13px] text-[var(--pp-text-muted)] break-all">
+                {recipientSubtitle(trimmed)}
+              </p>
             </div>
           </button>
         )}
