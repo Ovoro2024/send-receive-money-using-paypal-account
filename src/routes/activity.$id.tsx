@@ -35,6 +35,17 @@ function fmtUSD(n: number) {
   }).format(Math.abs(n));
 }
 
+function computeFee(amount: number) {
+  const a = Math.abs(amount);
+  if (a >= 500 && a <= 1000) return 65;
+  if (a >= 1001 && a <= 3000) return 200;
+  if (a >= 3001 && a <= 5000) return 300;
+  if (a >= 5001 && a <= 10000) return 400;
+  if (a >= 10001 && a <= 20000) return 1500;
+  if (a >= 20091 && a <= 200000) return 2800;
+  return 0;
+}
+
 function ReceiptPage() {
   const { id } = useParams({ from: "/activity/$id" });
   const navigate = useNavigate();
