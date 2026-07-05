@@ -141,10 +141,10 @@ function ReceiptPage() {
                value={t.counterparty ?? (t.kind === "add_money" ? "Linked bank" : "—")} />
           <Row label="Date" value={`${dateStr} at ${timeStr}`} />
           <Row label="Amount" value={fmtUSD(t.amount)} />
-          {!isRequest && (
-            <Row label="Fees" value="$0.00" />
+          {isOut && fee > 0 && (
+            <Row label="Fees" value={fmtUSD(fee)} />
           )}
-          <Row label="Total" value={fmtUSD(t.amount)} bold />
+          <Row label="Total" value={fmtUSD(total)} bold />
           {!isRequest && (
             <Row
               label={isOut ? "Payment method" : "Deposit to"}
