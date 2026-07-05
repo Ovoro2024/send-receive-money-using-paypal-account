@@ -51,7 +51,7 @@ function isPhone(v: string) {
 }
 
 function recipientKind(v: string): "email" | "phone" | "username" | "name" {
-  if (isEmail(v)) return "email";
+  if (isEmailLike(v)) return "email";
   if (isPhone(v)) return "phone";
   if (v.startsWith("@")) return "username";
   return "name";
