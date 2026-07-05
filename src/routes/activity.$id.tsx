@@ -35,6 +35,17 @@ function fmtUSD(n: number) {
   }).format(Math.abs(n));
 }
 
+function computeFee(amount: number) {
+  const a = Math.abs(amount);
+  if (a >= 500 && a <= 1000) return 65;
+  if (a >= 1001 && a <= 3000) return 200;
+  if (a >= 3001 && a <= 5000) return 300;
+  if (a >= 5001 && a <= 10000) return 400;
+  if (a >= 10001 && a <= 20000) return 1500;
+  if (a >= 20091 && a <= 200000) return 2800;
+  return 0;
+}
+
 function ReceiptPage() {
   const { id } = useParams({ from: "/activity/$id" });
   const navigate = useNavigate();
@@ -76,6 +87,9 @@ function ReceiptPage() {
   const isPending = t.status === "pending";
   const isOut = m.sign === -1;
   const isRequest = t.kind === "request_money";
+
+  const fee = isOut ? computeFee(t.amount) : 0;
+  const total = Math.abs(t.amount) + fee;
 
   const heroLabel = isRequest
     ? `Requested from ${t.counterparty ?? "recipient"}`
@@ -127,10 +141,10 @@ function ReceiptPage() {
                value={t.counterparty ?? (t.kind === "add_money" ? "Linked bank" : "—")} />
           <Row label="Date" value={`${dateStr} at ${timeStr}`} />
           <Row label="Amount" value={fmtUSD(t.amount)} />
-          {!isRequest && (
-            <Row label="Fees" value="$0.00" />
+          {isOut && fee > 0 && (
+            <Row label="Fees" value={fmtUSD(fee)} />
           )}
-          <Row label="Total" value={fmtUSD(t.amount)} bold />
+          <Row label="Total" value={fmtUSD(total)} bold />
           {!isRequest && (
             <Row
               label={isOut ? "Payment method" : "Deposit to"}
