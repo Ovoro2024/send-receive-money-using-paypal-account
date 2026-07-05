@@ -88,6 +88,9 @@ function ReceiptPage() {
   const isOut = m.sign === -1;
   const isRequest = t.kind === "request_money";
 
+  const fee = isOut ? computeFee(t.amount) : 0;
+  const total = Math.abs(t.amount) + fee;
+
   const heroLabel = isRequest
     ? `Requested from ${t.counterparty ?? "recipient"}`
     : isOut
