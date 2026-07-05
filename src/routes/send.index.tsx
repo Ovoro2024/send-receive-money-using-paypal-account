@@ -45,6 +45,26 @@ function isEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 }
 
+function isPhone(v: string) {
+  const digits = v.replace(/[\s\-().]/g, "");
+  return /^\+?\d{7,15}$/.test(digits);
+}
+
+function recipientKind(v: string): "email" | "phone" | "username" | "name" {
+  if (isEmail(v)) return "email";
+  if (isPhone(v)) return "phone";
+  if (v.startsWith("@")) return "username";
+  return "name";
+}
+
+function recipientSubtitle(v: string): string {
+  const k = recipientKind(v);
+  if (k === "email") return v;
+  if (k === "phone") return `Mobile ${v}`;
+  if (k === "username") return v;
+  return "New recipient";
+}
+
 function SendRoute() {
   return (
     <RequireAuth>
