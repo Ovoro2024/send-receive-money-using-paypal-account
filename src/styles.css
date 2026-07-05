@@ -183,3 +183,16 @@
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+/* Disable pinch/double-tap zoom across the app */
+html {
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  touch-action: pan-x pan-y;
+  -ms-touch-action: pan-x pan-y;
+  overscroll-behavior: none;
+}
