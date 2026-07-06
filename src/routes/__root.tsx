@@ -114,10 +114,12 @@ function RootComponent() {
   }, []);
 
   return (
-    <AuthProvider>
-      <SplashGate>
-        <Outlet />
-      </SplashGate>
-    </AuthProvider>
+    <div className="safe-root">
+      <AuthProvider>
+        <SplashGate>
+          <Outlet />
+        </SplashGate>
+      </AuthProvider>
+    </div>
   );
 }
