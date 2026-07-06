@@ -196,3 +196,8 @@ body {
   -ms-touch-action: pan-x pan-y;
   overscroll-behavior: none;
 }
+
+/* Add safe-area spacing at the top of every page (below the phone status bar) */
+.safe-root > div:not(.fixed) {
+  padding-top: max(env(safe-area-inset-top), 20px);
+}
