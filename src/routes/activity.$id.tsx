@@ -50,7 +50,6 @@ function ReceiptPage() {
   const { id } = useParams({ from: "/activity/$id" });
   const navigate = useNavigate();
   const [t, setT] = useState<Txn | null | undefined>(undefined);
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     supabase
@@ -60,17 +59,6 @@ function ReceiptPage() {
       .maybeSingle()
       .then(({ data }) => setT((data as Txn) ?? null));
   }, [id]);
-
-  const updateStatus = async (status: "pending" | "completed") => {
-    if (!t || t.status === status) return;
-    setSaving(true);
-    const prev = t.status;
-    setT({ ...t, status });
-    const { error } = await supabase.from("transactions").update({ status }).eq("id", t.id);
-    if (error) setT((cur) => (cur ? { ...cur, status: prev } : cur));
-    setSaving(false);
-  };
-
 
   if (t === undefined) {
     return <div className="min-h-screen bg-white p-6 text-[13px] text-[var(--pp-text-muted)]">Loading…</div>;
@@ -177,35 +165,6 @@ function ReceiptPage() {
       <div className="flex-1" />
 
       <div className="px-4 pb-8 pt-6 space-y-3">
-        <div className="rounded-2xl border border-[color:var(--border)] p-4">
-          <p className="text-[12px] font-semibold text-[var(--pp-text-muted)] uppercase tracking-wide">
-            Payment status
-          </p>
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {(["pending", "completed"] as const).map((s) => {
-              const active = t.status === s;
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  disabled={saving}
-                  onClick={() => updateStatus(s)}
-                  className={`rounded-full py-2.5 text-[14px] font-bold border-2 capitalize disabled:opacity-50 ${
-                    active ? "" : "bg-transparent"
-                  }`}
-                  style={{
-                    borderColor: "var(--pp-blue-dark)",
-                    background: active ? "var(--pp-blue-dark)" : "transparent",
-                    color: active ? "#fff" : "var(--pp-blue-dark)",
-                  }}
-                >
-                  {s}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {isRequest && isPending && (
           <button className="w-full rounded-full py-3.5 text-[15px] font-bold"
                   style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}>
