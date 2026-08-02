@@ -165,6 +165,35 @@ function ReceiptPage() {
       <div className="flex-1" />
 
       <div className="px-4 pb-8 pt-6 space-y-3">
+        <div className="rounded-2xl border border-[color:var(--border)] p-4">
+          <p className="text-[12px] font-semibold text-[var(--pp-text-muted)] uppercase tracking-wide">
+            Payment status
+          </p>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {(["pending", "completed"] as const).map((s) => {
+              const active = t.status === s;
+              return (
+                <button
+                  key={s}
+                  type="button"
+                  disabled={saving}
+                  onClick={() => updateStatus(s)}
+                  className={`rounded-full py-2.5 text-[14px] font-bold border-2 capitalize disabled:opacity-50 ${
+                    active ? "" : "bg-transparent"
+                  }`}
+                  style={{
+                    borderColor: "var(--pp-blue-dark)",
+                    background: active ? "var(--pp-blue-dark)" : "transparent",
+                    color: active ? "#fff" : "var(--pp-blue-dark)",
+                  }}
+                >
+                  {s}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {isRequest && isPending && (
           <button className="w-full rounded-full py-3.5 text-[15px] font-bold"
                   style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}>
@@ -176,6 +205,7 @@ function ReceiptPage() {
           Report a problem
         </button>
       </div>
+
     </div>
   );
 }
