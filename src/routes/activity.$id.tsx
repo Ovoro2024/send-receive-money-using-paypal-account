@@ -50,6 +50,7 @@ function ReceiptPage() {
   const { id } = useParams({ from: "/activity/$id" });
   const navigate = useNavigate();
   const [t, setT] = useState<Txn | null | undefined>(undefined);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     supabase
@@ -59,6 +60,17 @@ function ReceiptPage() {
       .maybeSingle()
       .then(({ data }) => setT((data as Txn) ?? null));
   }, [id]);
+
+  const updateStatus = async (status: "pending" | "completed") => {
+    if (!t || t.status === status) return;
+    setSaving(true);
+    const prev = t.status;
+    setT({ ...t, status });
+    const { error } = await supabase.from("transactions").update({ status }).eq("id", t.id);
+    if (error) setT((cur) => (cur ? { ...cur, status: prev } : cur));
+    setSaving(false);
+  };
+
 
   if (t === undefined) {
     return <div className="min-h-screen bg-white p-6 text-[13px] text-[var(--pp-text-muted)]">Loading…</div>;
