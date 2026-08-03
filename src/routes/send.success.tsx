@@ -4,12 +4,13 @@ import { useEffect, useRef } from "react";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 
-type Search = { to: string; amount: string };
+type Search = { to: string; amount: string; status?: "pending" | "completed" };
 
 export const Route = createFileRoute("/send/success")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     to: typeof s.to === "string" ? s.to : "",
     amount: typeof s.amount === "string" ? s.amount : "0",
+    status: s.status === "pending" || s.status === "completed" ? s.status : "completed",
   }),
   component: SuccessRoute,
   head: () => ({
