@@ -367,6 +367,34 @@ function ReviewSheet({
           <Row left="Payment delivery" right="In seconds" muted />
         </div>
 
+        <div className="px-5 mt-4">
+          <p className="text-[13px] text-[var(--pp-text-muted)] mb-2">Payment status</p>
+          <div className="flex rounded-full bg-[var(--pp-bg)] p-1">
+            <button
+              type="button"
+              onClick={() => onStatusChange("pending")}
+              className={`flex-1 rounded-full py-2 text-[14px] font-semibold transition-colors ${
+                status === "pending"
+                  ? "bg-white text-[var(--pp-text)] shadow-sm"
+                  : "text-[var(--pp-text-muted)]"
+              }`}
+            >
+              Pending
+            </button>
+            <button
+              type="button"
+              onClick={() => onStatusChange("completed")}
+              className={`flex-1 rounded-full py-2 text-[14px] font-semibold transition-colors ${
+                status === "completed"
+                  ? "bg-white text-[var(--pp-text)] shadow-sm"
+                  : "text-[var(--pp-text-muted)]"
+              }`}
+            >
+              Completed
+            </button>
+          </div>
+        </div>
+
         <div className="px-5 mt-5">
           <button
             type="button"
