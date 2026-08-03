@@ -147,13 +147,26 @@ export type Database = {
         Args: { p_amount: number; p_from: string; p_note?: string }
         Returns: string
       }
-      send_money: {
-        Args: { p_amount: number; p_note?: string; p_to: string }
-        Returns: {
-          new_balance: number
-          transaction_id: string
-        }[]
-      }
+      send_money:
+        | {
+            Args: { p_amount: number; p_note?: string; p_to: string }
+            Returns: {
+              new_balance: number
+              transaction_id: string
+            }[]
+          }
+        | {
+            Args: {
+              p_amount: number
+              p_note?: string
+              p_status?: string
+              p_to: string
+            }
+            Returns: {
+              new_balance: number
+              transaction_id: string
+            }[]
+          }
       transfer_money: { Args: { p_amount: number }; Returns: number }
       transfer_to_savings: {
         Args: { p_amount: number }
