@@ -56,6 +56,7 @@ function SendAmountPage() {
   const [stage, setStage] = useState<Stage>("amount");
   const [showReview, setShowReview] = useState(false);
   const [note, setNote] = useState("");
+  const [status, setStatus] = useState<"pending" | "completed">("completed");
 
   const numeric = useMemo(() => Number.parseFloat(raw || "0") || 0, [raw]);
   const canNext = numeric > 0;
@@ -86,7 +87,7 @@ function SendAmountPage() {
     display.length <= 7 ? "text-[68px]" : display.length <= 10 ? "text-[52px]" : "text-[40px]";
 
   const submit = () => {
-    navigate({ to: "/send/success", search: { to, amount: numeric.toFixed(2) } });
+    navigate({ to: "/send/success", search: { to, amount: numeric.toFixed(2), status } });
   };
 
   return (
