@@ -246,6 +246,7 @@ function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
       items: [
         { icon: <CreditCard size={20} />, label: "Wallet" },
         { icon: <FileText size={20} />, label: "Activity" },
+        { icon: <FileText size={20} />, label: "Transactions" },
         { icon: <Gift size={20} />, label: "Rewards" },
       ],
     },
