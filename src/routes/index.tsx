@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Trophy, ScanLine, X, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
@@ -234,8 +234,7 @@ function CryptoIcon() {
 
 function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { signOut } = useAuth();
-  const navigate = useNavigate();
-  const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string; to?: string }[] }[] = [
+  const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string }[] }[] = [
     {
       items: [
         { icon: <Bell size={20} />, label: "Notifications" },
@@ -246,8 +245,7 @@ function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
       title: "Account",
       items: [
         { icon: <CreditCard size={20} />, label: "Wallet" },
-        { icon: <FileText size={20} />, label: "Activity", to: "/activity" },
-        { icon: <FileText size={20} />, label: "Transactions", to: "/transactions" },
+        { icon: <FileText size={20} />, label: "Activity" },
         { icon: <Gift size={20} />, label: "Rewards" },
       ],
     },
@@ -291,26 +289,20 @@ function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
                   {sec.title}
                 </p>
               )}
-              {sec.items.map((it) => {
-                const handleClick = () => {
-                  onClose();
-                  if (it.to) navigate({ to: it.to });
-                };
-                return (
-                  <button
-                    key={it.label}
-                    onClick={handleClick}
-                    className="w-full flex items-center gap-4 px-5 py-3 text-left hover:bg-[var(--pp-bg)]"
-                  >
-                    <span className="text-[var(--pp-blue-dark)]">{it.icon}</span>
-                    <span className="flex-1 min-w-0">
-                      <span className="block text-[15px] font-medium text-[var(--pp-text)]">{it.label}</span>
-                      {it.sub && <span className="block text-[12px] text-[var(--pp-text-muted)]">{it.sub}</span>}
-                    </span>
-                    <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
-                  </button>
-                );
-              })}
+              {sec.items.map((it) => (
+                <button
+                  key={it.label}
+                  onClick={onClose}
+                  className="w-full flex items-center gap-4 px-5 py-3 text-left hover:bg-[var(--pp-bg)]"
+                >
+                  <span className="text-[var(--pp-blue-dark)]">{it.icon}</span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block text-[15px] font-medium text-[var(--pp-text)]">{it.label}</span>
+                    {it.sub && <span className="block text-[12px] text-[var(--pp-text-muted)]">{it.sub}</span>}
+                  </span>
+                  <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
+                </button>
+              ))}
             </div>
           ))}
           <div className="px-5 py-4 mt-2 border-t border-[color:var(--border)]">

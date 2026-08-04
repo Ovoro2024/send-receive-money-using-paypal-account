@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WalletRouteImport } from './routes/wallet'
-import { Route as TransactionsRouteImport } from './routes/transactions'
 import { Route as SplashRouteImport } from './routes/splash'
 import { Route as SecurityCheckRouteImport } from './routes/security-check'
 import { Route as PaymentsRouteImport } from './routes/payments'
@@ -22,7 +21,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AddMoneyRouteImport } from './routes/add-money'
 import { Route as ActivityRouteImport } from './routes/activity'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TransactionsIndexRouteImport } from './routes/transactions.index'
 import { Route as SendIndexRouteImport } from './routes/send.index'
 import { Route as SecurityCheckIndexRouteImport } from './routes/security-check.index'
 import { Route as RequestIndexRouteImport } from './routes/request.index'
@@ -49,11 +47,6 @@ import { Route as CryptoBuySymbolRouteImport } from './routes/crypto.buy.$symbol
 const WalletRoute = WalletRouteImport.update({
   id: '/wallet',
   path: '/wallet',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransactionsRoute = TransactionsRouteImport.update({
-  id: '/transactions',
-  path: '/transactions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SplashRoute = SplashRouteImport.update({
@@ -110,11 +103,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const TransactionsIndexRoute = TransactionsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TransactionsRoute,
 } as any)
 const SendIndexRoute = SendIndexRouteImport.update({
   id: '/send/',
@@ -239,7 +227,6 @@ export interface FileRoutesByFullPath {
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
-  '/transactions': typeof TransactionsRouteWithChildren
   '/wallet': typeof WalletRoute
   '/activity/$id': typeof ActivityIdRoute
   '/add-money/method': typeof AddMoneyMethodRoute
@@ -261,7 +248,6 @@ export interface FileRoutesByFullPath {
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
   '/send/': typeof SendIndexRoute
-  '/transactions/': typeof TransactionsIndexRoute
   '/crypto/buy/$symbol': typeof CryptoBuySymbolRoute
   '/crypto/sell/$symbol': typeof CryptoSellSymbolRoute
 }
@@ -294,7 +280,6 @@ export interface FileRoutesByTo {
   '/request': typeof RequestIndexRoute
   '/security-check': typeof SecurityCheckIndexRoute
   '/send': typeof SendIndexRoute
-  '/transactions': typeof TransactionsIndexRoute
   '/crypto/buy/$symbol': typeof CryptoBuySymbolRoute
   '/crypto/sell/$symbol': typeof CryptoSellSymbolRoute
 }
@@ -311,7 +296,6 @@ export interface FileRoutesById {
   '/payments': typeof PaymentsRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
-  '/transactions': typeof TransactionsRouteWithChildren
   '/wallet': typeof WalletRoute
   '/activity/$id': typeof ActivityIdRoute
   '/add-money/method': typeof AddMoneyMethodRoute
@@ -333,7 +317,6 @@ export interface FileRoutesById {
   '/request/': typeof RequestIndexRoute
   '/security-check/': typeof SecurityCheckIndexRoute
   '/send/': typeof SendIndexRoute
-  '/transactions/': typeof TransactionsIndexRoute
   '/crypto/buy/$symbol': typeof CryptoBuySymbolRoute
   '/crypto/sell/$symbol': typeof CryptoSellSymbolRoute
 }
@@ -351,7 +334,6 @@ export interface FileRouteTypes {
     | '/payments'
     | '/security-check'
     | '/splash'
-    | '/transactions'
     | '/wallet'
     | '/activity/$id'
     | '/add-money/method'
@@ -373,7 +355,6 @@ export interface FileRouteTypes {
     | '/request/'
     | '/security-check/'
     | '/send/'
-    | '/transactions/'
     | '/crypto/buy/$symbol'
     | '/crypto/sell/$symbol'
   fileRoutesByTo: FileRoutesByTo
@@ -406,7 +387,6 @@ export interface FileRouteTypes {
     | '/request'
     | '/security-check'
     | '/send'
-    | '/transactions'
     | '/crypto/buy/$symbol'
     | '/crypto/sell/$symbol'
   id:
@@ -422,7 +402,6 @@ export interface FileRouteTypes {
     | '/payments'
     | '/security-check'
     | '/splash'
-    | '/transactions'
     | '/wallet'
     | '/activity/$id'
     | '/add-money/method'
@@ -444,7 +423,6 @@ export interface FileRouteTypes {
     | '/request/'
     | '/security-check/'
     | '/send/'
-    | '/transactions/'
     | '/crypto/buy/$symbol'
     | '/crypto/sell/$symbol'
   fileRoutesById: FileRoutesById
@@ -461,7 +439,6 @@ export interface RootRouteChildren {
   PaymentsRoute: typeof PaymentsRoute
   SecurityCheckRoute: typeof SecurityCheckRouteWithChildren
   SplashRoute: typeof SplashRoute
-  TransactionsRoute: typeof TransactionsRouteWithChildren
   WalletRoute: typeof WalletRoute
   RequestAmountRoute: typeof RequestAmountRoute
   RequestSuccessRoute: typeof RequestSuccessRoute
@@ -480,13 +457,6 @@ declare module '@tanstack/react-router' {
       path: '/wallet'
       fullPath: '/wallet'
       preLoaderRoute: typeof WalletRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/transactions': {
-      id: '/transactions'
-      path: '/transactions'
-      fullPath: '/transactions'
-      preLoaderRoute: typeof TransactionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/splash': {
@@ -565,13 +535,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/transactions/': {
-      id: '/transactions/'
-      path: '/'
-      fullPath: '/transactions/'
-      preLoaderRoute: typeof TransactionsIndexRouteImport
-      parentRoute: typeof TransactionsRoute
     }
     '/send/': {
       id: '/send/'
@@ -797,18 +760,6 @@ const SecurityCheckRouteWithChildren = SecurityCheckRoute._addFileChildren(
   SecurityCheckRouteChildren,
 )
 
-interface TransactionsRouteChildren {
-  TransactionsIndexRoute: typeof TransactionsIndexRoute
-}
-
-const TransactionsRouteChildren: TransactionsRouteChildren = {
-  TransactionsIndexRoute: TransactionsIndexRoute,
-}
-
-const TransactionsRouteWithChildren = TransactionsRoute._addFileChildren(
-  TransactionsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivityRoute: ActivityRouteWithChildren,
@@ -821,7 +772,6 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentsRoute: PaymentsRoute,
   SecurityCheckRoute: SecurityCheckRouteWithChildren,
   SplashRoute: SplashRoute,
-  TransactionsRoute: TransactionsRouteWithChildren,
   WalletRoute: WalletRoute,
   RequestAmountRoute: RequestAmountRoute,
   RequestSuccessRoute: RequestSuccessRoute,
