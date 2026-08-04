@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Trophy, ScanLine, X, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
