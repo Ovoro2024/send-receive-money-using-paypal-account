@@ -234,7 +234,8 @@ function CryptoIcon() {
 
 function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { signOut } = useAuth();
-  const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string }[] }[] = [
+  const navigate = useNavigate();
+  const sections: { title?: string; items: { icon: React.ReactNode; label: string; sub?: string; to?: string }[] }[] = [
     {
       items: [
         { icon: <Bell size={20} />, label: "Notifications" },
@@ -245,8 +246,8 @@ function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
       title: "Account",
       items: [
         { icon: <CreditCard size={20} />, label: "Wallet" },
-        { icon: <FileText size={20} />, label: "Activity" },
-        { icon: <FileText size={20} />, label: "Transactions" },
+        { icon: <FileText size={20} />, label: "Activity", to: "/activity" },
+        { icon: <FileText size={20} />, label: "Transactions", to: "/transactions" },
         { icon: <Gift size={20} />, label: "Rewards" },
       ],
     },
