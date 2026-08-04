@@ -291,20 +291,26 @@ function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
                   {sec.title}
                 </p>
               )}
-              {sec.items.map((it) => (
-                <button
-                  key={it.label}
-                  onClick={onClose}
-                  className="w-full flex items-center gap-4 px-5 py-3 text-left hover:bg-[var(--pp-bg)]"
-                >
-                  <span className="text-[var(--pp-blue-dark)]">{it.icon}</span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-[15px] font-medium text-[var(--pp-text)]">{it.label}</span>
-                    {it.sub && <span className="block text-[12px] text-[var(--pp-text-muted)]">{it.sub}</span>}
-                  </span>
-                  <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
-                </button>
-              ))}
+              {sec.items.map((it) => {
+                const handleClick = () => {
+                  onClose();
+                  if (it.to) navigate({ to: it.to });
+                };
+                return (
+                  <button
+                    key={it.label}
+                    onClick={handleClick}
+                    className="w-full flex items-center gap-4 px-5 py-3 text-left hover:bg-[var(--pp-bg)]"
+                  >
+                    <span className="text-[var(--pp-blue-dark)]">{it.icon}</span>
+                    <span className="flex-1 min-w-0">
+                      <span className="block text-[15px] font-medium text-[var(--pp-text)]">{it.label}</span>
+                      {it.sub && <span className="block text-[12px] text-[var(--pp-text-muted)]">{it.sub}</span>}
+                    </span>
+                    <ChevronRight size={18} className="text-[var(--pp-text-muted)]" />
+                  </button>
+                );
+              })}
             </div>
           ))}
           <div className="px-5 py-4 mt-2 border-t border-[color:var(--border)]">
