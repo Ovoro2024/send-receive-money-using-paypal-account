@@ -85,11 +85,13 @@ function ReceiptPage() {
   const timeStr = created.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
   const isPending = t.status === "pending";
+  const isFailed = t.status === "failed" || t.status === "canceled" || t.status === "cancelled";
   const isOut = m.sign === -1;
   const isRequest = t.kind === "request_money";
 
   const fee = isOut ? computeFee(t.amount) : 0;
   const total = Math.abs(t.amount) + fee;
+
 
   const heroLabel = isRequest
     ? `Requested from ${t.counterparty ?? "recipient"}`
