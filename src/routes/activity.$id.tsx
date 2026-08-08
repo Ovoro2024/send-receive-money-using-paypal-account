@@ -129,13 +129,34 @@ function ReceiptPage() {
         </p>
         <div className="mt-2 inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-[12px] font-semibold"
           style={{
-            background: isPending ? "var(--pp-yellow)" : "oklch(0.95 0.05 145)",
-            color: isPending ? "var(--pp-blue-dark)" : "var(--pp-success)",
+            background: isFailed
+              ? "oklch(0.95 0.05 25)"
+              : isPending
+              ? "var(--pp-yellow)"
+              : "oklch(0.95 0.05 145)",
+            color: isFailed
+              ? "oklch(0.52 0.2 25)"
+              : isPending
+              ? "var(--pp-blue-dark)"
+              : "var(--pp-success)",
           }}
         >
-          {isPending ? <Clock className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" strokeWidth={3} />}
-          {isPending ? "Pending" : "Completed"}
+          {isFailed ? (
+            <AlertCircle className="h-3.5 w-3.5" />
+          ) : isPending ? (
+            <Clock className="h-3.5 w-3.5" />
+          ) : (
+            <Check className="h-3.5 w-3.5" strokeWidth={3} />
+          )}
+          {isFailed
+            ? t.status === "failed"
+              ? "Failed"
+              : "Canceled"
+            : isPending
+            ? "Pending"
+            : "Completed"}
         </div>
+
       </div>
 
       {/* Details */}
