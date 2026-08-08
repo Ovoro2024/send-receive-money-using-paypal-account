@@ -50,6 +50,8 @@ function ReceiptPage() {
   const { id } = useParams({ from: "/activity/$id" });
   const navigate = useNavigate();
   const [t, setT] = useState<Txn | null | undefined>(undefined);
+  const [retrying, setRetrying] = useState(false);
+  const [retryError, setRetryError] = useState<string | null>(null);
 
   useEffect(() => {
     supabase
