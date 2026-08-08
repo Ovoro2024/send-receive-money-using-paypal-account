@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Share2, HelpCircle, Check, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { ArrowLeft, Share2, HelpCircle, Check, Clock } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { kindMeta } from "./activity.index";
@@ -50,8 +50,6 @@ function ReceiptPage() {
   const { id } = useParams({ from: "/activity/$id" });
   const navigate = useNavigate();
   const [t, setT] = useState<Txn | null | undefined>(undefined);
-  const [retrying, setRetrying] = useState(false);
-  const [retryError, setRetryError] = useState<string | null>(null);
 
   useEffect(() => {
     supabase
@@ -87,40 +85,17 @@ function ReceiptPage() {
   const timeStr = created.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 
   const isPending = t.status === "pending";
-  const isFailed = t.status === "failed" || t.status === "canceled" || t.status === "cancelled";
   const isOut = m.sign === -1;
   const isRequest = t.kind === "request_money";
 
   const fee = isOut ? computeFee(t.amount) : 0;
   const total = Math.abs(t.amount) + fee;
 
-
   const heroLabel = isRequest
     ? `Requested from ${t.counterparty ?? "recipient"}`
     : isOut
     ? `Sent to ${t.counterparty ?? "recipient"}`
     : `Added to PayPal balance`;
-
-  const handleRetry = async () => {
-    if (retrying) return;
-    setRetrying(true);
-    setRetryError(null);
-    const { data, error } = await supabase.rpc("send_money", {
-      p_amount: Math.abs(t.amount),
-      p_to: t.counterparty ?? "recipient",
-      p_note: t.note ?? undefined,
-      p_status: "completed",
-    });
-    setRetrying(false);
-    if (error) {
-      setRetryError(error.message || "Retry failed. Please try again.");
-      return;
-    }
-    const newId = Array.isArray(data) ? data[0]?.transaction_id : undefined;
-    if (newId) navigate({ to: "/activity/$id", params: { id: newId } });
-    else navigate({ to: "/activity" });
-  };
-
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -150,34 +125,13 @@ function ReceiptPage() {
         </p>
         <div className="mt-2 inline-flex items-center gap-1.5 px-3 h-7 rounded-full text-[12px] font-semibold"
           style={{
-            background: isFailed
-              ? "oklch(0.95 0.05 25)"
-              : isPending
-              ? "var(--pp-yellow)"
-              : "oklch(0.95 0.05 145)",
-            color: isFailed
-              ? "oklch(0.52 0.2 25)"
-              : isPending
-              ? "var(--pp-blue-dark)"
-              : "var(--pp-success)",
+            background: isPending ? "var(--pp-yellow)" : "oklch(0.95 0.05 145)",
+            color: isPending ? "var(--pp-blue-dark)" : "var(--pp-success)",
           }}
         >
-          {isFailed ? (
-            <AlertCircle className="h-3.5 w-3.5" />
-          ) : isPending ? (
-            <Clock className="h-3.5 w-3.5" />
-          ) : (
-            <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          )}
-          {isFailed
-            ? t.status === "failed"
-              ? "Failed"
-              : "Canceled"
-            : isPending
-            ? "Pending"
-            : "Completed"}
+          {isPending ? <Clock className="h-3.5 w-3.5" /> : <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+          {isPending ? "Pending" : "Completed"}
         </div>
-
       </div>
 
       {/* Details */}
@@ -211,23 +165,6 @@ function ReceiptPage() {
       <div className="flex-1" />
 
       <div className="px-4 pb-8 pt-6 space-y-3">
-        {isFailed && (
-          <>
-            <button
-              type="button"
-              disabled={retrying}
-              onClick={handleRetry}
-              className="w-full rounded-full py-3.5 text-[15px] font-bold flex items-center justify-center gap-2 disabled:opacity-60"
-              style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}
-            >
-              <RotateCcw className={`h-4 w-4 ${retrying ? "animate-spin" : ""}`} />
-              {retrying ? "Retrying…" : "Retry payment"}
-            </button>
-            {retryError && (
-              <p className="text-center text-[13px] text-[oklch(0.52_0.2_25)]">{retryError}</p>
-            )}
-          </>
-        )}
         {isRequest && isPending && (
           <button className="w-full rounded-full py-3.5 text-[15px] font-bold"
                   style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}>
@@ -239,7 +176,6 @@ function ReceiptPage() {
           Report a problem
         </button>
       </div>
-
 
     </div>
   );
