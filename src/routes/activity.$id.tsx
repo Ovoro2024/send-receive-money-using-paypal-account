@@ -101,6 +101,27 @@ function ReceiptPage() {
     ? `Sent to ${t.counterparty ?? "recipient"}`
     : `Added to PayPal balance`;
 
+  const handleRetry = async () => {
+    if (retrying) return;
+    setRetrying(true);
+    setRetryError(null);
+    const { data, error } = await supabase.rpc("send_money", {
+      p_amount: Math.abs(t.amount),
+      p_to: t.counterparty ?? "recipient",
+      p_note: t.note ?? undefined,
+      p_status: "completed",
+    });
+    setRetrying(false);
+    if (error) {
+      setRetryError(error.message || "Retry failed. Please try again.");
+      return;
+    }
+    const newId = Array.isArray(data) ? data[0]?.transaction_id : undefined;
+    if (newId) navigate({ to: "/activity/$id", params: { id: newId } });
+    else navigate({ to: "/activity" });
+  };
+
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <header className="px-4 pt-6 pb-3 flex items-center justify-between">
