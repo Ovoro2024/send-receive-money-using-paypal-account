@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Share2, HelpCircle, Check, Clock } from "lucide-react";
+import { ArrowLeft, Share2, HelpCircle, Check, Clock, AlertCircle, RotateCcw } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { kindMeta } from "./activity.index";
