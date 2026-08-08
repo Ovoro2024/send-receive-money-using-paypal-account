@@ -190,6 +190,23 @@ function ReceiptPage() {
       <div className="flex-1" />
 
       <div className="px-4 pb-8 pt-6 space-y-3">
+        {isFailed && (
+          <>
+            <button
+              type="button"
+              disabled={retrying}
+              onClick={handleRetry}
+              className="w-full rounded-full py-3.5 text-[15px] font-bold flex items-center justify-center gap-2 disabled:opacity-60"
+              style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}
+            >
+              <RotateCcw className={`h-4 w-4 ${retrying ? "animate-spin" : ""}`} />
+              {retrying ? "Retrying…" : "Retry payment"}
+            </button>
+            {retryError && (
+              <p className="text-center text-[13px] text-[oklch(0.52_0.2_25)]">{retryError}</p>
+            )}
+          </>
+        )}
         {isRequest && isPending && (
           <button className="w-full rounded-full py-3.5 text-[15px] font-bold"
                   style={{ background: "var(--pp-yellow)", color: "var(--pp-blue-dark)" }}>
@@ -201,6 +218,7 @@ function ReceiptPage() {
           Report a problem
         </button>
       </div>
+
 
     </div>
   );
