@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as SplashRouteImport } from './routes/splash'
 import { Route as SecurityCheckRouteImport } from './routes/security-check'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as LinkAccountRouteImport } from './routes/link-account'
 import { Route as FinancesRouteImport } from './routes/finances'
@@ -57,6 +58,11 @@ const SplashRoute = SplashRouteImport.update({
 const SecurityCheckRoute = SecurityCheckRouteImport.update({
   id: '/security-check',
   path: '/security-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PaymentsRoute = PaymentsRouteImport.update({
@@ -225,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/finances': typeof FinancesRoute
   '/link-account': typeof LinkAccountRoute
   '/payments': typeof PaymentsRoute
+  '/profile': typeof ProfileRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
@@ -258,6 +265,7 @@ export interface FileRoutesByTo {
   '/finances': typeof FinancesRoute
   '/link-account': typeof LinkAccountRoute
   '/payments': typeof PaymentsRoute
+  '/profile': typeof ProfileRoute
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
   '/activity/$id': typeof ActivityIdRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/finances': typeof FinancesRoute
   '/link-account': typeof LinkAccountRoute
   '/payments': typeof PaymentsRoute
+  '/profile': typeof ProfileRoute
   '/security-check': typeof SecurityCheckRouteWithChildren
   '/splash': typeof SplashRoute
   '/wallet': typeof WalletRoute
@@ -332,6 +341,7 @@ export interface FileRouteTypes {
     | '/finances'
     | '/link-account'
     | '/payments'
+    | '/profile'
     | '/security-check'
     | '/splash'
     | '/wallet'
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
     | '/finances'
     | '/link-account'
     | '/payments'
+    | '/profile'
     | '/splash'
     | '/wallet'
     | '/activity/$id'
@@ -400,6 +411,7 @@ export interface FileRouteTypes {
     | '/finances'
     | '/link-account'
     | '/payments'
+    | '/profile'
     | '/security-check'
     | '/splash'
     | '/wallet'
@@ -437,6 +449,7 @@ export interface RootRouteChildren {
   FinancesRoute: typeof FinancesRoute
   LinkAccountRoute: typeof LinkAccountRoute
   PaymentsRoute: typeof PaymentsRoute
+  ProfileRoute: typeof ProfileRoute
   SecurityCheckRoute: typeof SecurityCheckRouteWithChildren
   SplashRoute: typeof SplashRoute
   WalletRoute: typeof WalletRoute
@@ -471,6 +484,13 @@ declare module '@tanstack/react-router' {
       path: '/security-check'
       fullPath: '/security-check'
       preLoaderRoute: typeof SecurityCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/payments': {
@@ -770,6 +790,7 @@ const rootRouteChildren: RootRouteChildren = {
   FinancesRoute: FinancesRoute,
   LinkAccountRoute: LinkAccountRoute,
   PaymentsRoute: PaymentsRoute,
+  ProfileRoute: ProfileRoute,
   SecurityCheckRoute: SecurityCheckRouteWithChildren,
   SplashRoute: SplashRoute,
   WalletRoute: WalletRoute,

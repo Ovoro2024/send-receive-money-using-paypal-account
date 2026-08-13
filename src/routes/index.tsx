@@ -274,13 +274,17 @@ function PayPalMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
             <X size={24} />
           </button>
         </div>
-        <div className="px-5 pb-4 flex items-center gap-3 border-b border-[color:var(--border)]">
+        <Link
+          to="/profile"
+          onClick={onClose}
+          className="px-5 pb-4 flex items-center gap-3 border-b border-[color:var(--border)]"
+        >
           <div className="min-w-0">
             <p className="text-[17px] font-semibold text-[var(--pp-text)] truncate">Your account</p>
             <p className="text-[13px] text-[var(--pp-text-muted)]">Manage profile</p>
           </div>
           <ChevronRight size={20} className="ml-auto text-[var(--pp-text-muted)]" />
-        </div>
+        </Link>
         <nav className="flex-1 overflow-y-auto py-2">
           {sections.map((sec, i) => (
             <div key={i} className="py-1">
