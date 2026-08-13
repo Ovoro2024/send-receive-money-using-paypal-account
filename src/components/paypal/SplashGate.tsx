@@ -13,7 +13,11 @@ export function SplashGate({ children }: { children: ReactNode }) {
   const [phase, setPhase] = useState<Phase>("done");
 
   useEffect(() => {
-    if (phase === "done") return;
+    if (phase === "done") {
+      // Start the splash once per session, after hydration.
+      if (!sessionStorage.getItem(SEEN_KEY)) setPhase("yellow");
+      return;
+    }
     if (phase === "yellow") {
       const t = setTimeout(() => setPhase("loading"), 1300);
       return () => clearTimeout(t);
