@@ -8,14 +8,16 @@ type Phase = "yellow" | "loading" | "done";
 
 export function SplashGate({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  // If user deep-links to /auth or other routes, still show splash once per session.
-  const [phase, setPhase] = useState<Phase>(() => {
-    if (typeof window === "undefined") return "done";
-    return sessionStorage.getItem(SEEN_KEY) ? "done" : "yellow";
-  });
+  // Initialize to "done" so SSR and the client's first render match (no hydration
+  // mismatch). The splash is started in an effect after mount.
+  const [phase, setPhase] = useState<Phase>("done");
 
   useEffect(() => {
-    if (phase === "done") return;
+    if (phase === "done") {
+      // Start the splash once per session, after hydration.
+      if (!sessionStorage.getItem(SEEN_KEY)) setPhase("yellow");
+      return;
+    }
     if (phase === "yellow") {
       const t = setTimeout(() => setPhase("loading"), 1300);
       return () => clearTimeout(t);
