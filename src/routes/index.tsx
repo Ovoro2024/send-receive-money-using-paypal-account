@@ -6,6 +6,8 @@ import { RecentActivity } from "@/components/paypal/RecentActivity";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
+import { useMoneyOnHold } from "@/auth/useMoneyOnHold";
+
 import { useAuth } from "@/auth/AuthProvider";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
 
