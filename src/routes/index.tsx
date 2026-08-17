@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trophy, ScanLine, X, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
+import { Trophy, ScanLine, X, Clock, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { RecentActivity } from "@/components/paypal/RecentActivity";
