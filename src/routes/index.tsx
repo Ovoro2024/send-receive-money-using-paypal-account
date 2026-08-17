@@ -32,12 +32,15 @@ function IndexRoute() {
 function Index() {
   const { balance } = useBalance();
   const { savings } = useSavings();
+  const { onHold } = useMoneyOnHold();
   const [menuOpen, setMenuOpen] = useState(false);
   const fmt = (v: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
   const totalBalance = (balance ?? 0) + (savings ?? 0);
   const balanceLabel = balance === null ? "—" : fmt(totalBalance);
   const savingsLabel = savings === null ? "$0.00" : fmt(savings);
+  const onHoldLabel = onHold === null ? "$0.00" : fmt(onHold);
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
