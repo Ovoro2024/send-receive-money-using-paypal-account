@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Trophy, ScanLine, X, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
+import { Trophy, ScanLine, X, Clock, ArrowUp, Menu, ChevronRight, Settings, HelpCircle, Bell, Shield, CreditCard, Gift, Users, FileText, LogOut } from "lucide-react";
 import { useState } from "react";
 import { BottomNav } from "@/components/paypal/BottomNav";
 import { RecentActivity } from "@/components/paypal/RecentActivity";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
+import { useMoneyOnHold } from "@/auth/useMoneyOnHold";
+
 import { useAuth } from "@/auth/AuthProvider";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
 
@@ -30,12 +32,15 @@ function IndexRoute() {
 function Index() {
   const { balance } = useBalance();
   const { savings } = useSavings();
+  const { onHold } = useMoneyOnHold();
   const [menuOpen, setMenuOpen] = useState(false);
   const fmt = (v: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
   const totalBalance = (balance ?? 0) + (savings ?? 0);
   const balanceLabel = balance === null ? "—" : fmt(totalBalance);
   const savingsLabel = savings === null ? "$0.00" : fmt(savings);
+  const onHoldLabel = onHold === null ? "$0.00" : fmt(onHold);
+
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--pp-bg)]">
@@ -67,6 +72,21 @@ function Index() {
             amount={balanceLabel}
             footer={<Link to="/add-money" className="text-[var(--pp-link)] font-semibold">Add money</Link>}
           />
+          <AccountCard
+            icon={
+              <div className="h-7 w-7 rounded-md bg-[var(--pp-yellow)] flex items-center justify-center">
+                <Clock size={16} strokeWidth={2.5} className="text-[var(--pp-text)]" />
+              </div>
+            }
+            title="Money on hold"
+            amount={onHoldLabel}
+            footer={
+              <Link to="/activity" className="text-[var(--pp-link)] font-semibold">
+                View details
+              </Link>
+            }
+          />
+
           <AccountCard
             icon={
               <div className="h-7 w-7 rounded-md bg-[var(--pp-blue)] flex items-center justify-center">
