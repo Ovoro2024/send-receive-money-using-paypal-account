@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "@tanstack/react-router";
-import { PayPalLogo } from "./PayPalLogo";
+import splashArt from "@/assets/paypal-splash.jpg.asset.json";
 
 const SEEN_KEY = "pp_splash_seen";
 
@@ -47,12 +47,12 @@ export function SplashGate({ children }: { children: ReactNode }) {
               pointerEvents: phase === "yellow" ? "auto" : "none",
             }}
           >
-            <div
-              className="transition-transform duration-700 ease-out"
-              style={{ transform: phase === "yellow" ? "scale(1)" : "scale(1.15)" }}
-            >
-              <PayPalLogo className="h-20 w-20 drop-shadow-sm" />
-            </div>
+            <img
+              src={splashArt.url}
+              alt="PayPal"
+              className="h-full w-full object-cover transition-transform duration-700 ease-out"
+              style={{ transform: phase === "yellow" ? "scale(1)" : "scale(1.06)" }}
+            />
           </div>
 
           <div
