@@ -107,21 +107,23 @@ function Index() {
               </span>
             }
           />
-          <Link to="/crypto" className="block">
-            <AccountCard
-              icon={
-                <div className="h-7 w-7 rounded-full bg-[var(--pp-blue-light)] flex items-center justify-center text-white font-bold text-[13px]">
-                  C
-                </div>
-              }
-              title="Crypto"
-              amount={fmt(cryptoValue)}
-              footer={
-                <span className="text-[var(--pp-link)] font-semibold">
-                  {cryptoValue > 0 ? "View" : "Buy"}
-                </span>
-              }
-            />
+          <Link
+            to="/crypto"
+            className="snap-start min-w-[46%] max-w-[80%] flex-1 flex rounded-2xl bg-white border border-[color:var(--border)] p-4 flex-col gap-2 overflow-hidden"
+          >
+            <div className="h-7 w-7 rounded-full bg-[var(--pp-blue-light)] flex items-center justify-center text-white font-bold text-[13px]">
+              C
+            </div>
+            <p className="text-[14px] text-[var(--pp-text-muted)] mt-1 truncate">Crypto</p>
+            <p
+              className="text-[26px] font-semibold text-[var(--pp-text)] leading-tight truncate"
+              title={fmt(cryptoValue)}
+            >
+              {fmt(cryptoValue)}
+            </p>
+            <div className="mt-3 text-[14px] truncate text-[var(--pp-link)] font-semibold">
+              {cryptoValue > 0 ? "View" : "Buy"}
+            </div>
           </Link>
         </div>
 
