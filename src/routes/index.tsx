@@ -7,6 +7,7 @@ import { RequireAuth } from "@/auth/RequireAuth";
 import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
 import { useMoneyOnHold } from "@/auth/useMoneyOnHold";
+import { useCryptoHoldings } from "@/auth/useCrypto";
 
 import { useAuth } from "@/auth/AuthProvider";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
@@ -113,8 +114,12 @@ function Index() {
                 </div>
               }
               title="Crypto"
-              amount="$0.00"
-              footer={<span className="text-[var(--pp-link)] font-semibold">Buy</span>}
+              amount={fmt(cryptoValue)}
+              footer={
+                <span className="text-[var(--pp-link)] font-semibold">
+                  {cryptoValue > 0 ? "View" : "Buy"}
+                </span>
+              }
             />
           </Link>
         </div>
