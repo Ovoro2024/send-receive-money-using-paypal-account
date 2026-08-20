@@ -34,6 +34,7 @@ function Index() {
   const { balance } = useBalance();
   const { savings } = useSavings();
   const { onHold } = useMoneyOnHold();
+  const { totalValue: cryptoValue } = useCryptoHoldings();
   const [menuOpen, setMenuOpen] = useState(false);
   const fmt = (v: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
