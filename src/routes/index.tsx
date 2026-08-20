@@ -57,10 +57,7 @@ function Index() {
             <Menu size={26} strokeWidth={2.25} />
           </button>
         </div>
-        <div className="flex items-center gap-4 text-[var(--pp-blue)]">
-          <Trophy size={22} strokeWidth={2.25} />
-          <ScanLine size={22} strokeWidth={2.25} />
-        </div>
+        <HeaderActions />
       </header>
 
       <PayPalMenu open={menuOpen} onClose={() => setMenuOpen(false)} />
