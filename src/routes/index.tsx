@@ -181,6 +181,7 @@ function Index() {
 
 function HeaderActions() {
   const { user } = useAuth();
+  const { url: avatarUrl } = useAvatar();
   const email = user?.email ?? "";
   const initials =
     (email.split("@")[0] ?? "")
@@ -199,14 +200,19 @@ function HeaderActions() {
         <ScanLine size={20} strokeWidth={2.25} className="text-[var(--pp-blue-dark)]" />
       </IconBubble>
       <Link to="/profile" aria-label="Your profile" className="relative shrink-0">
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--pp-blue-dark)] text-[14px] font-bold text-white">
-          {initials}
-        </span>
+        {avatarUrl ? (
+          <img src={avatarUrl} alt="Your profile" className="h-10 w-10 rounded-full object-cover" />
+        ) : (
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--pp-blue-dark)] text-[14px] font-bold text-white">
+            {initials}
+          </span>
+        )}
         <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-[var(--pp-notify)] ring-2 ring-[var(--pp-bg)]" />
       </Link>
     </div>
   );
 }
+
 
 function IconBubble({
   children,
