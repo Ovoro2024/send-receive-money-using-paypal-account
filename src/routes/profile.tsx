@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Mail, Phone, Shield, Bell, CreditCard, LogOut, Check, Pencil } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Mail, Phone, Shield, Bell, CreditCard, LogOut, Check, Pencil, Camera, Trash2 } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useAuth } from "@/auth/AuthProvider";
+import { useAvatar } from "@/auth/useAvatar";
+
 
 export const Route = createFileRoute("/profile")({
   component: ProfileRoute,
