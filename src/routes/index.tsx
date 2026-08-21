@@ -8,6 +8,8 @@ import { useBalance } from "@/auth/useBalance";
 import { useSavings } from "@/auth/useSavings";
 import { useMoneyOnHold } from "@/auth/useMoneyOnHold";
 import { useCryptoHoldings } from "@/auth/useCrypto";
+import { useAvatar } from "@/auth/useAvatar";
+
 
 import { useAuth } from "@/auth/AuthProvider";
 import paypalPLogo from "@/assets/paypal-p-balance.jpeg.asset.json";
