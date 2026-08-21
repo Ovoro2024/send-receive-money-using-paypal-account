@@ -38,6 +38,9 @@ function Profile() {
   const [phone, setPhone] = useState("");
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const { url: avatarUrl, uploading, error: avatarError, upload, remove } = useAvatar();
+  const fileRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     setName(localStorage.getItem(NAME_KEY) ?? "");
