@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Mail, Phone, Shield, Bell, CreditCard, LogOut, Check, Pencil } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Mail, Phone, Shield, Bell, CreditCard, LogOut, Check, Pencil, Camera, Trash2 } from "lucide-react";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { useAuth } from "@/auth/AuthProvider";
+import { useAvatar } from "@/auth/useAvatar";
+
 
 export const Route = createFileRoute("/profile")({
   component: ProfileRoute,
@@ -36,6 +38,9 @@ function Profile() {
   const [phone, setPhone] = useState("");
   const [editing, setEditing] = useState(false);
   const [saved, setSaved] = useState(false);
+  const { url: avatarUrl, uploading, error: avatarError, upload, remove } = useAvatar();
+  const fileRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     setName(localStorage.getItem(NAME_KEY) ?? "");
@@ -77,9 +82,60 @@ function Profile() {
 
       <main className="flex-1 px-4 pb-10">
         <section className="rounded-2xl bg-white border border-[color:var(--border)] p-5 flex flex-col items-center">
-          <div className="h-20 w-20 rounded-full bg-[var(--pp-blue-dark)] flex items-center justify-center text-white text-[26px] font-bold">
-            {initials || "PP"}
+          <div className="relative">
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Your profile photo"
+                className="h-20 w-20 rounded-full object-cover"
+              />
+            ) : (
+              <div className="h-20 w-20 rounded-full bg-[var(--pp-blue-dark)] flex items-center justify-center text-white text-[26px] font-bold">
+                {initials || "PP"}
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              aria-label="Change profile photo"
+              className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full bg-[var(--pp-blue-dark)] text-white flex items-center justify-center border-2 border-white disabled:opacity-60"
+            >
+              <Camera size={15} />
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                e.target.value = "";
+                if (f) void upload(f);
+              }}
+            />
           </div>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            className="mt-3 text-[14px] font-semibold text-[var(--pp-link)] disabled:opacity-60"
+          >
+            {uploading ? "Uploading…" : avatarUrl ? "Change photo" : "Add photo"}
+          </button>
+          {avatarUrl && !uploading && (
+            <button
+              type="button"
+              onClick={() => void remove()}
+              className="mt-1 flex items-center gap-1 text-[13px] text-[var(--pp-text-muted)]"
+            >
+              <Trash2 size={13} /> Remove photo
+            </button>
+          )}
+          {avatarError && (
+            <p className="mt-2 text-[13px] font-semibold text-[var(--pp-notify)]">{avatarError}</p>
+          )}
+
           {editing ? (
             <input
               value={name}
